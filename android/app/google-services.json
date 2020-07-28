@@ -1,0 +1,83 @@
+{
+  "project_info": {
+    "project_number": "1031672895017",
+    "firebase_url": "https://labtest-6b089.firebaseio.com",
+    "project_id": "labtest-6b089",
+    "storage_bucket": "labtest-6b089.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1031672895017:android:b112801ca2e5de3d3b6e38",
+        "android_client_info": {
+          "package_name": "com.example"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1031672895017-khnu4b0s4p31nj5r120u9n4eggqejp7m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNalDnhFIA9PBa3MWyf8fD5dtEJASeyt4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1031672895017-khnu4b0s4p31nj5r120u9n4eggqejp7m.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1031672895017-md3fn57ivug77qt1do5beh4alq4e7rq7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sslabl.labApp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1031672895017:android:9e8cd10edc2426f03b6e38",
+        "android_client_info": {
+          "package_name": "com.labtest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1031672895017-khnu4b0s4p31nj5r120u9n4eggqejp7m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNalDnhFIA9PBa3MWyf8fD5dtEJASeyt4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1031672895017-khnu4b0s4p31nj5r120u9n4eggqejp7m.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1031672895017-md3fn57ivug77qt1do5beh4alq4e7rq7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sslabl.labApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
