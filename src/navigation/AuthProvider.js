@@ -19,6 +19,7 @@ export const AuthProvider = ({ children }) => {
       value={{
         user,
         setUser,
+
         login: async (name, birth, testNumber) => {
           try {
             //await auth().signInWithEmailAndPassword(email, password);
@@ -38,6 +39,7 @@ export const AuthProvider = ({ children }) => {
             console.log(e);
           }
         },
+        
         logout: async () => {
           try {
             await auth().signOut();

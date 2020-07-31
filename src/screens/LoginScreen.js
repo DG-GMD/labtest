@@ -34,6 +34,7 @@ export default function LoginScreen({ navigation }) {
         onChangeText={userTestNumber => setTestNumber(userTestNumber)}
       />
       <FormButton buttonTitle='Login' onPress={() => login(name, birth, testNumber)} />
+      <FormButton buttonTitle='Test Login' onPress={() => login('park', '970000', '1000')} />
       <Text style={styles.text}>연구번호를 분실했거나 오류가 발생할 경우, 관리자
 (green940@g.skku.edu)에게 문의해주십시오.</Text>
     </View>
