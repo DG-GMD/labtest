@@ -1,12 +1,21 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-
+import {FormButton} from '../components/FormButton';
 import React, { Component, useState, useEffect } from 'react';
 import { TouchableHighlight, View, Text, Image, ScrollView, TextInput, StyleSheet } from 'react-native';
 import database from '@react-native-firebase/database';
 
 const Stack = createStackNavigator();
 
+//단어 테스트 여부 질의 버튼, 다시보기 버튼
+function enterTest(props){
+    return (
+        <FormButton buttonTitle='다시 한번 학습할래요' onPress={() => } />
+        <FormButton buttonTitle='단어 테스트 볼래요' onPress={() => } />
+    );
+
+    //여기 온 클릭에서 어떻게 this.state.count를 조작할지?
+}
 
 
 export default class Test extends Component {
@@ -17,44 +26,62 @@ export default class Test extends Component {
             wordList : '',
             word : '',
             meaning :'',
-            isWord: false
+            isWord: true
         };
-    }
-    componentDidMount(){
+
         database()
-        .ref('/words/day1')
+        .ref('/words/day2')
         .once('value')
         .then(snapshot => {
             console.log('User data: ', snapshot.val());
             
             this.setState({
-                wordList: snapshot.val()
+                wordList: snapshot.val(),
+            });
+            this.setState({
+                word: this.state.wordList[this.state.count].word
             });
         });
     }
+    componentDidMount(){
+        
+    }
     _onPressScreen(){
-        //현재 영단어가 표기되고 있다면
-        if(this.state.isWord){
-            this.setState({
-                word: this.state.wordList[this.state.count].meaning,
-                isWord: !this.state.isWord
-            });
+        //마지막 5번째 단어인지
+        if(this.state.isWord != false && this.state.count == 5){
+            //단어 테스트 여부 질의 버튼, 다시보기 버튼
         }
 
-        //현재 한글 뜻이 표기되고 있다면
+        //마지막 5번째 단어가 아니다
         else{
-            this.setState({
-                word: this.state.wordList[this.state.count].word,
-                count: this.state.count+1,
-                isWord: !this.state.isWord
-            });
+            //현재 영단어가 표기되고 있다면
+            if(this.state.isWord){
+                this.setState({
+                    word: this.state.wordList[this.state.count].meaning,
+                    isWord: !this.state.isWord
+                });
+            }
+
+            //현재 한글 뜻이 표기되고 있다면
+            else{
+                this.setState({
+                    count: this.state.count+1,
+                    word: this.state.wordList[this.state.count+1].word,
+                    isWord: !this.state.isWord
+                });
+            }
         }
-        console.log(this.state.wordList);
+        
     }
 
     
     render(){
         const { count, word } = this.state;
+        let lastWordButton;
+
+        if(this.state.isWord != false && this.state.count == 5){
+            lastWordButton = enterTest;
+        }
         return (  
             <View style={{
                 flex: 1
