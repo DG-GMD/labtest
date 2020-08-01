@@ -7,15 +7,23 @@ import { Button, TouchableHighlight, View, Image, ScrollView, TextInput, StyleSh
 import { Text, RadioButton } from 'react-native-paper';
 import database from '@react-native-firebase/database';
 
+let dbwordList;
+
+database()
+.ref('/words/day2')
+.once('value')
+.then(snapshot => {
+    dbwordList = snapshot.val();
+});
+
+
+
 export default class Test extends Component{
     constructor(props){
         super(props);
         this.changeChecked = this.changeChecked.bind(this);
         this.increaseCount = this.increaseCount.bind(this);
         this.decreaseCount = this.decreaseCount.bind(this);
-        this.findMeaning = this.findMeaning.bind(this);
-        this._ProblemButton = this._ProblemButton.bind(this);
-        this._MeaningRadioButton = this._MeaningRadioButton(this);
 
         this.state = {
             checked: '',
@@ -60,58 +68,7 @@ export default class Test extends Component{
         });
     }
 
-    findMeaning(){
-        this.setState({
-
-        });
-
-        const temp =  this.state.wordList[1].word;
-    }
-
-    _MeaningRadioButton(props){
-        return (
-            <View>
-                <Text>{props.meaning}</Text>
-                <RadioButton value={props.number} />
-            </View>
-        );
-    }
     
-    _ProblemButton(){
-        let randomNumber = 0;
-        let randomNumberList = [];
-        let flag = true;
-        let returnDOM = [];
-        const wordList = this.state.wordList;
-
-        
-        console.log("ddddddd" + this.findMeaning());
-        //random 숫자 생성
-        //생성된 숫자대로 단어 배열
-        for(let i=0; i<5; i++){
-            while(flag){
-                flag = false;
-                randomNumber = Math.floor(Math.random() * 5) + 1;
-                randomNumberList.forEach(element => {
-                    if(element == randomNumber){
-                        flag = true;
-                    }
-                });
-    
-                if(!flag){
-                    randomNumberList.push(randomNumber);
-                }
-            }
-            let wordMeaning;
-            
-            returnDOM.push(<MeaningRadioButton number={randomNumber} meaning={"ddd"}/>);
-            
-        }
-        
-        console.log(wordList);
-        //console.log(<MeaningRadioButton number={randomNumber} meaning={"ddd"}/>);
-        return returnDOM;
-    }
 
     render() {
         const {count, checked, word, wordList} = this.state;
@@ -126,7 +83,7 @@ export default class Test extends Component{
 
                 </Text>
                 <RadioButton.Group onValueChange={(value) => this.changeChecked(value)} value={checked}>
-                    <this._ProblemButton />
+                    <ProblemButton count={count} wordList={wordList}/>
                     
                 </RadioButton.Group>
                 
@@ -137,7 +94,7 @@ export default class Test extends Component{
     }
 }
 
-/*
+
 function MeaningRadioButton(props){
     return (
         <View>
@@ -153,16 +110,10 @@ function ProblemButton(props){
     let flag = true;
     let returnDOM = [];
     let wordList = props.wordList;
-   
-    const temp = wordList[1];
-
-    let temp2 = JSON.stringify(temp);
-    console.log("temp2" + temp2.word);
-    console.log(wordList[1]);
+    console.log(dbwordList[1]["word"]);
     
     
-
-
+    
     //random 숫자 생성
     //생성된 숫자대로 단어 배열
     for(let i=0; i<5; i++){
@@ -181,14 +132,14 @@ function ProblemButton(props){
         let wordMeaning;
         
         returnDOM.push(<MeaningRadioButton number={randomNumber} meaning={"ddd"}/>);
-        
+        }
     }
     
-    console.log(wordList);
+    //console.log(wordList);
     console.log(<MeaningRadioButton number={randomNumber} meaning={"ddd"}/>);
     return returnDOM;
 }
-*/
+
 
 
 function NextButton(props){
