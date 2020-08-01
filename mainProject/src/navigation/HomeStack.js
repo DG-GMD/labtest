@@ -5,7 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import  Alarm  from '../screens/AlarmScreen';
 import  Check  from '../screens/CheckScreen';
-import  Test  from '../screens/TestScreen';
+import TestStack from './TestStack';
 
 
 const Tab = createBottomTabNavigator();
@@ -15,7 +15,7 @@ export default function HomeStack() {
     <Tab.Navigator>
       <Tab.Screen name='Alarm' component={Alarm} />
       <Tab.Screen name='Check' component={Check} />
-      <Tab.Screen name='Test' component={Test} />
+      <Tab.Screen name='Test' component={TestStack} />
     </Tab.Navigator>
   );
 }

@@ -2,23 +2,15 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import {FormButton} from '../components/FormButton';
 import React, { Component, useState, useEffect } from 'react';
-import { TouchableHighlight, View, Text, Image, ScrollView, TextInput, StyleSheet } from 'react-native';
+import { Button, TouchableHighlight, View, Text, Image, ScrollView, TextInput, StyleSheet } from 'react-native';
 import database from '@react-native-firebase/database';
 
 const Stack = createStackNavigator();
 
-//단어 테스트 여부 질의 버튼, 다시보기 버튼
-function enterTest(props){
-    return (
-        <FormButton buttonTitle='다시 한번 학습할래요' onPress={() => } />
-        <FormButton buttonTitle='단어 테스트 볼래요' onPress={() => } />
-    );
-
-    //여기 온 클릭에서 어떻게 this.state.count를 조작할지?
-}
 
 
-export default class Test extends Component {
+
+export default class Memorize extends Component {
     constructor(props){
         super(props);
         this.state = { 
@@ -28,6 +20,9 @@ export default class Test extends Component {
             meaning :'',
             isWord: true
         };
+
+        this._setToFirstWord = this._setToFirstWord.bind(this);
+        this._IsLastWord = this._IsLastWord.bind(this);
 
         database()
         .ref('/words/day2')
@@ -49,7 +44,7 @@ export default class Test extends Component {
     _onPressScreen(){
         //마지막 5번째 단어인지
         if(this.state.isWord != false && this.state.count == 5){
-            //단어 테스트 여부 질의 버튼, 다시보기 버튼
+            this._setToFirstWord;
         }
 
         //마지막 5번째 단어가 아니다
@@ -74,14 +69,40 @@ export default class Test extends Component {
         
     }
 
+    _setToFirstWord(){
+        console.log('aaa');
+
+        
+        this.setState({
+            count: 1,
+            isWord: true,
+            word: this.state.wordList[1].word
+        });
+        
+    }
+
+    _IsLastWord(props){
+        const count = props.count;
+        const flag = props.isWord;
+        if(count == 5 && flag != true){
+            //단어 테스트 여부 질의 버튼, 다시보기 버튼
+            return (
+                <View>
+                    <Button title='다시 한번 학습할래요' onPress={ () => this._setToFirstWord() } />
+                    <Button title='단어 테스트 볼래요' onPress={() => this.props.navigation.navigate('Test') } />
+                </View>
+            );
+        }
+        else{
+            return <View></View>;
+        }
+    }
+
     
     render(){
         const { count, word } = this.state;
-        let lastWordButton;
 
-        if(this.state.isWord != false && this.state.count == 5){
-            lastWordButton = enterTest;
-        }
+        
         return (  
             <View style={{
                 flex: 1
@@ -120,6 +141,7 @@ export default class Test extends Component {
                                 fontSize: 25,
                                 textAlign: 'center',
                             }}>화면을 탭하면 단어의 뜻이 나타납니다.</Text>
+                            <this._IsLastWord count={this.state.count} flag={this.state.isWord}></this._IsLastWord>
                         </View>
 
                         
