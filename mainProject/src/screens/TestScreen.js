@@ -7,14 +7,7 @@ import { Button, TouchableHighlight, View, Image, ScrollView, TextInput, StyleSh
 import { Text, RadioButton } from 'react-native-paper';
 import database from '@react-native-firebase/database';
 
-let dbwordList;
-
-database()
-.ref('/words/day2')
-.once('value')
-.then(snapshot => {
-    dbwordList = snapshot.val();
-});
+import * as RNFS from 'react-native-fs';
 
 
 
@@ -43,6 +36,19 @@ export default class Test extends Component{
             });
             this.setState({
                 word: this.state.wordList[this.state.count].word
+            });
+            
+            let path = RNFS.DocumentDirectoryPath + '/db.json';
+            let writeString = JSON.stringify(snapshot.val());
+            console.log("write String");
+            console.log(writeString);
+            RNFS.writeFile(path, writeString, 'utf8').then(res => {
+                console.log("success to write jsondddddddddddddddddddddddd");
+                console.log(path);
+            })
+            .catch(err => {
+                console.log("write errrrrrrrrrrrrrrdddddddddddrrrrr");
+                console.log(err);
             });
         });
     }
@@ -78,7 +84,7 @@ export default class Test extends Component{
                     단어 테스트  {count} / 5
                 </Text>
 
-                <Text>
+                <Text style={{fontSize : 15}}>
                     {word}
 
                 </Text>
@@ -104,13 +110,50 @@ function MeaningRadioButton(props){
     );
 }
 
+
 function ProblemButton(props){
+    //let dbwordList;
+    let dbList;
+    var path = RNFS.DocumentDirectoryPath + '/db.json';
+
+    let getDB = async => {
+        return await RNFS.readFile(path, 'utf8').then(res => {
+            console.log("success to readddddddddddd");
+            console.log(res);
+            console.log(res[2]);
+            return JSON.parse(res);
+        })
+        .catch(err => {
+        
+            console.log(err.message, err.code);
+        
+        });
+    }
+
+    console.log("dbList1111111111111");
+    dbList = getDB().then(res => {
+        console.log("this is in func"); 
+        console.log(res); 
+        return res;
+    });
+
+    console.log("dbList selected");
+    console.log(dbList);
+    console.log(dbList[1]);
+    
+    
     let randomNumber = 0;
     let randomNumberList = [];
     let flag = true;
     let returnDOM = [];
-    let wordList = props.wordList;
-    console.log(dbwordList[1]["word"]);
+    const wordList = props.wordList;
+    //const dbwordList = JSON.parse(wordList);
+    const temp = wordList[1];
+    console.log("-------------------");
+    //console.log(dbwordList);
+    //const dbwordList = JSON.stringify(dbList);
+    // const temp3 = JSON.parse(temp);
+    // console.log(temp3);
     
     
     
@@ -129,15 +172,18 @@ function ProblemButton(props){
             if(!flag){
                 randomNumberList.push(randomNumber);
             }
-        let wordMeaning;
+        //let wordMeaning = dbwordList[randomNumber]["meaning"];
         
-        returnDOM.push(<MeaningRadioButton number={randomNumber} meaning={"ddd"}/>);
+        
         }
+        flag = true;
+        returnDOM.push(<MeaningRadioButton number={randomNumber} meaning={"dd"}/>);
+        console.log("randomn n : " + randomNumber);
     }
     
     //console.log(wordList);
-    console.log(<MeaningRadioButton number={randomNumber} meaning={"ddd"}/>);
-    return returnDOM;
+    //console.log(<MeaningRadioButton number={randomNumber} meaning={"ddd"}/>);    
+    return returnDOM
 }
 
 
