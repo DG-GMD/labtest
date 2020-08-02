@@ -44,7 +44,7 @@ export default class Test extends Component{
             console.log(writeString);
             RNFS.writeFile(path, writeString, 'utf8').then(res => {
                 console.log("success to write jsondddddddddddddddddddddddd");
-                console.log(path);
+                //console.log(path);
             })
             .catch(err => {
                 console.log("write errrrrrrrrrrrrrrdddddddddddrrrrr");
@@ -58,14 +58,14 @@ export default class Test extends Component{
         this.setState({
             checked: _value
         });
-        console.log(_value);
+        //console.log(_value);
     }
     increaseCount(){
         this.setState({
             count: this.state.count+1,
             word: this.state.wordList[1].word
         });
-        console.log(this.state.wordList[1].word);
+        //console.log(this.state.wordList[1].word);
     }
     decreaseCount(){
         this.setState({
@@ -111,79 +111,48 @@ function MeaningRadioButton(props){
 }
 
 
-function ProblemButton(props){
-    //let dbwordList;
-    let dbList;
-    var path = RNFS.DocumentDirectoryPath + '/db.json';
-
-    let getDB = async => {
-        return await RNFS.readFile(path, 'utf8').then(res => {
-            console.log("success to readddddddddddd");
-            console.log(res);
-            console.log(res[2]);
-            return JSON.parse(res);
-        })
-        .catch(err => {
+function ProblemButton(props) {
+    return (item) => database()
+    .ref('/words/day2')
+    .once('value')
+    .then(snapshot => {
+        let randomNumber = 0;
+        let randomNumberList = [];
+        let flag = true;
+        let returnDOM = [];
+        const wordList = snapshot.val();
+        //const dbwordList = JSON.parse(wordList);
         
-            console.log(err.message, err.code);
-        
-        });
-    }
+        console.log("-------------------");
+        console.log(wordList[1].word);
+        //random 숫자 생성
+        //생성된 숫자대로 단어 배열
+        for(let i=0; i<5; i++){
+            while(flag){
+                flag = false;
+                randomNumber = Math.floor(Math.random() * 5) + 1 ;
+                randomNumberList.forEach(element => {
+                    if(element == randomNumber){
+                        flag = true;
+                    }
+                });
 
-    console.log("dbList1111111111111");
-    dbList = getDB().then(res => {
-        console.log("this is in func"); 
-        console.log(res); 
-        return res;
-    });
-
-    console.log("dbList selected");
-    console.log(dbList);
-    console.log(dbList[1]);
-    
-    
-    let randomNumber = 0;
-    let randomNumberList = [];
-    let flag = true;
-    let returnDOM = [];
-    const wordList = props.wordList;
-    //const dbwordList = JSON.parse(wordList);
-    const temp = wordList[1];
-    console.log("-------------------");
-    //console.log(dbwordList);
-    //const dbwordList = JSON.stringify(dbList);
-    // const temp3 = JSON.parse(temp);
-    // console.log(temp3);
-    
-    
-    
-    //random 숫자 생성
-    //생성된 숫자대로 단어 배열
-    for(let i=0; i<5; i++){
-        while(flag){
-            flag = false;
-            randomNumber = Math.floor(Math.random() * 5) + 1 ;
-            randomNumberList.forEach(element => {
-                if(element == randomNumber){
-                    flag = true;
+                if(!flag){
+                    randomNumberList.push(randomNumber);
                 }
-            });
-
-            if(!flag){
-                randomNumberList.push(randomNumber);
+            //let wordMeaning = dbwordList[randomNumber]["meaning"];
+            
+            
             }
-        //let wordMeaning = dbwordList[randomNumber]["meaning"];
-        
-        
+            flag = true;
+            returnDOM.push(<MeaningRadioButton number={randomNumber} meaning={"dd"}/>);
+            //console.log("randomn n : " + randomNumber);
         }
-        flag = true;
-        returnDOM.push(<MeaningRadioButton number={randomNumber} meaning={"dd"}/>);
-        console.log("randomn n : " + randomNumber);
-    }
-    
-    //console.log(wordList);
-    //console.log(<MeaningRadioButton number={randomNumber} meaning={"ddd"}/>);    
-    return returnDOM
+
+        //console.log(wordList);
+        //console.log(<MeaningRadioButton number={randomNumber} meaning={"ddd"}/>);    
+        return returnDOM;
+    });
 }
 
 
