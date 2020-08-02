@@ -7,8 +7,21 @@ import database from '@react-native-firebase/database';
 
 const Stack = createStackNavigator();
 
+let dbList;
+
+function getDB(){
+    return async () => await database()
+        .ref('/words/day2')
+        .once('value')
+        .then(snapshot => {
+            dbList = getDB();
+            return snapshot.val();
+        });
+}
 
 
+console.log('===========');
+console.log(dbList);
 
 export default class Memorize extends Component {
     constructor(props){
@@ -23,6 +36,7 @@ export default class Memorize extends Component {
 
         this._setToFirstWord = this._setToFirstWord.bind(this);
         this._IsLastWord = this._IsLastWord.bind(this);
+        getDB();
 
         database()
         .ref('/words/day2')
