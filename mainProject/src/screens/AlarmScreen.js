@@ -3,6 +3,7 @@ import { View, Text, Image, ScrollView, TextInput, Button, Platform } from 'reac
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { AuthContext } from '../navigation/AuthProvider';
+import { alarmModule } from '../utils/jvmodules';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 const Stack = createStackNavigator();
@@ -15,6 +16,9 @@ function AlarmMain() {
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
         setShow(Platform.OS === 'ios');
+
+        alarmModule.diaryNotification(currentDate.toISOString());
+        //console.log(currentDate.toISOString());
         setDate(currentDate);
     };
 
