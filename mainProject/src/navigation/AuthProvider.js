@@ -27,8 +27,11 @@ export const AuthProvider = ({ children }) => {
             .ref(`/users/${testNumber}`)
             .on('value', snapshot => {
               console.log('User data: ', snapshot.val());
-              let getName = Object.keys(snapshot.val());
-              let getBirth = snapshot.val()[getName];
+
+              let userDB = snapshot.val();
+
+              let getName = userDB.name;
+              let getBirth = userDB.birth;
 
               if(getName == name && getBirth == birth){
                 //navigation.navigate('HomeStack');

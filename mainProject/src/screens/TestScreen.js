@@ -97,7 +97,7 @@ export default class Test extends Component{
     
             });
         }
-        console.log(_checkedList);
+        // console.log(_checkedList);
         //console.log(this.state.wordList[1].word);
     }
     decreaseCount(){
@@ -118,7 +118,7 @@ export default class Test extends Component{
     
             });
         }
-        console.log(_checkedList);
+        // console.log(_checkedList);
     }
 
     componentDidMount(){
@@ -140,23 +140,24 @@ export default class Test extends Component{
     ProblemButton() {
         if(this.state.problemDOM && this.state.problemDOM.length){
             let item;
-            console.log("DOM is existed : " + this.state.count);
+            // console.log("DOM is existed : " + this.state.count);
             
             item = this.state.problemDOM[this.state.count];
             // console.log(item);
             return item;
         }
         else{
-            console.log("in else");
+            // console.log("in else");
             let randomNumber = 0;
             let randomNumberList = [];
             let flag = true;
             let returnDOM;
         
+            tempAnswerList.push(-1);
             for(let k=0; k<6; k++){
                 // //random 숫자 생성
                 //생성된 숫자대로 단어 배열
-                let wordMeaning;
+                let wordMeaning, oneProblemItemList = [];
                 returnDOM = [];
                 randomNumberList = []
                 for(let i=0; i<5; i++){
@@ -177,25 +178,30 @@ export default class Test extends Component{
                     flag = true;
                     wordMeaning = this.state.wordList[randomNumber].meaning;
 
-                    //삽입될 DOM의 뜻이 현재 문제 번호의 영단어와 일치               다면
+                    //삽입될 DOM의 뜻이 현재 문제 번호의 영단어와 일치한다면
                     //answerList에 문제번호 별로 답 번호 기록
                     if(this.state.wordList[k].meaning == wordMeaning){
-                        tempAnswerList.push(randomNumber);
-
-                        
+                        tempAnswerList.push(i+1);
                     }
 
                     //단어 뜻이 적힌 객관식 문제 항목번호와 대응되는 단어 뜻을 기록
                     let item = [];
                     item.push(randomNumber);
-                    item.push(this.state.wordList[randomNumber].meaning);
-                    tempProblemItemList.push(item);
+                    item.push(wordMeaning);
+                    oneProblemItemList.push(item);
 
                     returnDOM.push(<MeaningRadioButton number={i+1} meaning={wordMeaning}/>);
                 }
+                //한 문제의 5개 보기 정보를 저장
+                tempProblemItemList.push(oneProblemItemList);
+                
+                //한 문제에 해당하는 DOM 저장
                 tempProblemList.push(returnDOM);
                 console.log(randomNumberList);
             }
+            console.log("answerList : " + tempAnswerList);
+            console.log("problemitemlist : ");
+            console.log(tempProblemItemList);
             return tempProblemList[1];
         }
     }
@@ -247,8 +253,13 @@ export default class Test extends Component{
 
     GradingScreen(){
         return(
-            <View>
-                <View>
+            <View style={{
+                flex: 1
+            }}>
+                <View style={{
+                    flex: 1,
+                    justifyContent: 'center'
+                }}>
                     <Text>
                         단어 테스트 결과
                     </Text>
@@ -270,14 +281,21 @@ export default class Test extends Component{
                     </Table>
                 </View>
 
-                <Text>
-                    맞은 개수 {this.state.correctCount}
-                </Text>
+                <View style={{
+                    flex: 1,
+                    justifyContent: 'center'
+                }}>
+                    <Text>
+                        맞은 개수 {this.state.correctCount}
+                    </Text>
+                </View>
             </View>
         );
     }
 
     Grading(){
+        console.log("checkedlist : " + this.state.checkedList);
+
         this.setState({
             testDone: true
         });
@@ -305,7 +323,8 @@ export default class Test extends Component{
 
             //내 답변
             let myAnswerNumber = this.state.checkedList[i+1];
-            this.state.tableData[i][1] = this.state.problemItemList[i+1][1];
+            console.log("myAnswerNumber : " + myAnswerNumber);
+            this.state.tableData[i][1] = this.state.problemItemList[i+1][myAnswerNumber-1][1];
 
             //채점 결과
             //맞다면
@@ -321,6 +340,8 @@ export default class Test extends Component{
         this.setState({
             correctCount: _correctCount
         });
+
+        writeCorrectCount(_correctCount);
     }
 
     render() {
@@ -331,6 +352,25 @@ export default class Test extends Component{
     }
 }
 
+function writeCorrectCount(item) {
+    var now = new Date();
+
+    // A post entry.
+    var postData = {
+      correctCount: item,
+      date: now.toUTCString()
+    };
+  
+    // Get a key for a new Post.
+    var newPostKey = database().ref().child('users/1000/test' + now.getTime()).push().key;
+  
+    // Write the new post's data simultaneously in the posts list and the user's post list.
+    var updates = {};
+    updates['/users/1000/test/' + now.getTime()] = postData;
+    // updates['/user-posts/' + uid + '/' + newPostKey] = postData;
+  
+    return database().ref().update(updates);
+  }
 
 function MeaningRadioButton(props){
     return (
