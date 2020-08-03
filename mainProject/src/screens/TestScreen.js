@@ -28,7 +28,8 @@ export default class Test extends Component{
             count: 1,
             wordList: '',
             word: '',
-            start: false
+            start: false,
+            problemState: [[], [], [], [], []]
         };
 
         database()
@@ -109,6 +110,12 @@ export default class Test extends Component{
             
             }
             flag = true;
+
+            let temp = this.state.problemState;
+            temp[this.state.count][i] = randomNumber;
+            this.setState({
+                problemState: temp
+            });
             returnDOM.push(<MeaningRadioButton number={randomNumber} meaning={wordMeaning}/>);
             //console.log("randomn n : " + randomNumber);
         }
