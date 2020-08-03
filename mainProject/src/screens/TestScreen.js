@@ -7,11 +7,13 @@ import { Button, TouchableHighlight, View, Image, ScrollView, TextInput, StyleSh
 import { Text, RadioButton } from 'react-native-paper';
 import database from '@react-native-firebase/database';
 
-import * as RNFS from 'react-native-fs';
-
+import { Table, TableWrapper, Row, Rows, Cell, Col } from 'react-native-table-component';
 
 let dbList;
 
+let tempProblemList = [];
+let tempAnswerList = [];
+let tempProblemItemList = [];
 
 export default class Test extends Component{
     constructor(props){
@@ -22,6 +24,8 @@ export default class Test extends Component{
         this.ProblemButton = this.ProblemButton.bind(this);
         this.TestStartButtonScreen = this.TestStartButtonScreen.bind(this);
         this.TestScreen = this.TestScreen.bind(this);
+        this.Grading = this.Grading.bind(this);
+        this.GradingScreen = this.GradingScreen.bind(this);
 
         this.state = {
             checked: '',
@@ -29,7 +33,23 @@ export default class Test extends Component{
             wordList: '',
             word: '',
             start: false,
-            problemState: [[], [], [], [], []]
+            problemState: [[], [], [], [], [], []],
+            checkedList: [-1, -1, -1, -1, -1, -1],
+            problemDOM: [],
+            answerList: [-1, -1, -1, -1, -1, -1],
+            correctList: [false, false, false, false, false, false],
+            testDone: false,
+            problemItemList: [[], [], [], [], [], []],
+            tableHead: ['', '단어 뜻', '내 답변', '결과'],
+            tableTitle: [null, null, null, null, null],
+            tableData: [
+                [null, null, null],
+                [null, null, null],
+                [null, null, null],
+                [null, null, null],
+                [null, null, null],
+            ],
+            correctCount: 0
         };
 
         database()
@@ -44,89 +64,144 @@ export default class Test extends Component{
             this.setState({
                 word: this.state.wordList[this.state.count].word
             });
-            
-            let path = RNFS.DocumentDirectoryPath + '/db.json';
-            let writeString = JSON.stringify(snapshot.val());
-            console.log("write String");
-            console.log(writeString);
-            RNFS.writeFile(path, writeString, 'utf8').then(res => {
-                console.log("success to write jsondddddddddddddddddddddddd");
-                //console.log(path);
-            })
-            .catch(err => {
-                console.log("write errrrrrrrrrrrrrrdddddddddddrrrrr");
-                console.log(err);
-            });
+
         });
     }
 
     changeChecked(value){
         const _value = value;
+        let _checkedList = [...this.state.checkedList];
+        _checkedList[this.state.count] = _value;
+
         this.setState({
+            checkedList: _checkedList,
             checked: _value
         });
-        //console.log(_value);
+        
     }
     increaseCount(){
-        this.setState({
-            count: this.state.count+1,
-            word: this.state.wordList[this.state.count+1].word
-        });
+        let _checkedList = [...this.state.checkedList];
+        let _checked = _checkedList[this.state.count+1];
+        if(_checked == -1){
+            this.setState({
+                count: this.state.count+1,
+                word: this.state.wordList[this.state.count+1].word,
+                checked: -1
+            });
+        }
+        else{
+            this.setState({
+                checked: _checked,
+                count: this.state.count+1,
+                word: this.state.wordList[this.state.count+1].word
+    
+            });
+        }
+        console.log(_checkedList);
         //console.log(this.state.wordList[1].word);
     }
     decreaseCount(){
-        this.setState({
-            count: this.state.count-1,
-            word: this.state.wordList[this.state.count-1].word
+        let _checkedList = [...this.state.checkedList];
+        let _checked = _checkedList[this.state.count-1];
+        if(_checked == -1){
+            this.setState({
+                count: this.state.count-1,
+                word: this.state.wordList[this.state.count-1].word,
+                checked: -1
+            });
+        }
+        else{
+            this.setState({
+                checked: _checked,
+                count: this.state.count-1,
+                word: this.state.wordList[this.state.count-1].word
+    
+            });
+        }
+        console.log(_checkedList);
+    }
+
+    componentDidMount(){
+        console.log("in componentDidMount()");
+        let problemDOM = tempProblemList;
+        let _answerList = tempAnswerList;
+        let _checkedList = [...this.state.checkedList];
+        let _checked = _checkedList[this.state.count];
+        let _probelmItemList = tempProblemItemList;
+        this.setState({    
+            checked: _checked,
+            problemDOM : problemDOM,
+            answerList: _answerList,
+            problemItemList: _probelmItemList
         });
+        // console.log("checkedState : " + this.state.checkedState[this.state.count]);
     }
 
     ProblemButton() {
-    
-        let randomNumber = 0;
-        let randomNumberList = [];
-        let flag = true;
-        let returnDOM = [];
-    
-        // //random 숫자 생성
-        //생성된 숫자대로 단어 배열
-        let wordMeaning;
-        for(let i=0; i<5; i++){
-
-            while(flag){
-                flag = false;
-                randomNumber = Math.floor(Math.random() * 5) + 1 ;
-                randomNumberList.forEach(element => {
-                    if(element == randomNumber){
-                        flag = true;
-                    }
-                });
-    
-                if(!flag){
-                    randomNumberList.push(randomNumber);
-                }
-            wordMeaning = this.state.wordList[randomNumber].meaning;
+        if(this.state.problemDOM && this.state.problemDOM.length){
+            let item;
+            console.log("DOM is existed : " + this.state.count);
             
-            
-            }
-            flag = true;
-
-            let temp = this.state.problemState;
-            temp[this.state.count][i] = randomNumber;
-            this.setState({
-                problemState: temp
-            });
-            returnDOM.push(<MeaningRadioButton number={randomNumber} meaning={wordMeaning}/>);
-            //console.log("randomn n : " + randomNumber);
+            item = this.state.problemDOM[this.state.count];
+            // console.log(item);
+            return item;
         }
-    
-        //console.log(wordList);
-        //console.log(<MeaningRadioButton number={randomNumber} meaning={"ddd"}/>);    
+        else{
+            console.log("in else");
+            let randomNumber = 0;
+            let randomNumberList = [];
+            let flag = true;
+            let returnDOM;
         
-        return returnDOM;
+            for(let k=0; k<6; k++){
+                // //random 숫자 생성
+                //생성된 숫자대로 단어 배열
+                let wordMeaning;
+                returnDOM = [];
+                randomNumberList = []
+                for(let i=0; i<5; i++){
+                    while(flag){
+                        flag = false;
+                        randomNumber = Math.floor(Math.random() * 5) + 1 ;
+                        randomNumberList.forEach(element => {
+                            if(element == randomNumber){
+                                flag = true;
+                                
+                            }
+                        });
+            
+                        if(!flag){
+                            randomNumberList.push(randomNumber);
+                        }
+                    }
+                    flag = true;
+                    wordMeaning = this.state.wordList[randomNumber].meaning;
+
+                    //삽입될 DOM의 뜻이 현재 문제 번호의 영단어와 일치               다면
+                    //answerList에 문제번호 별로 답 번호 기록
+                    if(this.state.wordList[k].meaning == wordMeaning){
+                        tempAnswerList.push(randomNumber);
+
+                        
+                    }
+
+                    //단어 뜻이 적힌 객관식 문제 항목번호와 대응되는 단어 뜻을 기록
+                    let item = [];
+                    item.push(randomNumber);
+                    item.push(this.state.wordList[randomNumber].meaning);
+                    tempProblemItemList.push(item);
+
+                    returnDOM.push(<MeaningRadioButton number={i+1} meaning={wordMeaning}/>);
+                }
+                tempProblemList.push(returnDOM);
+                console.log(randomNumberList);
+            }
+            return tempProblemList[1];
+        }
     }
 
     TestStartButtonScreen(){
+        //단어 시작 버튼 페이지
         if(!this.state.start){
             return(
                 <View>
@@ -140,8 +215,13 @@ export default class Test extends Component{
                 </View>
             );
         }
-        else{
+        //단어 시험 페이지
+        else if(!this.state.testDone){
             return this.TestScreen();
+        }
+        //단어 채점 페이지
+        else{
+            return this.GradingScreen();
         }
     }
     TestScreen(){
@@ -151,7 +231,7 @@ export default class Test extends Component{
                     단어 테스트  {this.state.count} / 5
                 </Text>
 
-                <Text style={{fontSize : 15}}>
+                <Text style={{fontSize : 40}}>
                     {this.state.word}
 
                 </Text>
@@ -160,14 +240,91 @@ export default class Test extends Component{
                     
                 </RadioButton.Group>
                 
-                <BottomButton count={this.state.count} increase={this.increaseCount} decrease={this.decreaseCount}/>
-
+                <BottomButton count={this.state.count} grading={this.Grading} increase={this.increaseCount} decrease={this.decreaseCount}/>
             </View>
         );
     }
 
+    GradingScreen(){
+        return(
+            <View>
+                <View>
+                    <Text>
+                        단어 테스트 결과
+                    </Text>
+                    <Text>
+                        2020년 8월 4일
+                    </Text>    
+                </View>
+                
+                <View style={{
+                    flex: 2,
+                    justifyContent: 'center'
+                }}>
+                    <Table borderStyle={{borderWidth: 1}}>
+                        <Row data={this.state.tableHead} flexArr={[1, 1, 1, 1]} style={styles.head} textStyle={styles.text}/>
+                        <TableWrapper style={styles.wrapper}>
+                            <Col data={this.state.tableTitle} style={{height: 40, backgroundColor: '#f1f8ff'}} heightArr={[40,40,40,40,40]} textStyle={styles.text}/>
+                            <Rows data={this.state.tableData} flexArr={[1, 1, 1]} style={styles.row} textStyle={styles.text}/>
+                        </TableWrapper>
+                    </Table>
+                </View>
+
+                <Text>
+                    맞은 개수 {this.state.correctCount}
+                </Text>
+            </View>
+        );
+    }
+
+    Grading(){
+        this.setState({
+            testDone: true
+        });
+        let _correctList = [false, false, false, false, false, false];
+        for(let i=1; i<=5; i++){
+            //답안지와 체크한 항목이 일치한다면
+            if(this.state.checkedList[i] == this.state.answerList[i]){
+                _correctList[i] = true;
+            }
+        }
+        this.setState({
+            correctList: _correctList
+        });
+        
+        let _correctCount = 0;
+
+        for(let i=0; i<5; i++){
+            //표의 title을 단어로 기입
+            this.state.tableTitle[i] = this.state.wordList[i+1].word;
+
+            //표의 data를 단어 뜻, 내 답변, 채점 결과로 기입
+
+            //단어 뜻
+            this.state.tableData[i][0] = this.state.wordList[i+1].meaning;
+
+            //내 답변
+            let myAnswerNumber = this.state.checkedList[i+1];
+            this.state.tableData[i][1] = this.state.problemItemList[i+1][1];
+
+            //채점 결과
+            //맞다면
+            if(this.state.checkedList[i+1] == this.state.answerList[i+1]){
+                this.state.tableData[i][2] = "O";
+                _correctCount++;
+            }
+            else{
+                this.state.tableData[i][2] = "X";
+            }
+        }
+
+        this.setState({
+            correctCount: _correctCount
+        });
+    }
+
     render() {
-        const {count, checked, word, wordList} = this.state;
+
         return(
             <this.TestStartButtonScreen />
         );
@@ -178,111 +335,11 @@ export default class Test extends Component{
 function MeaningRadioButton(props){
     return (
         <View>
-            <Text>{props.meaning}</Text>
+            <Text>{props.number}. {props.meaning}</Text>
             <RadioButton value={props.number} />
         </View>
     );
 }
-/*
-function ProblemButton(props) {
-    
-    let randomNumber = 0;
-    let randomNumberList = [];
-    let flag = true;
-    let returnDOM = [];
-    let wordList;
-
-    wordList = props.wordList;
-  
-    
-    //const dbwordList = JSON.parse(wordList);
-    
-    console.log("-------------------");
-    console.log(wordList);
-    console.log(wordList[1]);
-    //console.log(Object.keys(wordList[1]));
-    console.log(typeof(wordList[1]));
-    // //random 숫자 생성
-    //생성된 숫자대로 단어 배열
-    for(let i=0; i<5; i++){
-        while(flag){
-            flag = false;
-            randomNumber = Math.floor(Math.random() * 5) + 1 ;
-            randomNumberList.forEach(element => {
-                if(element == randomNumber){
-                    flag = true;
-                }
-            });
-
-            if(!flag){
-                randomNumberList.push(randomNumber);
-            }
-        //let wordMeaning = dbwordList[randomNumber]["meaning"];
-        
-        
-        }
-        flag = true;
-        returnDOM.push(<MeaningRadioButton number={randomNumber} meaning={"dd"}/>);
-        //console.log("randomn n : " + randomNumber);
-    }
-
-    //console.log(wordList);
-    //console.log(<MeaningRadioButton number={randomNumber} meaning={"ddd"}/>);    
-    
-    return returnDOM;
-}
-*/
-
-function ProblemButton(props) {
-    return new Promise(function(resolve, rejct){
-        let temp;
-        database()
-        .ref('/words/day2')
-        .once('value')
-        .then(snapshot => {
-            let randomNumber = 0;
-            let randomNumberList = [];
-            let flag = true;
-            let returnDOM = [];
-            const wordList = snapshot.val();
-            //const dbwordList = JSON.parse(wordList);
-            
-            console.log("-------------------");
-            console.log(wordList[1].word);
-            //random 숫자 생성
-            //생성된 숫자대로 단어 배열
-            for(let i=0; i<5; i++){
-                while(flag){
-                    flag = false;
-                    randomNumber = Math.floor(Math.random() * 5) + 1 ;
-                    randomNumberList.forEach(element => {
-                        if(element == randomNumber){
-                            flag = true;
-                        }
-                    });
-
-                    if(!flag){
-                        randomNumberList.push(randomNumber);
-                    }
-                //let wordMeaning = dbwordList[randomNumber]["meaning"];
-                
-                
-                }
-                flag = true;
-                returnDOM.push(<MeaningRadioButton number={randomNumber} meaning={"dd"}/>);
-                //console.log("randomn n : " + randomNumber);
-            }
-
-            //console.log(wordList);
-            //console.log(<MeaningRadioButton number={randomNumber} meaning={"ddd"}/>);    
-            
-            //return returnDOM;
-            resolve(returnDOM);
-        })
-    });
-
-}
-
 
 
 
@@ -302,13 +359,21 @@ function PrevButton(props){
     );
 }
 
+function GradingButton(props){
+    return(
+        <Button title="채점하기!" onPress={props.onPress}>
+            
+        </Button>
+    );
+}
+
 function BottomButton(props){
     const count = props.count;
     if(count == 1){
         return <NextButton onPress={props.increase}/>;
     }
     else if(count == 5){
-        return <PrevButton onPress={props.decrease}/>;
+        return <View><PrevButton onPress={props.decrease}/><GradingButton onPress={props.grading} /></View>;
     }
     else{
         return <View><NextButton onPress={props.increase}/><PrevButton onPress={props.decrease}/></View>;
@@ -332,6 +397,11 @@ const styles = StyleSheet.create({
     },
     bottom:{
         flex: 1,
-    }
+    },
+    head: {  height: 40,  backgroundColor: '#f1f8ff'  },
+    wrapper: { flexDirection: 'row' },
+    title: { flex: 1, backgroundColor: '#f6f8fa' },
+    row: {  height: 40  },
+    text: { textAlign: 'center' }
 });
 

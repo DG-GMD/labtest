@@ -14,8 +14,8 @@ export default function HomeStack() {
   return (
     <Tab.Navigator>
       <Tab.Screen name='Alarm' component={Alarm} />
-      <Tab.Screen name='Check' component={Check} />
       <Tab.Screen name='Test' component={TestStack} />
+      <Tab.Screen name='Check' component={Check} />    
     </Tab.Navigator>
   );
 }
