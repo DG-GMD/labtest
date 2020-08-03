@@ -47,19 +47,6 @@ export default function Providers() {
     }
   );
 
-  alarmModule.checkIsAlarm(
-    (msg) => {
-      console.log(msg);
-    },
-    (isAlarm) => {
-      console.log(isAlarm);
-      if(isAlarm){
-        console.log("hi");
-        alarmModule.startDict(true);
-      }
-    }
-  );
-
   return (
     <AuthProvider>
       <Routes />

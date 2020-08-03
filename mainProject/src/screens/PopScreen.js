@@ -1,16 +1,26 @@
 import React from 'react';
 import { View, Text, Image, ScrollView, TextInput, Button } from 'react-native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { AuthProvider } from '../navigation/AuthProvider';
+import Routes from '../navigation/Routes';
+import { alarmModule } from '../utils/jvmodules'
+
+function startDict(admit) {
+    console.log("admit", admit);
+    alarmModule.startDict(admit);
+
+    return (
+        <AuthProvider>
+            <Routes />
+        </AuthProvider>
+    );
+}
 
 export default function Pop(){
-    const startDict = (admit) => {
-        console.log(admit);
-    };
 
     return (  
         <View>
-            <Button onPress = {startDict(true)} title ="yes" />
-            <Button onPress = {startDict(false)} title ="no" />
+            <Button onPress = {() => startDict(true)} title ="yes" />
+            <Button onPress = {() => startDict(false)} title ="no" />
         </View>
     );
 }

@@ -119,16 +119,16 @@ public class alarmModule extends ReactContextBaseJavaModule {
     Context context = reactContext;
 
     RingtoneManager ringMan = new RingtoneManager(context);
-    //ringMan.stopPreviousRingtone();
+    ringMan.stopPreviousRingtone();
 
     SharedPreferences.Editor editor = context.getSharedPreferences("daily alarm", MODE_PRIVATE).edit();
     editor.putBoolean("isAlarm", false);
     editor.apply();
 
     if(admit){
-
+      simpleToast("admitted");
     }else{
-
+      simpleToast("not admitted");
     }
   }
 
