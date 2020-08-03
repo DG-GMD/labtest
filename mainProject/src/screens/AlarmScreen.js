@@ -9,16 +9,15 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 const Stack = createStackNavigator();
 
 function AlarmMain() {
-    const [date, setDate] = useState(new Date(1598051730000));
-    const [mode, setMode] = useState('date');
+    const [date, setDate] = useState(new Date());
+    const [mode, setMode] = useState('time');
     const [show, setShow] = useState(false);
 
     const onChange = (event, selectedDate) => {
-        const currentDate = selectedDate || date;
-        setShow(Platform.OS === 'ios');
+        setShow(false);
 
-        alarmModule.diaryNotification(currentDate.toISOString());
-        //console.log(currentDate.toISOString());
+        const currentDate = selectedDate || date;
+        console.log(currentDate);
         setDate(currentDate);
     };
 
@@ -35,13 +34,18 @@ function AlarmMain() {
         showMode('time');
     };
 
+    const saveAlarm = () => {
+        console.log(date.toISOString());
+        alarmModule.diaryNotification(date.toISOString());
+    };
+
     return (
         <View>
             <View>
-                <Button onPress={showDatepicker} title="Show date picker!" />
+                <Button onPress={showTimepicker} title = "알람시간 선택" />
             </View>
             <View>
-                <Button onPress={showTimepicker} title="Show time picker!" />
+                <Button onPress={saveAlarm} title = "저장" />
             </View>
             {show && (
                 <DateTimePicker
@@ -55,7 +59,7 @@ function AlarmMain() {
             )}
         </View>
     );
-}
+};
 
 function AlarmSet() {
     return (

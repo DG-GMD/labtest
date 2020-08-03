@@ -35,6 +35,11 @@ public class AlarmReceiver extends BroadcastReceiver {
         //  Preference에 설정한 값 저장
         SharedPreferences.Editor editor = context.getSharedPreferences("daily alarm", MODE_PRIVATE).edit();
         editor.putLong("nextNotifyTime", nextNotifyTime.getTimeInMillis());
+        editor.putBoolean("isAlarm", true);
         editor.apply();
+
+        Intent intent_ = new Intent(context, MainActivity.class);
+        intent_.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent_);
     }
 }

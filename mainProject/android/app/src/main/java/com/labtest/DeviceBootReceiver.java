@@ -38,17 +38,17 @@ public class DeviceBootReceiver extends BroadcastReceiver {
             nextNotifyTime.setTimeInMillis(sharedPreferences.getLong("nextNotifyTime", millis));
 
             if (current_calendar.after(nextNotifyTime)) {
-                nextNotifyTime.add(Calendar.DATE, 1);
+                current_calendar.add(Calendar.DATE, 1);
+                nextNotifyTime.set(current_calendar.get(Calendar.YEAR),current_calendar.get(Calendar.MONTH),current_calendar.get(Calendar.DATE));
             }
 
             Date currentDateTime = nextNotifyTime.getTime();
             String date_text = new SimpleDateFormat("yyyy년 MM월 dd일 EE요일 a hh시 mm분 ", Locale.getDefault()).format(currentDateTime);
-            Toast.makeText(context.getApplicationContext(),"[재부팅후] 다음 알람은 " + date_text + "으로 알람이 설정되었습니다!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context.getApplicationContext(),"다음 알람은 " + date_text + "으로 알람이 설정되었습니다!", Toast.LENGTH_SHORT).show();
 
 
             if (manager != null) {
-                manager.setRepeating(AlarmManager.RTC_WAKEUP, nextNotifyTime.getTimeInMillis(),
-                        AlarmManager.INTERVAL_DAY, pendingIntent);
+                manager.setRepeating(AlarmManager.RTC_WAKEUP, nextNotifyTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
             }
         }
     }
