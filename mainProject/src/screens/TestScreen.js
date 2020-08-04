@@ -267,7 +267,7 @@ export default class Test extends Component{
                             style={styles.buttonContainer}  
                             
                             
-                            onPress={() => { writeTestState(''); } }
+                            onPress={() => { writeTestState(''); this.props.navigation.navigate('Memorize');}  }
                         >
                             <Text>
                                 로컬 파일 초기화

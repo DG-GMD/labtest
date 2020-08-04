@@ -2,7 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import {FormButton} from '../components/FormButton';
 import React, { Component, useState, useEffect } from 'react';
-import { Button, TouchableHighlight, View, Text, Image, ScrollView, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { AsyncStorage, Button, TouchableHighlight, View, Text, Image, ScrollView, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import database from '@react-native-firebase/database';
 
 import writeTestState from '../navigation/TestStack';
@@ -33,7 +33,8 @@ export default class Memorize extends Component {
             wordList : '',
             word : '',
             meaning :'',
-            isWord: true
+            isWord: true,
+            tochange: true
         };
 
         this._setToFirstWord = this._setToFirstWord.bind(this);
@@ -110,6 +111,7 @@ export default class Memorize extends Component {
                         <Text>다시 한번 학습할래요</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.buttonContainer} onPress={ () => { 
+                        this.props.navigation.navigate('Test');
                         writeTestStateTesting(); 
                         
                     }} >
@@ -188,11 +190,14 @@ export default class Memorize extends Component {
 function writeTestStateTesting(){
     (async () => {
         try{
-            await AsyncStorage.setItem('day1', 'testing');
+            await AsyncStorage.setItem('day1', "testing");
+            
             console.log("check day1 as testing");
         }
         catch(e){
-            console.log("fail to check day1 as testing");
+            
+            console.log("ddd fail to check day1 as testing", e);
+
         }
     })();
 }

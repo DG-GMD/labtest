@@ -2,7 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import React, { Component } from 'react';
-import {Button, StyleSheet, View, Text, Image, ScrollView, TextInput
+import { AsyncStorage, Button, StyleSheet, View, Text, Image, ScrollView, TextInput
     , TouchableOpacity, Alert, ImageBackground, Linking} from 'react-native';
     import database from '@react-native-firebase/database';
 
@@ -161,6 +161,11 @@ export default class Check extends Component {
                     <Text>설문조사</Text>
                   </TouchableOpacity>
 
+                  <TouchableOpacity 
+                    style={styles.buttonContainer} onPress={ () => {logout()} }>
+                    <Text>Log out</Text>
+                  </TouchableOpacity>
+
                   
 
                 </View>
@@ -222,24 +227,59 @@ export default class Check extends Component {
     }
   }
    
-  const styles = StyleSheet.create({
-    container: { flex: 1, padding: 20, paddingTop: 30, backgroundColor: 'white'},
-    
-    head: {  height: 40,  backgroundColor: 'mediumaquamarine'  },
-    wrapper: { flexDirection: 'row' },
-    title: { flex: 1, backgroundColor: '#f6f8fa' },
-    row: {  height: 30  },
-    text: { textAlign: 'center' },
-    
-    
-    buttonContainer: {
-      marginTop: 10,
-      width: windowWidth / 2,
-      height: windowHeight / 15,
-      backgroundColor: 'lightseagreen',
-      padding: 10,
-      alignItems: 'center',
-      justifyContent: 'center',
-      borderRadius: 8
-    },
-  });
+function logout(){
+  console.log("logout");
+  const saveUser = async () => {
+    try{
+      await AsyncStorage.setItem('user', '');
+      console.log("save name to null");
+    }
+    catch(e){
+      console.log("fail to save name", e);
+    }
+  }
+  const saveBirth = async () => {
+    try{
+      await AsyncStorage.setItem('birth', '');
+      console.log("save birth to null");
+    }
+    catch(e){
+      console.log("fail to save birth", e);
+    }
+  }
+  const saveNumber = async () => {
+    try{
+      await AsyncStorage.setItem('testNumber', '');
+      console.log("save number to null");
+    }
+    catch(e){
+      console.log("fail to save number", e);
+    }
+  }
+  
+  saveUser();
+  saveBirth();
+  saveNumber();
+
+}
+const styles = StyleSheet.create({
+  container: { flex: 1, padding: 20, paddingTop: 30, backgroundColor: 'white'},
+  
+  head: {  height: 40,  backgroundColor: 'mediumaquamarine'  },
+  wrapper: { flexDirection: 'row' },
+  title: { flex: 1, backgroundColor: '#f6f8fa' },
+  row: {  height: 30  },
+  text: { textAlign: 'center' },
+  
+  
+  buttonContainer: {
+    marginTop: 10,
+    width: windowWidth / 2,
+    height: windowHeight / 15,
+    backgroundColor: 'lightseagreen',
+    padding: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 8
+  },
+});
