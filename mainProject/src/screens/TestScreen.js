@@ -2,7 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import React, { Component, useState, useEffect } from 'react';
-import { Button, TouchableHighlight, View, Image, ScrollView, TextInput, StyleSheet } from 'react-native';
+import {AsyncStorage, Button, TouchableHighlight, View, Image, ScrollView, TextInput, StyleSheet } from 'react-native';
 
 import { Text, RadioButton } from 'react-native-paper';
 import database from '@react-native-firebase/database';
@@ -362,11 +362,11 @@ function writeCorrectCount(item) {
     };
   
     // Get a key for a new Post.
-    var newPostKey = database().ref().child('users/1000/test' + now.getTime()).push().key;
+    //var newPostKey = database().ref().child('users/1000/test' + now.getTime()).push().key;
   
     // Write the new post's data simultaneously in the posts list and the user's post list.
     var updates = {};
-    updates['/users/1000/test/' + now.getTime()] = postData;
+    updates['/users/1000/test/' + '1'] = postData;
     // updates['/user-posts/' + uid + '/' + newPostKey] = postData;
   
     return database().ref().update(updates);
