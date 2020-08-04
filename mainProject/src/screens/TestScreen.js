@@ -2,12 +2,18 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import React, { Component, useState, useEffect } from 'react';
-import {AsyncStorage, Button, TouchableHighlight, View, Image, ScrollView, TextInput, StyleSheet } from 'react-native';
+import {AsyncStorage, Button, TouchableOpacity, TouchableHighlight, View, Image, ScrollView, TextInput, StyleSheet } from 'react-native';
 
 import { Text, RadioButton } from 'react-native-paper';
 import database from '@react-native-firebase/database';
 
 import { Table, TableWrapper, Row, Rows, Cell, Col } from 'react-native-table-component';
+
+import Toast from 'react-native-simple-toast';
+
+
+import { windowHeight, windowWidth } from '../utils/Dimensions';
+
 
 let dbList;
 
@@ -28,6 +34,7 @@ export default class Test extends Component{
         this.GradingScreen = this.GradingScreen.bind(this);
 
         this.state = {
+            toastVisible: false,
             checked: '',
             count: 1,
             wordList: '',
@@ -68,6 +75,7 @@ export default class Test extends Component{
         });
     }
 
+    //사용자가 체크한 현재 문제의 답을 저장
     changeChecked(value){
         const _value = value;
         let _checkedList = [...this.state.checkedList];
@@ -77,6 +85,8 @@ export default class Test extends Component{
             checkedList: _checkedList,
             checked: _value
         });
+
+        
         
     }
     increaseCount(){
@@ -127,6 +137,8 @@ export default class Test extends Component{
         let _answerList = tempAnswerList;
         let _checkedList = [...this.state.checkedList];
         let _checked = _checkedList[this.state.count];
+
+        
         let _probelmItemList = tempProblemItemList;
         this.setState({    
             checked: _checked,
@@ -147,6 +159,8 @@ export default class Test extends Component{
             return item;
         }
         else{
+            writeTestState('testing');
+
             // console.log("in else");
             let randomNumber = 0;
             let randomNumberList = [];
@@ -196,6 +210,7 @@ export default class Test extends Component{
                 tempProblemItemList.push(oneProblemItemList);
                 
                 //한 문제에 해당하는 DOM 저장
+                
                 tempProblemList.push(returnDOM);
                 console.log(randomNumberList);
             }
@@ -210,15 +225,57 @@ export default class Test extends Component{
         //단어 시작 버튼 페이지
         if(!this.state.start){
             return(
-                <View>
-                    <Text>
-                        단어 시작!
-                    </Text>
+                
+                <View style={styles.warningContainer}>
+                    <View style={styles.warningWordsContainer}>
+                        <Text style={{
+                            fontSize: 25
+                        }}>
+                            하단의 테스트 시작 버튼을 누르면 단어 시험을 시작합니다.{"\n"}
+                        {"\n"}
 
-                    <Button title='테스트 시작' 
-                    onPress={ () => {this.setState({ start: true})} } />
+                        </Text>
+
+                        <Text style={{
+                            fontSize: 17
+                        }}>
+
+                        ⚠ 하단의 테스트 시작 버튼을 누르면 단어 시험을 시작합니다. ⚠{"\n"}
+                        {"\n"}
+                        1. 시험 도중에 앱을 완전 종료하셔도 다시 단어 시험으로 돌아올 수 있습니다.{"\n"}
+                        2. 완전 종료 후 앱을 재실행해 단어시험을 보시면 기존의 시험 내용은 사라집니다.{"\n"}
+                        3. 본 주의사항은 앱을 완전 종료하신 후 재접속하셔도 보실 수 있습니다.{"\n"}
+                        {"\n"}
+                        </Text>
                     
+                    </View>
+                    
+                    <View style={styles.warningButtonContainer}>
+                        <TouchableOpacity
+                            style={styles.buttonContainer}  
+                            
+                            
+                            onPress={ () => { this.setState({ start: true }) } } 
+                        >
+                            <Text>
+                                테스트 시작
+                            </Text>
+                        </TouchableOpacity>
+
+
+                        <TouchableOpacity
+                            style={styles.buttonContainer}  
+                            
+                            
+                            onPress={() => { writeTestState(''); } }
+                        >
+                            <Text>
+                                로컬 파일 초기화
+                            </Text>
+                        </TouchableOpacity>
+                    </View>  
                 </View>
+                
             );
         }
         //단어 시험 페이지
@@ -232,21 +289,27 @@ export default class Test extends Component{
     }
     TestScreen(){
         return(
-            <View>
-                <Text>
-                    단어 테스트  {this.state.count} / 5
-                </Text>
+            <View style={{flex: 1}}>
+                <View style={{flex: 1, padding: 10, alignItems: 'center'}}>
+                    <Text style={{fontSize: 20}}>
+                        단어 테스트  {this.state.count} / 5
+                    </Text>
 
-                <Text style={{fontSize : 40}}>
-                    {this.state.word}
+                    <Text style={{fontSize : 50}}>
+                        {this.state.word}
 
-                </Text>
-                <RadioButton.Group onValueChange={(value) => this.changeChecked(value)} value={this.state.checked}>
-                    <this.ProblemButton />
-                    
-                </RadioButton.Group>
+                    </Text>
+                </View>
+                <View style={{flex: 4, padding: 15}}>
+                    <RadioButton.Group onValueChange={(value) => this.changeChecked(value)} value={this.state.checked}>
+                        <this.ProblemButton />
+                        
+                    </RadioButton.Group>
+                </View>
+                <View style={{flex: 2}}>
+                    <BottomButton count={this.state.count} grading={this.Grading} increase={this.increaseCount} decrease={this.decreaseCount}/>
+                </View>
                 
-                <BottomButton count={this.state.count} grading={this.Grading} increase={this.increaseCount} decrease={this.decreaseCount}/>
             </View>
         );
     }
@@ -294,6 +357,28 @@ export default class Test extends Component{
     }
 
     Grading(){
+        let isAllProlbemChecked = true;
+        //모든 문제가 체크돼어있는지 확인
+        //아니라면 상태 변화 없음
+        for(let i=1; i<=5; i++){
+            if(this.state.checkedList[i] == -1){
+                isAllProlbemChecked = false;
+            }
+        }
+
+        if(!isAllProlbemChecked){
+            
+            console.log("toastVisible");
+
+            
+            Toast.show('반드시 모든 문제를 풀어야 채점이 가능합니다!', Toast.LONG);
+            
+        
+            return;
+        }
+
+        writeTestState("after test");
+
         console.log("checkedlist : " + this.state.checkedList);
 
         this.setState({
@@ -347,9 +432,24 @@ export default class Test extends Component{
     render() {
 
         return(
-            <this.TestStartButtonScreen />
+            
+            <View style={{flex: 1}}>
+                <this.TestStartButtonScreen />
+            </View>
         );
     }
+}
+
+function writeTestState(state){
+    (async () => {
+        try{
+            await AsyncStorage.setItem('day1', state);
+            console.log("check day1 as", state);
+        }
+        catch(e){
+            console.log("fail to check day1 as", state);
+        }
+    })();
 }
 
 function writeCorrectCount(item) {
@@ -375,7 +475,7 @@ function writeCorrectCount(item) {
 function MeaningRadioButton(props){
     return (
         <View>
-            <Text>{props.number}. {props.meaning}</Text>
+            <Text style={styles.problemMeaning}>{props.number}. {props.meaning}</Text>
             <RadioButton value={props.number} />
         </View>
     );
@@ -385,38 +485,48 @@ function MeaningRadioButton(props){
 
 function NextButton(props){
     return (
-        <Button title="다음" onPress={props.onPress}>
-            
-        </Button>
+        <TouchableOpacity style={styles.buttonContainer} onPress={props.onPress}>
+            <Text>
+                다음
+            </Text>
+        </TouchableOpacity>
+        
     );
 }
 
 function PrevButton(props){
     return (
-        <Button title="prev" onPress={props.onPress}>
-            
-        </Button>
+        <TouchableOpacity style={styles.buttonContainer} onPress={props.onPress}>
+            <Text>
+                이전
+            </Text>
+        </TouchableOpacity>
     );
 }
 
 function GradingButton(props){
     return(
-        <Button title="채점하기!" onPress={props.onPress}>
-            
-        </Button>
+        <TouchableOpacity style={styles.gradingButtonContainer} onPress={props.onPress}>
+            <Text>
+                채점하기
+            </Text>
+        </TouchableOpacity>
     );
 }
 
 function BottomButton(props){
     const count = props.count;
     if(count == 1){
-        return <NextButton onPress={props.increase}/>;
+        return <View style={{alignItems: 'center', justifyContent: 'center'}}>
+            <NextButton onPress={props.increase}/></View>;
     }
     else if(count == 5){
-        return <View><PrevButton onPress={props.decrease}/><GradingButton onPress={props.grading} /></View>;
+        return <View style={{alignItems: 'center', justifyContent: 'center'}}>
+            <PrevButton onPress={props.decrease}/><GradingButton onPress={props.grading} /></View>;
     }
     else{
-        return <View><NextButton onPress={props.increase}/><PrevButton onPress={props.decrease}/></View>;
+        return <View style={{alignItems: 'center', justifyContent: 'center'}}>
+            <NextButton onPress={props.increase}/><PrevButton onPress={props.decrease}/></View>;
     }
 }
 const styles = StyleSheet.create({
@@ -442,6 +552,48 @@ const styles = StyleSheet.create({
     wrapper: { flexDirection: 'row' },
     title: { flex: 1, backgroundColor: '#f6f8fa' },
     row: {  height: 40  },
-    text: { textAlign: 'center' }
+    text: { textAlign: 'center' },
+
+    warningContainer: {
+        
+        padding: 40,
+        backgroundColor: 'white'
+    }, 
+    warningWordsContainer: {
+        
+        
+    },
+    warningButtonContainer: {
+        
+        justifyContent: 'center', alignItems: 'center',
+        
+    },
+    buttonContainer: {
+        marginTop: 10,
+        width: 250,
+        height: 50,
+        backgroundColor: 'lightgreen',
+        padding: 10,
+        margin: 40,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 8
+    },
+    gradingButtonContainer: {
+        marginTop: 10,
+        width: 250,
+        height: 50,
+        backgroundColor: 'sandybrown',
+        padding: 10,
+        margin: 40,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 8
+    },
+    problemMeaning:{
+        fontSize: 15,
+        margin: 5,
+    }
 });
+
 
