@@ -2,13 +2,28 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import {FormButton} from '../components/FormButton';
 import React, { Component, useState, useEffect } from 'react';
-import { Button, TouchableHighlight, View, Text, Image, ScrollView, TextInput, StyleSheet } from 'react-native';
+import { Button, TouchableHighlight, View, Text, Image, ScrollView, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import database from '@react-native-firebase/database';
+
+import writeTestState from '../navigation/TestStack';
 
 const Stack = createStackNavigator();
 
+let dbList;
+
+function getDB(){
+    return async () => await database()
+        .ref('/words/day2')
+        .once('value')
+        .then(snapshot => {
+            dbList = getDB();
+            return snapshot.val();
+        });
+}
 
 
+console.log('===========');
+console.log(dbList);
 
 export default class Memorize extends Component {
     constructor(props){
@@ -23,6 +38,7 @@ export default class Memorize extends Component {
 
         this._setToFirstWord = this._setToFirstWord.bind(this);
         this._IsLastWord = this._IsLastWord.bind(this);
+        getDB();
 
         database()
         .ref('/words/day2')
@@ -37,6 +53,8 @@ export default class Memorize extends Component {
                 word: this.state.wordList[this.state.count].word
             });
         });
+
+        //writeTestState('before test');
     }
     componentDidMount(){
         
@@ -87,9 +105,16 @@ export default class Memorize extends Component {
         if(count == 5 && flag != true){
             //단어 테스트 여부 질의 버튼, 다시보기 버튼
             return (
-                <View>
-                    <Button title='다시 한번 학습할래요' onPress={ () => this._setToFirstWord() } />
-                    <Button title='단어 테스트 볼래요' onPress={() => this.props.navigation.navigate('Test') } />
+                <View style={{justifyContent: 'center', flexDirection: 'row'}}>
+                    <TouchableOpacity style={styles.buttonContainer} onPress={ () => this._setToFirstWord() } >
+                        <Text>다시 한번 학습할래요</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonContainer} onPress={ () => { 
+                        writeTestStateTesting(); 
+                        
+                    }} >
+                        <Text>단어 테스트 볼래요</Text>
+                    </TouchableOpacity>
                 </View>
             );
         }
@@ -105,7 +130,8 @@ export default class Memorize extends Component {
         
         return (  
             <View style={{
-                flex: 1
+                flex: 1,
+                backgroundColor: 'white'
             }}
                 onStartShouldSetResponder = { (PressEvent) => this._onPressScreen() }
             >
@@ -134,7 +160,7 @@ export default class Memorize extends Component {
                         
                         <View style={{
                             flex: 1,
-                            backgroundColor: 'green',
+                            
                             justifyContent: 'center'
                         }}>
                             <Text style={{
@@ -159,24 +185,47 @@ export default class Memorize extends Component {
         );
     }
 }
+function writeTestStateTesting(){
+    (async () => {
+        try{
+            await AsyncStorage.setItem('day1', 'testing');
+            console.log("check day1 as testing");
+        }
+        catch(e){
+            console.log("fail to check day1 as testing");
+        }
+    })();
+}
+
 
 const styles = StyleSheet.create({
     head:{
         flex: 1,
-        backgroundColor: 'powderblue',
+        
         justifyContent: 'center'
     },
     middle:{
         flex: 2,
-        backgroundColor: 'skyblue',
+        
         justifyContent: 'center'
     },
     end:{
         flex: 2,
         flexDirection: 'column',
-        backgroundColor: 'steelblue'
+        
     },
     bottom:{
         flex: 1,
-    }
+    },
+    buttonContainer: {
+        marginTop: 10,
+        width: 180,
+        height: 50,
+        backgroundColor: 'lightgreen',
+        padding: 10,
+        margin: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 8
+      },
 });
