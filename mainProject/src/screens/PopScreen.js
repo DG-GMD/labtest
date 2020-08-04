@@ -1,26 +1,25 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, Image, ScrollView, TextInput, Button } from 'react-native';
-import { AuthProvider } from '../navigation/AuthProvider';
-import Routes from '../navigation/Routes';
 import { alarmModule } from '../utils/jvmodules'
+import { AuthContext } from '../navigation/AuthProvider';
 
 function startDict(admit) {
     console.log("admit", admit);
     alarmModule.startDict(admit);
-
-    return (
-        <AuthProvider>
-            <Routes />
-        </AuthProvider>
-    );
 }
 
 export default function Pop(){
-
+    const { setSkip } = useContext(AuthContext);
     return (  
         <View>
-            <Button onPress = {() => startDict(true)} title ="yes" />
-            <Button onPress = {() => startDict(false)} title ="no" />
+            <Button onPress = {() => {
+                startDict(true);
+                setSkip(true);
+                }} title ="yes" />
+            <Button onPress = {() => {
+                startDict(false);
+                setSkip(true);
+                }} title ="no" />
         </View>
     );
 }

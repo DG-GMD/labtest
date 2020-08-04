@@ -4,27 +4,26 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.AudioAttributes;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import java.util.Calendar;
 
+import android.os.Build;
+
 import static android.content.Context.MODE_PRIVATE;
+
+import android.widget.Toast;
+
+import android.util.Log;
 
 public class AlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        //RingtoneManager.setActualDefaultRingtoneUri(alarmPage.this,RingtoneManager.TYPE_ALARM, Uri.parse("android.resource://com.example.alarmtest/" + R.raw.file_example_mp3_700kb));
-        Uri uri = RingtoneManager.getActualDefaultRingtoneUri(context, RingtoneManager.TYPE_ALARM);
-        Ringtone ringtone = RingtoneManager.getRingtone(context, uri);
-        if (ringtone != null) {
-            ringtone.setAudioAttributes(new AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_ALARM)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                    .build());
-            ringtone.play();
+        Log.v("Receiver","Imhere");
+        Intent startIntent = new Intent(context, RingtonePlayingService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(startIntent);
+        } else {
+            context.startService(startIntent);
         }
 
         Calendar nextNotifyTime = Calendar.getInstance();

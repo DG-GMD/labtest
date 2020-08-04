@@ -13,6 +13,7 @@ const Stack = createStackNavigator();
 
 export default function Routes() {
   const { user, setUser } = useContext(AuthContext);
+  const { skip, setSkip } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
   const [initializing, setInitializing] = useState(true);
   const [Pop, setPop] = useState(true);

@@ -118,8 +118,8 @@ public class alarmModule extends ReactContextBaseJavaModule {
   public void startDict(Boolean admit){
     Context context = reactContext;
 
-    RingtoneManager ringMan = new RingtoneManager(context);
-    ringMan.stopPreviousRingtone();
+    Intent stopIntent = new Intent(context, RingtonePlayingService.class);
+    context.stopService(stopIntent);
 
     SharedPreferences.Editor editor = context.getSharedPreferences("daily alarm", MODE_PRIVATE).edit();
     editor.putBoolean("isAlarm", false);
@@ -153,10 +153,10 @@ public class alarmModule extends ReactContextBaseJavaModule {
     Calendar nextNotifyTime = new GregorianCalendar();
     nextNotifyTime.setTimeInMillis(millis);
 
-    // if (current_calendar.after(nextNotifyTime)) {
-    //     current_calendar.add(Calendar.DATE, 1);
-    //     nextNotifyTime.set(current_calendar.get(Calendar.YEAR),current_calendar.get(Calendar.MONTH),current_calendar.get(Calendar.DATE));
-    // }
+    if (current_calendar.after(nextNotifyTime)) {
+        current_calendar.add(Calendar.DATE, 1);
+        nextNotifyTime.set(current_calendar.get(Calendar.YEAR),current_calendar.get(Calendar.MONTH),current_calendar.get(Calendar.DATE));
+    }
 
     Date currentDateTime = nextNotifyTime.getTime();
     String date_text = new SimpleDateFormat("yyyy년 MM월 dd일 EE요일 a hh시 mm분 ", Locale.getDefault()).format(currentDateTime);
