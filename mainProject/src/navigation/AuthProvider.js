@@ -28,17 +28,12 @@ export const AuthProvider = ({ children }) => {
             const onValueChange = database()
             .ref(`/users/${testNumber}`)
             .on('value', snapshot => {
-              console.log('User data: ', snapshot.val());
-<<<<<<< HEAD
-=======
 
->>>>>>> origin/master
+              console.log('User data: ', snapshot.val());
               let userDB = snapshot.val();
 
               let getName = userDB.name;
               let getBirth = userDB.birth;
-<<<<<<< HEAD
-=======
               console.log("getBirth : ", getBirth);
 
               const saveUser = async () => {
@@ -68,10 +63,10 @@ export const AuthProvider = ({ children }) => {
                   console.log("fail to save number", e);
                 }
               }
+              
               saveUser();
               saveBirth();
               saveNumber();
->>>>>>> origin/master
 
               if(getName == name && getBirth == birth){
                 //navigation.navigate('HomeStack');
