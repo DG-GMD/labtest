@@ -15,10 +15,9 @@ import android.widget.Toast;
 import android.util.Log;
 
 public class AlarmReceiver extends BroadcastReceiver {
-
+    
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.v("Receiver","Imhere");
         Intent startIntent = new Intent(context, RingtonePlayingService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(startIntent);
@@ -38,6 +37,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         editor.apply();
 
         Intent intent_ = new Intent(context, MainActivity.class);
+        intent_.putExtra("AlarmOn",true);
         intent_.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent_);
     }

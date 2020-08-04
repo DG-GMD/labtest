@@ -32,6 +32,13 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 import android.media.RingtoneManager;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+
+import android.content.ServiceConnection;
+import android.os.IBinder;
+
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -49,6 +56,9 @@ public class alarmModule extends ReactContextBaseJavaModule {
   private static final int OVERLAY_PERMISSION_REQUEST_CODE = 101;
 
   private static ReactApplicationContext reactContext;
+
+  // RingtonePlayingService mService;
+  // Boolean mBound = false;
 
   alarmModule(ReactApplicationContext context) {
     super(context);
@@ -118,19 +128,44 @@ public class alarmModule extends ReactContextBaseJavaModule {
   public void startDict(Boolean admit){
     Context context = reactContext;
 
-    Intent stopIntent = new Intent(context, RingtonePlayingService.class);
-    context.stopService(stopIntent);
+    Intent intent = new Intent(context, RingtonePlayingService.class);
+    context.stopService(intent);
+
+    // if(mBound){
+    //   mService.stopRingtone();
+    //   context.unbindService(connection);
+    //   mBound = false;
+    // }
+
+    //((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).deleteNotificationChannel("ringtone_service_channel");
 
     SharedPreferences.Editor editor = context.getSharedPreferences("daily alarm", MODE_PRIVATE).edit();
     editor.putBoolean("isAlarm", false);
     editor.apply();
 
-    if(admit){
-      simpleToast("admitted");
-    }else{
-      simpleToast("not admitted");
-    }
+    // if(admit){
+    //   simpleToast("admitted");
+    // }else{
+    //   simpleToast("not admitted");
+    // }
   }
+
+  // private ServiceConnection connection = new ServiceConnection() {
+
+  //   @Override
+  //   public void onServiceConnected(ComponentName className,
+  //                                  IBinder service) {
+  //       // We've bound to LocalService, cast the IBinder and get LocalService instance
+  //       RingtonePlayingService.LocalBinder binder = (RingtonePlayingService.LocalBinder) service;
+  //       mService = binder.getService();
+  //       mBound = true;
+  //   }
+
+  //   @Override
+  //   public void onServiceDisconnected(ComponentName arg0) {
+  //       mBound = false;
+  //   }
+  // };
 
   @ReactMethod
   public void diaryNotification(String isoString)
