@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { StyleSheet, Text, AsyncStorage} from "react-native";
+import { StyleSheet, Text, AsyncStorage, BackHandler} from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import AuthStack from './AuthStack';
@@ -20,12 +20,15 @@ export default function Routes() {
   const [initializing, setInitializing] = useState(true);
   const [Pop, setPop] = useState(true);
 
+  if(skip == 3){
+    BackHandler.exitApp();
+  }
+
   alarmModule.checkIsAlarm(
     (msg) => {
       console.log(msg);
     },
     (isAlarm) => {
-      console.log("isAlarm", isAlarm);
       if(isAlarm){
         setPop(true);
       }
@@ -50,7 +53,6 @@ export default function Routes() {
     return subscriber; // unsubscribe on unmount
   }, []);
 
-
   //한번 로그인했었으면 해당 정보로 자동 로그인
   (async () => {
     const storageUserName = await AsyncStorage.getItem('user');
@@ -67,7 +69,6 @@ export default function Routes() {
       login(storageUserName, storageUserBirth, storageUserNumber);
     }
 
-    
   })();
   
 
@@ -76,7 +77,6 @@ export default function Routes() {
   }
 
   if(Pop){
-    console.log("I reach");
     return(
       <NavigationContainer>
         <Stack.Navigator>

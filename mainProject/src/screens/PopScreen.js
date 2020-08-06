@@ -14,11 +14,11 @@ export default function Pop(){
         <View>
             <Button onPress = {() => {
                 startDict(true);
-                setSkip(true);
+                setSkip(2);
                 }} title ="yes" />
             <Button onPress = {() => {
                 startDict(false);
-                setSkip(true);
+                setSkip(3);
                 }} title ="no" />
         </View>
     );
