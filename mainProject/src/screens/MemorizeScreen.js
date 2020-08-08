@@ -7,6 +7,8 @@ import database from '@react-native-firebase/database';
 
 import writeTestState from '../navigation/TestStack';
 
+import LogoutButton from '../components/Logout';
+
 const Stack = createStackNavigator();
 
 let dbList;
@@ -28,17 +30,20 @@ console.log(dbList);
 export default class Memorize extends Component {
     constructor(props){
         super(props);
+        
         this.state = { 
             count : 1 ,
             wordList : '',
             word : '',
             meaning :'',
             isWord: true,
-            tochange: true
+            tochange: true,
         };
+
 
         this._setToFirstWord = this._setToFirstWord.bind(this);
         this._IsLastWord = this._IsLastWord.bind(this);
+        this._BottomText = this._BottomText.bind(this);
         getDB();
 
         database()
@@ -55,6 +60,7 @@ export default class Memorize extends Component {
             });
         });
 
+        this.props.navigation.setOptions({ headerTitle: props => <LogoutButton /> });
         //writeTestState('before test');
     }
     componentDidMount(){
@@ -62,8 +68,8 @@ export default class Memorize extends Component {
     }
     _onPressScreen(){
         //마지막 5번째 단어인지
-        if(this.state.isWord != false && this.state.count == 5){
-            this._setToFirstWord;
+        if(this.state.isWord == false && this.state.count == 5){
+            //this._setToFirstWord;
         }
 
         //마지막 5번째 단어가 아니다
@@ -72,7 +78,7 @@ export default class Memorize extends Component {
             if(this.state.isWord){
                 this.setState({
                     word: this.state.wordList[this.state.count].meaning,
-                    isWord: !this.state.isWord
+                    isWord: false
                 });
             }
 
@@ -81,7 +87,7 @@ export default class Memorize extends Component {
                 this.setState({
                     count: this.state.count+1,
                     word: this.state.wordList[this.state.count+1].word,
-                    isWord: !this.state.isWord
+                    isWord: true
                 });
             }
         }
@@ -101,9 +107,10 @@ export default class Memorize extends Component {
     }
 
     _IsLastWord(props){
-        const count = props.count;
-        const flag = props.isWord;
-        if(count == 5 && flag != true){
+        const count = this.state.count;
+        const flag = this.state.isWord;
+
+        if(count == 5 && flag == false){
             //단어 테스트 여부 질의 버튼, 다시보기 버튼
             return (
                 <View style={{justifyContent: 'center', flexDirection: 'row'}}>
@@ -125,6 +132,32 @@ export default class Memorize extends Component {
         }
     }
 
+    //화면 하단 문구 DOM
+    _BottomText(props){
+        let bottomText = '';
+        const flag =  this.state.isWord;
+        //5번째 단어
+        if(this.state.count == 5 && !flag){
+            bottomText = '“단어학습이 완료되었습니다. 다시 한 번 학습하기 또는 단어테스트 보기 중 선택해주세요.';
+            
+        }
+        //1~4번째 영단어
+        else if(flag){
+            bottomText = '화면을 탭하면 단어의 뜻이 나타납니다.';
+        }
+        //1~4번째 영단어의 한글 뜻
+        else {
+            bottomText = '화면을 탭하면 다음 영단어가 나타납니다.';
+        }
+        return(
+            <Text style={{
+                fontSize: 20,
+                textAlign: 'center',
+                color: 'dimgray'
+            }}>{bottomText}</Text>
+        );
+    }
+
     
     render(){
         const { count, word } = this.state;
@@ -133,7 +166,8 @@ export default class Memorize extends Component {
         return (  
             <View style={{
                 flex: 1,
-                backgroundColor: 'white'
+                backgroundColor: 'white',
+                padding: 10
             }}
                 onStartShouldSetResponder = { (PressEvent) => this._onPressScreen() }
             >
@@ -165,24 +199,14 @@ export default class Memorize extends Component {
                             
                             justifyContent: 'center'
                         }}>
-                            <Text style={{
-                                fontSize: 25,
-                                textAlign: 'center',
-                            }}>화면을 탭하면 단어의 뜻이 나타납니다.</Text>
+                            <this._BottomText />
                             <this._IsLastWord count={this.state.count} flag={this.state.isWord}></this._IsLastWord>
                         </View>
 
                         
                     
                     </View>
-                    <View style={styles.bottom}>
-                        <Image style={{
-                            alignItems: 'flex-end'
-                        }}
-                            source={require('../../img/logo.png')}
-                        />
-                    </View>
-                
+                    
             </View>
         );
     }
@@ -210,7 +234,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     middle:{
-        flex: 2,
+        flex: 1,
         
         justifyContent: 'center'
     },

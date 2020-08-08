@@ -11,10 +11,9 @@ import { Table, TableWrapper, Row, Rows, Cell, Col } from 'react-native-table-co
 
 import Toast from 'react-native-simple-toast';
 
-
 import { windowHeight, windowWidth } from '../utils/Dimensions';
 
-
+import LogoutButton from '../components/Logout';
 let dbList;
 
 let tempProblemList = [];
@@ -73,6 +72,8 @@ export default class Test extends Component{
             });
 
         });
+
+        this.props.navigation.setOptions({ headerTitle: props => <LogoutButton /> });
     }
 
     //사용자가 체크한 현재 문제의 답을 저장
@@ -231,7 +232,7 @@ export default class Test extends Component{
                         <Text style={{
                             fontSize: 25
                         }}>
-                            하단의 테스트 시작 버튼을 누르면 단어 시험을 시작합니다.{"\n"}
+                            오늘의 단어 테스트{"\n"}
                         {"\n"}
 
                         </Text>
@@ -240,12 +241,11 @@ export default class Test extends Component{
                             fontSize: 17
                         }}>
 
-                        ⚠ 하단의 테스트 시작 버튼을 누르면 단어 시험을 시작합니다. ⚠{"\n"}
+                        
                         {"\n"}
-                        1. 시험 도중에 앱을 완전 종료하셔도 다시 단어 시험으로 돌아올 수 있습니다.{"\n"}
-                        2. 완전 종료 후 앱을 재실행해 단어시험을 보시면 기존의 시험 내용은 사라집니다.{"\n"}
-                        3. 본 주의사항은 앱을 완전 종료하신 후 재접속하셔도 보실 수 있습니다.{"\n"}
-                        {"\n"}
+                        하단의 ‘테스트 시작’ 버튼을 누르시면 단어테스트를 시작합니다.{"\n"}
+                        객관식의 총 5 문항입니다.{"\n"}
+                        
                         </Text>
                     
                     </View>
@@ -257,23 +257,29 @@ export default class Test extends Component{
                             
                             onPress={ () => { this.setState({ start: true }) } } 
                         >
-                            <Text>
+                            <Text style={{
+                                fontSize: 19
+                            }}>
                                 테스트 시작
                             </Text>
                         </TouchableOpacity>
 
 
-                        <TouchableOpacity
-                            style={styles.buttonContainer}  
-                            
-                            
-                            onPress={() => { writeTestState(''); this.props.navigation.navigate('Memorize');}  }
-                        >
-                            <Text>
-                                로컬 파일 초기화
-                            </Text>
-                        </TouchableOpacity>
+                        
                     </View>  
+
+                    <View style={styles.warningButtonContainer}>
+                        <TouchableOpacity
+                                style={styles.buttonContainer}  
+                                
+                                
+                                onPress={() => { writeTestState(''); this.props.navigation.navigate('Memorize');}  }
+                            >
+                                <Text>
+                                    로컬 파일 초기화
+                                </Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
                 
             );
@@ -306,7 +312,7 @@ export default class Test extends Component{
                         
                     </RadioButton.Group>
                 </View>
-                <View style={{flex: 2}}>
+                <View style={{flex: 1}}>
                     <BottomButton count={this.state.count} grading={this.Grading} increase={this.increaseCount} decrease={this.decreaseCount}/>
                 </View>
                 
@@ -433,7 +439,7 @@ export default class Test extends Component{
 
         return(
             
-            <View style={{flex: 1}}>
+            <View style={{flex: 1, backgroundColor: 'white'}}>
                 <this.TestStartButtonScreen />
             </View>
         );
@@ -485,8 +491,8 @@ function MeaningRadioButton(props){
 
 function NextButton(props){
     return (
-        <TouchableOpacity style={styles.buttonContainer} onPress={props.onPress}>
-            <Text>
+        <TouchableOpacity style={styles.problemButtonContainer} onPress={props.onPress}>
+            <Text style={styles.problemButtonText}>
                 다음
             </Text>
         </TouchableOpacity>
@@ -496,8 +502,8 @@ function NextButton(props){
 
 function PrevButton(props){
     return (
-        <TouchableOpacity style={styles.buttonContainer} onPress={props.onPress}>
-            <Text>
+        <TouchableOpacity style={styles.problemButtonContainer} onPress={props.onPress}>
+            <Text style={styles.problemButtonText}>
                 이전
             </Text>
         </TouchableOpacity>
@@ -507,7 +513,7 @@ function PrevButton(props){
 function GradingButton(props){
     return(
         <TouchableOpacity style={styles.gradingButtonContainer} onPress={props.onPress}>
-            <Text>
+            <Text style={styles.problemButtonText}>
                 채점하기
             </Text>
         </TouchableOpacity>
@@ -516,17 +522,18 @@ function GradingButton(props){
 
 function BottomButton(props){
     const count = props.count;
-    if(count == 1){
-        return <View style={{alignItems: 'center', justifyContent: 'center'}}>
-            <NextButton onPress={props.increase}/></View>;
-    }
-    else if(count == 5){
-        return <View style={{alignItems: 'center', justifyContent: 'center'}}>
+    
+    if(count == 5){
+        return <View style={styles.problemBottomButton}>
             <PrevButton onPress={props.decrease}/><GradingButton onPress={props.grading} /></View>;
     }
+    else if(count == 1){
+        return <View style={styles.problemBottomButton}>
+            <NextButton onPress={props.increase}/></View>;
+    }
     else{
-        return <View style={{alignItems: 'center', justifyContent: 'center'}}>
-            <NextButton onPress={props.increase}/><PrevButton onPress={props.decrease}/></View>;
+        return <View style={styles.problemBottomButton}>
+            <PrevButton onPress={props.decrease}/><NextButton onPress={props.increase}/></View>;
     }
 }
 const styles = StyleSheet.create({
@@ -555,37 +562,52 @@ const styles = StyleSheet.create({
     text: { textAlign: 'center' },
 
     warningContainer: {
-        
+        flex: 1,
         padding: 40,
         backgroundColor: 'white'
     }, 
     warningWordsContainer: {
-        
+        flex: 3
         
     },
     warningButtonContainer: {
-        
+        flex: 1,
+        flexDirection: 'row',
         justifyContent: 'center', alignItems: 'center',
         
     },
     buttonContainer: {
         marginTop: 10,
-        width: 250,
-        height: 50,
+        width: 200,
+        height: 60,
         backgroundColor: 'lightgreen',
         padding: 10,
-        margin: 40,
+        margin: 20,
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 8
     },
+    problemButtonContainer: {  
+        width: 100,
+        height: 60,
+        backgroundColor: 'lightgreen',
+        padding: 10,
+        marginLeft: 20,
+        marginRight: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 8
+    },
+    problemButtonText:{
+        fontSize: 16
+    },
     gradingButtonContainer: {
-        marginTop: 10,
-        width: 250,
-        height: 50,
+        width: 100,
+        height: 60,
         backgroundColor: 'sandybrown',
         padding: 10,
-        margin: 40,
+        marginLeft: 20,
+        marginRight: 20,
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 8
@@ -593,6 +615,10 @@ const styles = StyleSheet.create({
     problemMeaning:{
         fontSize: 15,
         margin: 5,
+    },
+    problemBottomButton:{
+        alignItems: 'center', justifyContent: 'center',
+        flexDirection: 'row'
     }
 });
 

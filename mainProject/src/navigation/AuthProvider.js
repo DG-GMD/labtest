@@ -69,7 +69,7 @@ export const AuthProvider = ({ children }) => {
               saveNumber();
 
               if(getName == name && getBirth == birth){
-                //navigation.navigate('HomeStack');
+                
                 setUser(getName);
               }
             });
@@ -80,7 +80,8 @@ export const AuthProvider = ({ children }) => {
         
         logout: async () => {
           try {
-            await auth().signOut();
+            console.log("logout!!!");
+            setUser('');
           } catch (e) {
             console.error(e);
           }

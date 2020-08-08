@@ -18,7 +18,8 @@ import Modal, {
   ScaleAnimation,
 } from 'react-native-modals';
 
-import * as Progress from 'react-native-progress';
+
+import LogoutButton from '../components/Logout';
 
 
 export default class Check extends Component {
@@ -43,7 +44,8 @@ export default class Check extends Component {
         linkList: '',
         testList: '',
       }
-
+    
+      
 
       database()
         .ref('/investigation')
@@ -85,6 +87,7 @@ export default class Check extends Component {
             }
         });
       
+        this.props.navigation.setOptions({ headerTitle: props => <LogoutButton /> });
     }
 
 
@@ -161,22 +164,12 @@ export default class Check extends Component {
                     <Text>설문조사</Text>
                   </TouchableOpacity>
 
-                  <TouchableOpacity 
-                    style={styles.buttonContainer} onPress={ () => {logout()} }>
-                    <Text>Log out</Text>
-                  </TouchableOpacity>
+                  
 
                   
 
                 </View>
-                <View style={{ flex: 1}}>
-                  <Image style={{
-                      justifyContent: 'flex-end',
-                      alignItems: 'flex-end'
-                  }}
-                      source={require('../../img/logo.png')}
-                  />
-                </View>
+                
                 
                   
 
@@ -227,41 +220,7 @@ export default class Check extends Component {
     }
   }
    
-function logout(){
-  console.log("logout");
-  const saveUser = async () => {
-    try{
-      await AsyncStorage.setItem('user', '');
-      console.log("save name to null");
-    }
-    catch(e){
-      console.log("fail to save name", e);
-    }
-  }
-  const saveBirth = async () => {
-    try{
-      await AsyncStorage.setItem('birth', '');
-      console.log("save birth to null");
-    }
-    catch(e){
-      console.log("fail to save birth", e);
-    }
-  }
-  const saveNumber = async () => {
-    try{
-      await AsyncStorage.setItem('testNumber', '');
-      console.log("save number to null");
-    }
-    catch(e){
-      console.log("fail to save number", e);
-    }
-  }
-  
-  saveUser();
-  saveBirth();
-  saveNumber();
 
-}
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, paddingTop: 30, backgroundColor: 'white'},
   

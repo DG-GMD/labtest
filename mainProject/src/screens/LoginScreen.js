@@ -15,7 +15,7 @@ export default function LoginScreen({ navigation }) {
       <Text style={{
         fontSize: 30,
         margin: 40
-      }}>i-lab Voice Alarm</Text>
+      }}>영어 단어 학습</Text>
       <FormInput
         value={name}
         placeholderText='이름'
