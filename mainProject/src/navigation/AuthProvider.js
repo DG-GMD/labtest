@@ -64,7 +64,9 @@ export const AuthProvider = ({ children }) => {
                 }
               }
               
-              
+              saveUser();
+              saveBirth();
+              saveNumber();
 
               if(getName == name && getBirth == birth){
                 

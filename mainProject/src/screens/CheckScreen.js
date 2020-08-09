@@ -19,6 +19,7 @@ export default class Check extends Component {
       super(props);
 
       this.getData = this.getData.bind(this);
+      
       this.state = {
         tableHead1: 
           ['1', '2', '3', '4', '5', '6', '7']
@@ -91,6 +92,7 @@ export default class Check extends Component {
 
     componentDidMount(){
       this.getData();
+      console.log('---------------in didmout');
     }
   
     getData = async () => {
@@ -113,31 +115,23 @@ export default class Check extends Component {
           userDB: snapshot.val(),
   
         });
+        return snapshot.val().startDate.millitime;
       })
-      .then( () => {
-        let milliTime = this.state.userDB.startDate.millitime;
+      .then( (milliTime) => {        
         console.log('time : ', milliTime);
   
         let now = new Date();
   
         let calcDate = new Date(now.getTime() - milliTime);
         this.setState({
-          howLongDate: calcDate
+          howLongDate: calcDate.getDate()
         });
-  
-        // this.setState(this.state);
         
       })
       .then( () => {
-      
-        this.props.navigation.setOptions({ headerTitle: props => {<LogoutButton restDate={this.state.howLongDate} userName={this.state.userName}/>}    });
+        this.props.navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={this.state.howLongDate} userName={this.state.userName}/>}   });
       });
-  
-      console.log("**************");
-      console.log("userDB", this.state.userDB);
-      console.log("username", this.state.userName);
     };
-
 
     render() {
       const state = this.state;

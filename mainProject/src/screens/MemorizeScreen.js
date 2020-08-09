@@ -43,6 +43,7 @@ export default class Memorize extends Component {
         this._setToFirstWord = this._setToFirstWord.bind(this);
         this._IsLastWord = this._IsLastWord.bind(this);
         this._BottomText = this._BottomText.bind(this);
+        this.getData = this.getData.bind(this);
         getDB();
 
         database()
@@ -63,8 +64,48 @@ export default class Memorize extends Component {
         //writeTestState('before test');
     }
     componentDidMount(){
+        this.getData();
+        console.log('---------------in didmout');
+      }
+    
+    getData = async () => {
+        const storageUserName = await AsyncStorage.getItem('user');
         
-    }
+        const storageTestNumber = await AsyncStorage.getItem('testNumber');
+        console.log("storage ", storageTestNumber, storageUserName);
+
+        this.setState({
+            userName: storageUserName,
+            userTestNumber: storageTestNumber
+        });
+
+        database()
+        .ref('/users/' + storageTestNumber)
+        .once('value')
+        .then(snapshot => {
+            console.log("snapshot ", snapshot.val());
+            this.setState({
+            userDB: snapshot.val(),
+
+            });
+            return snapshot.val().startDate.millitime;
+        })
+        .then( (milliTime) => {        
+            console.log('time : ', milliTime);
+
+            let now = new Date();
+
+            let calcDate = new Date(now.getTime() - milliTime);
+            this.setState({
+            howLongDate: calcDate.getDate()
+            });
+            
+        })
+        .then( () => {
+            this.props.navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={this.state.howLongDate} userName={this.state.userName}/>}   });
+        });
+    };
+
     _onPressScreen(){
         //마지막 5번째 단어인지
         if(this.state.isWord == false && this.state.count == 5){
