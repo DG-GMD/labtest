@@ -15,7 +15,7 @@ function AlarmMain({navigation}) {
     const [mode, setMode] = useState('time');
     const [show, setShow] = useState(false);
 
-    navigation.setOptions({ headerTitle: props => <LogoutButton /> });
+    //navigation.setOptions({ headerTitle: props => <LogoutButton /> });
     const onChange = (event, selectedDate) => {
         setShow(false);
 

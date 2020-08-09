@@ -7,16 +7,8 @@ import { AsyncStorage, Button, StyleSheet, View, Text, Image, ScrollView, TextIn
     import database from '@react-native-firebase/database';
 
 import { Table, TableWrapper, Row, Rows, Cell, Col } from 'react-native-table-component';
-import { windowHeight, windowWidth } from '../utils/Dimensions';
 
-import Modal, {
-  ModalTitle,
-  ModalContent,
-  ModalFooter,
-  ModalButton,
-  SlideAnimation,
-  ScaleAnimation,
-} from 'react-native-modals';
+
 
 
 import LogoutButton from '../components/Logout';
@@ -26,6 +18,7 @@ export default class Check extends Component {
     constructor(props) {
       super(props);
 
+      this.getData = this.getData.bind(this);
       this.state = {
         tableHead1: 
           ['1', '2', '3', '4', '5', '6', '7']
@@ -43,53 +36,107 @@ export default class Check extends Component {
         visible: false,
         linkList: '',
         testList: '',
+        userName: '',
+        userTestNumber: '',
+        userDB: '',
+        milliTime: 0,
+        howLongDate: 0
       }
     
       
 
       database()
-        .ref('/investigation')
-        .once('value')
-        .then(snapshot => {
-            console.log('investigation data: ', snapshot.val());
-            
-            this.setState({
-                linkList: snapshot.val(),
-            });
-        });
+      .ref('/investigation')
+      .once('value')
+      .then(snapshot => {
+          console.log('investigation data: ', snapshot.val());
+          
+          this.setState({
+              linkList: snapshot.val(),
+          });
+      });
       
-        database()
-        .ref('/users/1000/test')
-        .once('value')
-        .then(snapshot => {
-            console.log('test data: ', snapshot.val());
-            
+      database()
+      .ref('/users/1000/test')
+      .once('value')
+      .then(snapshot => {
+          console.log('test data: ', snapshot.val());
+          
+          this.setState({
+              testList: snapshot.val(),
+          });
+          
+          //해당 날짜에 시험을 수행했다면
+          try{
+            let temp = this.state.testList[1].correctCount;
+
+            //해당 날짜의 기호 변경
+            let _tableData = [...this.state.tableData1];
+            _tableData[0][0] = '✅';
             this.setState({
-                testList: snapshot.val(),
-            });
-            
-            //해당 날짜에 시험을 수행했다면
-            try{
-              let temp = this.state.testList[1].correctCount;
-  
-              //해당 날짜의 기호 변경
-              let _tableData = [...this.state.tableData1];
-              _tableData[0][0] = '✅';
-              this.setState({
-                tableData1: _tableData
-              })
-  
-              console.log("change check table!!");
-            }
-            //해당 날짜에 시험을 수행하지 않았다면
-            catch{
-              console.log("there's no test result");
-            }
-        });
+              tableData1: _tableData
+            })
+
+            console.log("change check table!!");
+          }
+          //해당 날짜에 시험을 수행하지 않았다면
+          catch{
+            console.log("there's no test result");
+          }
+      });
       
-        this.props.navigation.setOptions({ headerTitle: props => <LogoutButton /> });
+      //this.props.navigation.setOptions({ headerTitle: props => <LogoutButton /> });
     }
 
+
+    componentDidMount(){
+      this.getData();
+    }
+  
+    getData = async () => {
+      const storageUserName = await AsyncStorage.getItem('user');
+      
+      const storageTestNumber = await AsyncStorage.getItem('testNumber');
+      console.log("storage ", storageTestNumber, storageUserName);
+  
+      this.setState({
+        userName: storageUserName,
+        userTestNumber: storageTestNumber
+      });
+  
+      database()
+      .ref('/users/' + storageTestNumber)
+      .once('value')
+      .then(snapshot => {
+        console.log("snapshot ", snapshot.val());
+        this.setState({
+          userDB: snapshot.val(),
+  
+        });
+      })
+      .then( () => {
+        let milliTime = this.state.userDB.startDate.millitime;
+        console.log('time : ', milliTime);
+  
+        let now = new Date();
+  
+        let calcDate = new Date(now.getTime() - milliTime);
+        this.setState({
+          howLongDate: calcDate
+        });
+  
+        // this.setState(this.state);
+        
+      })
+      .then( () => {
+      
+        this.props.navigation.setOptions({ headerTitle: props => {<LogoutButton restDate={this.state.howLongDate} userName={this.state.userName}/>}    });
+      });
+  
+      console.log("**************");
+      console.log("userDB", this.state.userDB);
+      console.log("username", this.state.userName);
+    };
 
 
     render() {
@@ -158,61 +205,17 @@ export default class Check extends Component {
                     </View>
                 </View>
                 
-                <View style={{ flex: 2, flexDirection:"row", alignItems:'center', justifyContent: 'center'}}>
-                  <TouchableOpacity 
-                    style={styles.buttonContainer} onPress={ () => {this.setState({ visible: true })}} >
-                    <Text>설문조사</Text>
-                  </TouchableOpacity>
-
+                
                   
 
                   
-
+                <View style={{padding: 10}}>
+                  <Text style={{fontSize:18, alignContent:'center'}}>설문을 진행하시지 않은 피험자분들은 하단의 1주차 설문조사 링크로 접속해주시기 바랍니다. {"\n"}</Text>
+                  <Text style={{fontSize:20, color: 'blue', alignContent:'center', textAlign: 'center'}} onPress={() => Linking.openURL(this.state.linkList[0].link)}>
+                    설문조사 링크
+                  </Text>
                 </View>
-                
-                
-                  
-
-                  <Modal
-                    width={0.9}
-                    visible={this.state.visible}
-                    rounded
-                    actionsBordered
-                    onTouchOutside={() => {
-                      this.setState({ visible: false });
-                    }}
-                    modalTitle={
-                      <ModalTitle
-                        title="설문조사 링크"
-                        align="left"
-                      />
-                    }
-                    footer={
-                      <ModalFooter>
-                        
-                        <ModalButton
-                          text="확인"
-                          bordered
-                          onPress={() => {
-                            this.setState({ visible: false });
-                          }}
-                          
-                        />
-                      </ModalFooter>
-                      }
-                    >
-                      <ModalContent
-                        style={{ backgroundColor: '#fff' }}
-                      >
-                        <View style={{padding: 10}}>
-                          <Text>설문을 진행하시지 않은 피험자분들은 하단의 1주차 설문조사 링크로 접속해주시기 바랍니다. {"\n"}</Text>
-                          <Text style={{fontSize:20, color: 'blue', alignContent:'center'}} onPress={() => Linking.openURL(this.state.linkList[0].link)}>
-                            설문조사 링크
-                          </Text>
-                        </View>
-                      </ModalContent>
-
-                    </Modal>
+                      
                 
           </View>
         </View>
@@ -224,7 +227,7 @@ export default class Check extends Component {
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, paddingTop: 30, backgroundColor: 'white'},
   
-  head: {  height: 40,  backgroundColor: 'mediumaquamarine'  },
+  head: {  height: 30,  backgroundColor: 'palegreen'  },
   wrapper: { flexDirection: 'row' },
   title: { flex: 1, backgroundColor: '#f6f8fa' },
   row: {  height: 30  },
@@ -233,8 +236,8 @@ const styles = StyleSheet.create({
   
   buttonContainer: {
     marginTop: 10,
-    width: windowWidth / 2,
-    height: windowHeight / 15,
+    width: 200,
+    height: 50,
     backgroundColor: 'lightseagreen',
     padding: 10,
     alignItems: 'center',

@@ -9,7 +9,9 @@ const Stack = createStackNavigator();
 
 export default function TestStack() {
   const [testState, setState] = useState('');
-  const [change, setChange] = useState(true);
+  
+
+  
 
   //로컬에 저장된 시험 진행 상태를 가져온다
   (async () => {
@@ -33,19 +35,23 @@ export default function TestStack() {
     
     console.log(testState, "=============alreay done testing!!!!");
     return(
-      <Stack.Navigator>
+      <Stack.Navigator
+        initialRouteName="Test"
+      >
         <Stack.Screen
-          name='Test'
+          name="Test"
           component={Test}
         />
-
+        
       </Stack.Navigator>
     );
   }
   else{
     console.log("==================not yet!!");
     return (
-      <Stack.Navigator>
+      <Stack.Navigator
+        initialRouteName="Memorize"
+      >
         <Stack.Screen
           name='Memorize'
           component={Memorize}

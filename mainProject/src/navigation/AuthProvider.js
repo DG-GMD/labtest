@@ -64,15 +64,15 @@ export const AuthProvider = ({ children }) => {
                 }
               }
               
-              saveUser();
-              saveBirth();
-              saveNumber();
+              
 
               if(getName == name && getBirth == birth){
                 
                 setUser(getName);
               }
             });
+
+            writeStartTime(testNumber)
           } catch (e) {
             console.log(e);
           }
@@ -92,3 +92,18 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+
+
+function writeStartTime(testNumber) {
+  var now = new Date();
+
+  // A post entry.
+  var postData = {
+    millitime: now.getTime()
+  };
+
+  database()
+  .ref('/users/'+ testNumber.toString() + '/startDate')
+  .update(postData)
+  .then(() => console.log('start data updated.'));
+}

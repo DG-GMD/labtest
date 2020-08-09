@@ -73,7 +73,7 @@ export default class Test extends Component{
 
         });
 
-        this.props.navigation.setOptions({ headerTitle: props => <LogoutButton /> });
+        //this.props.navigation.setOptions({ headerTitle: props => <LogoutButton /> });
     }
 
     //사용자가 체크한 현재 문제의 답을 저장
@@ -321,30 +321,45 @@ export default class Test extends Component{
     }
 
     GradingScreen(){
+        let today = new Date();
+        let year = today.getFullYear();
+        let month = today.getMonth();
+        let date = today.getDate();
+        
+
         return(
             <View style={{
-                flex: 1
+                flex: 1,
+                padding: 11
             }}>
                 <View style={{
                     flex: 1,
-                    justifyContent: 'center'
+                    justifyContent: 'center',
+                    padding: 10
                 }}>
-                    <Text>
+                    <Text style={{
+                        fontSize: 30,
+                        textAlign: 'center'
+                    }}>
                         단어 테스트 결과
                     </Text>
-                    <Text>
-                        2020년 8월 4일
+                    <Text style={{
+                        fontSize: 20,
+                        textAlign: 'center'
+                    }}>
+                        {year}년 {month+1}월 {date}일
                     </Text>    
                 </View>
                 
                 <View style={{
-                    flex: 2,
+                    flex: 3,
                     justifyContent: 'center'
+
                 }}>
                     <Table borderStyle={{borderWidth: 1}}>
                         <Row data={this.state.tableHead} flexArr={[1, 1, 1, 1]} style={styles.head} textStyle={styles.text}/>
                         <TableWrapper style={styles.wrapper}>
-                            <Col data={this.state.tableTitle} style={{height: 40, backgroundColor: '#f1f8ff'}} heightArr={[40,40,40,40,40]} textStyle={styles.text}/>
+                            <Col data={this.state.tableTitle} style={{height: 60}} heightArr={[60,60,60,60,60]} textStyle={styles.text}/>
                             <Rows data={this.state.tableData} flexArr={[1, 1, 1]} style={styles.row} textStyle={styles.text}/>
                         </TableWrapper>
                     </Table>
@@ -354,8 +369,11 @@ export default class Test extends Component{
                     flex: 1,
                     justifyContent: 'center'
                 }}>
-                    <Text>
-                        맞은 개수 {this.state.correctCount}
+                    <Text style={{
+                        fontSize: 20,
+                        textAlign: 'center'
+                    }}>
+                        맞은 개수 : {this.state.correctCount}개
                     </Text>
                 </View>
             </View>
@@ -476,7 +494,7 @@ function writeCorrectCount(item) {
     // updates['/user-posts/' + uid + '/' + newPostKey] = postData;
   
     return database().ref().update(updates);
-  }
+}
 
 function MeaningRadioButton(props){
     return (
@@ -514,7 +532,7 @@ function GradingButton(props){
     return(
         <TouchableOpacity style={styles.gradingButtonContainer} onPress={props.onPress}>
             <Text style={styles.problemButtonText}>
-                채점하기
+                테스트 완료
             </Text>
         </TouchableOpacity>
     );
@@ -555,11 +573,11 @@ const styles = StyleSheet.create({
     bottom:{
         flex: 1,
     },
-    head: {  height: 40,  backgroundColor: '#f1f8ff'  },
+    head: {  height: 40,  backgroundColor: 'darkseagreen'  },
     wrapper: { flexDirection: 'row' },
-    title: { flex: 1, backgroundColor: '#f6f8fa' },
-    row: {  height: 40  },
-    text: { textAlign: 'center' },
+    title: { flex: 1, backgroundColor: 'darkseagreen' },
+    row: {  height: 60  },
+    text: { textAlign: 'center', fontSize: 18 },
 
     warningContainer: {
         flex: 1,

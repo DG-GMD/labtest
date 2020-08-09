@@ -5,7 +5,6 @@ import React, { Component, useState, useEffect } from 'react';
 import { AsyncStorage, Button, TouchableHighlight, View, Text, Image, ScrollView, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import database from '@react-native-firebase/database';
 
-import writeTestState from '../navigation/TestStack';
 
 import LogoutButton from '../components/Logout';
 

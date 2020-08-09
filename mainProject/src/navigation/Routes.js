@@ -47,6 +47,7 @@ export default function Routes() {
     setLoading(false);
   }
 
+  
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     console.log(onAuthStateChanged);
