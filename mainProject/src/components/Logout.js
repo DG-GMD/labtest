@@ -8,50 +8,8 @@ export default function LogoutButton({restDate, userName}) {
     const {name, setName} = useState('');
     const {date, setDate} = useState('');
 
-    console.log("in header", restDate, userName);
+    console.log("----------------------in header", restDate, userName);
 
-    getData = async () => {
-        const storageUserName = await AsyncStorage.getItem('user');
-        
-        const storageTestNumber = await AsyncStorage.getItem('testNumber');
-        console.log("storage ", storageTestNumber, storageUserName);
-    
-        setName(storageUserName);
-
-        
-        database()
-        .ref('/users/' + storageTestNumber)
-        .once('value')
-        .then(snapshot => {
-          console.log("snapshot ", snapshot.val());
-          this.setState({
-            userDB: snapshot.val(),
-    
-          });
-        })
-        .then( () => {
-          let milliTime = this.state.userDB.startDate.millitime;
-          console.log('time : ', milliTime);
-    
-          let now = new Date();
-    
-          let calcDate = new Date(now.getTime() - milliTime);
-          
-          return calcDate.getTime();
-    
-          // this.setState(this.state);
-          
-        })
-        .then( (date) => {
-            setDate(date);
-        });
-    
-        console.log("**************");
-        console.log("userDB", this.state.userDB);
-        console.log("username", this.state.userName);
-      };
-    
-    
     return (
         <View style={{
             flex: 1,
@@ -65,7 +23,7 @@ export default function LogoutButton({restDate, userName}) {
                 <Text style={{
                     fontSize: 20
                 }}>
-                    D+{name} 안녕하세요 {name}님
+                    D+{restDate} 안녕하세요 {userName}님
                 </Text>
             </View>
             

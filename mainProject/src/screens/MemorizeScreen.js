@@ -43,6 +43,7 @@ export default class Memorize extends Component {
         this._setToFirstWord = this._setToFirstWord.bind(this);
         this._IsLastWord = this._IsLastWord.bind(this);
         this._BottomText = this._BottomText.bind(this);
+        this.getData = this.getData.bind(this);
         getDB();
 
         database()
@@ -63,8 +64,48 @@ export default class Memorize extends Component {
         //writeTestState('before test');
     }
     componentDidMount(){
+        this.getData();
+        console.log('---------------in didmout');
+      }
+    
+    getData = async () => {
+        const storageUserName = await AsyncStorage.getItem('user');
         
-    }
+        const storageTestNumber = await AsyncStorage.getItem('testNumber');
+        console.log("storage ", storageTestNumber, storageUserName);
+
+        this.setState({
+            userName: storageUserName,
+            userTestNumber: storageTestNumber
+        });
+
+        database()
+        .ref('/users/' + storageTestNumber)
+        .once('value')
+        .then(snapshot => {
+            console.log("snapshot ", snapshot.val());
+            this.setState({
+            userDB: snapshot.val(),
+
+            });
+            return snapshot.val().startDate.millitime;
+        })
+        .then( (milliTime) => {        
+            console.log('time : ', milliTime);
+
+            let now = new Date();
+
+            let calcDate = new Date(now.getTime() - milliTime);
+            this.setState({
+            howLongDate: calcDate.getDate()
+            });
+            
+        })
+        .then( () => {
+            this.props.navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={this.state.howLongDate} userName={this.state.userName}/>}   });
+        });
+    };
+
     _onPressScreen(){
         //마지막 5번째 단어인지
         if(this.state.isWord == false && this.state.count == 5){
@@ -114,14 +155,14 @@ export default class Memorize extends Component {
             return (
                 <View style={{justifyContent: 'center', flexDirection: 'row'}}>
                     <TouchableOpacity style={styles.buttonContainer} onPress={ () => this._setToFirstWord() } >
-                        <Text>다시 한번 학습할래요</Text>
+                        <Text style={styles.buttonText}>다시 한번 학습할래요</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.buttonContainer} onPress={ () => { 
                         this.props.navigation.navigate('Test');
                         writeTestStateTesting(); 
                         
                     }} >
-                        <Text>단어 테스트 볼래요</Text>
+                        <Text style={styles.buttonText}>단어 테스트 볼래요</Text>
                     </TouchableOpacity>
                 </View>
             );
@@ -152,7 +193,8 @@ export default class Memorize extends Component {
             <Text style={{
                 fontSize: 20,
                 textAlign: 'center',
-                color: 'dimgray'
+                color: 'dimgray',
+                margin: 20
             }}>{bottomText}</Text>
         );
     }
@@ -185,7 +227,7 @@ export default class Memorize extends Component {
 
                     <View style={styles.middle}>
                         <Text style={{
-                            fontSize: 50,
+                            fontSize: 40,
                             textAlign: 'center'
                         }}>{word}</Text>
                     </View>
@@ -248,7 +290,7 @@ const styles = StyleSheet.create({
     buttonContainer: {
         marginTop: 10,
         width: 180,
-        height: 50,
+        height: 60,
         backgroundColor: 'lightgreen',
         padding: 10,
         margin: 10,
@@ -256,4 +298,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 8
       },
+    buttonText:{
+        fontSize: 18
+    }
 });

@@ -97,13 +97,14 @@ export default class HomeStack extends Component {
             padding: 10,
           },
         }}
+        
       >
         <Tab.Screen name='Alarm' component={Alarm} 
-          options={ {headerTitle: <LogoutButton restDate={this.state.howLongDate} userName={this.state.userName}/> }} />
-          <Tab.Screen name='Test' component={TestStack} 
-          options={ {headerTitle: <LogoutButton restDate={this.state.howLongDate} userName={this.state.userName}/> }}/>
-          <Tab.Screen name='Check' component={CheckStack} 
-          />   
+         />
+        <Tab.Screen name='Test' component={TestStack} 
+        />
+        <Tab.Screen name='Check' component={CheckStack} 
+        />   
       </Tab.Navigator>
     );
   }

@@ -27,8 +27,12 @@ export const AuthProvider = ({ children }) => {
             //await auth().signInWithEmailAndPassword(email, password);
             const onValueChange = database()
             .ref(`/users/${testNumber}`)
+<<<<<<< HEAD
             .once('value')
             .then(snapshot => {
+=======
+            .once('value', snapshot => {
+>>>>>>> origin/master
 
               console.log('User data: ', snapshot.val());
               let userDB = snapshot.val();
@@ -65,7 +69,9 @@ export const AuthProvider = ({ children }) => {
                 }
               }
               
-              
+              saveUser();
+              saveBirth();
+              saveNumber();
 
               if(getName == name && getBirth == birth){
                 
