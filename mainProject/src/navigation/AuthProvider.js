@@ -27,7 +27,8 @@ export const AuthProvider = ({ children }) => {
             //await auth().signInWithEmailAndPassword(email, password);
             const onValueChange = database()
             .ref(`/users/${testNumber}`)
-            .on('value', snapshot => {
+            .once('value')
+            .then(snapshot => {
 
               console.log('User data: ', snapshot.val());
               let userDB = snapshot.val();

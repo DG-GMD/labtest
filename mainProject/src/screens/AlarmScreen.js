@@ -5,10 +5,14 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { AuthContext } from '../navigation/AuthProvider';
 import { alarmModule } from '../utils/jvmodules';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
+import {ScrollPicker} from 'react-native-value-picker';
+import database from '@react-native-firebase/database';
 
+import {HOUR_DATA, MIN_DATA} from '../utils/timeData';
 import LogoutButton from '../components/Logout';
 
 const Stack = createStackNavigator();
+const reference = database().ref('/users/1000/alarm');
 
 export default function Alarm({navigation}){
     const { user, logout } = useContext(AuthContext); 
@@ -43,46 +47,95 @@ function AlarmMain({navigation}) {
 function AlarmSet({navigation}) {
     navigation.setOptions({ headerTitle: props => <LogoutButton /> });
 
-    const [date, setDate] = useState(new Date());
-    const [mode, setMode] = useState('time');
-    const [show, setShow] = useState(false);
+    const [pickedHourValue, setPickedHourValue] = useState(5);
+    const [pickedMinValue, setPickedMinValue] = useState(5);
+    const [flag, setFlag] = useState(false);
 
-    const onChange = (event, selectedDate) => {
-        setShow(false);
+    (function setAlarmTime() {
+        if(!flag){
+            reference
+            .orderByChild('order')
+            .limitToLast(1)
+            .once('value')
+            .then(snapshot => {
+                let alarmDataJson = snapshot.val();
+                let alarmData = {};
 
-        const currentDate = selectedDate || date;
-        console.log(currentDate);
-        setDate(currentDate);
-    };
+                for(let key in alarmDataJson){
+                    alarmData = alarmDataJson[key];
+                }
 
-    const showMode = currentMode => {
-        setShow(true);
-        setMode(currentMode);
-    };
+                let order = parseInt(alarmData.order);
 
-    const showDatepicker = () => {
-        showMode('date');
-    };
+                if(order < 1){
+                    const dt = new Date();
+                    setPickedHourValue(dt.getUTCHours());
+                    setPickedMinValue(dt.getUTCMinutes());
+                }
+                else{
+                    setPickedHourValue(alarmData.setHour);
+                    setPickedMinValue(alarmData.setMin);
+                }
 
-    const showTimepicker = () => {
-        showMode('time');
-    };
+                setFlag(true);
+            })
+        }
+    })();
 
     const saveAlarm = () => {
-        console.log(date.toISOString());
-        alarmModule.diaryNotification(date.toISOString());
+        reference
+            .orderByChild('order')
+            .limitToLast(1)
+            .once('value')
+            .then(snapshot => {
+                const dt = new Date();
+                dt.setHours(pickedHourValue);
+                dt.setMinutes(pickedMinValue);
+
+                console.log("alarm ISO time is ", dt.toISOString());
+                alarmModule.diaryNotification(dt.toISOString());
+
+                let alarmDataJson = snapshot.val();
+                let alarmData = {};
+
+                for(let key in alarmDataJson){
+                    alarmData = alarmDataJson[key];
+                }
+
+                let order = parseInt(alarmData.order);
+                order += 1;
+                order = order.toString();
+
+                var json = {};
+                json[order] = {
+                    setHour: pickedHourValue,
+                    setMin: pickedMinValue,
+                    saveTime: new Date().toUTCString(),
+                    order: parseInt(order),
+                };
+
+                reference
+                    .update(json)
+                    .then(() => console.log("alarm saved"));
+            });
     };
 
     return (
         <View>
-            <View>
-                <RNDateTimePicker
-                    testID="dateTimePicker"
-                    value={date}
-                    mode="time"
-                    is24Hour={true}
-                    display="spinner"
-                    onChange={onChange}
+            <View style={styles.PickerContainer}>
+                <ScrollPicker
+                currentValue={pickedHourValue}
+                extraData={pickedHourValue}
+                list={HOUR_DATA}
+                onItemPress={setPickedHourValue}
+                />
+            </View>
+            <View style={styles.PickerContainer}>
+                <ScrollPicker
+                currentValue={pickedMinValue}
+                extraData={pickedMinValue}
+                list={MIN_DATA}
+                onItemPress={setPickedMinValue}
                 />
             </View>
             <View>
@@ -114,5 +167,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 8
+    },
+    PickerContainer: {
+        height: 120,
+        width: 100,
+        alignItems: 'center',
+        marginTop: 50,
     },
 });
