@@ -36,9 +36,6 @@ function AlarmMain({navigation}) {
     navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Alarm Loading...</Text> });
 
     async function getData() {
-        
-        
-        
         const storageUserName = await AsyncStorage.getItem('user');
         const storageTestNumber = await AsyncStorage.getItem('testNumber');
         const storageFirstLoginTime = await AsyncStorage.getItem('firstLoginTime');
@@ -52,9 +49,6 @@ function AlarmMain({navigation}) {
         let now = new Date();
 
         let calcDate = new Date(now.getTime() - storageFirstLoginTime);
-        
-             
-        
         
         navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={calcDate.getDate()} userName={userName}/>}   });
     };
@@ -82,41 +76,28 @@ function AlarmMain({navigation}) {
 };
 
 function AlarmSet({navigation}) {
-    navigation.setOptions({ headerTitle: props => <LogoutButton /> });
-
     const [userName, setUserName] = useState();
     const [userTestNumber, setTestNumber] = useState();
+    const [firstLoginTime, setFristLoginTime] = useState();
+
+    navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Alarm Loading...</Text> });
 
     async function getData() {
         const storageUserName = await AsyncStorage.getItem('user');
-        
         const storageTestNumber = await AsyncStorage.getItem('testNumber');
-        console.log("storage ", storageTestNumber, storageUserName);
+        const storageFirstLoginTime = await AsyncStorage.getItem('firstLoginTime');
 
-        
         setUserName(storageUserName);
         setTestNumber(storageTestNumber);
+        setFristLoginTime(storageFirstLoginTime);
+
+        console.log("storage ", storageTestNumber, storageUserName, storageFirstLoginTime);
+
+        let now = new Date();
+
+        let calcDate = new Date(now.getTime() - storageFirstLoginTime);
         
-        database()
-        .ref('/users/' + storageTestNumber)
-        .once('value')
-        .then(snapshot => {
-            console.log("snapshot ", snapshot.val());
-            
-            return snapshot.val().startDate.millitime;
-        })
-        .then( (milliTime) => {        
-            console.log('time : ', milliTime);
-
-            let now = new Date();
-
-            let calcDate = new Date(now.getTime() - milliTime);
-            
-            return calcDate.getDate()
-        })
-        .then( (mililTime) => {
-            navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={mililTime} userName={userName}/>}   });
-        });
+        navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={calcDate.getDate()} userName={userName}/>}   });
     };
 
     useEffect( () => {
@@ -200,42 +181,6 @@ function AlarmSet({navigation}) {
             });
     };
 
-<<<<<<< HEAD
-=======
-    const [userName, setUserName] = useState();
-    const [userTestNumber, setTestNumber] = useState();
-    const [firstLoginTime, setFristLoginTime] = useState();
-    navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Alarm Loading...</Text> });
-
-    async function getData() {
-        
-        
-        
-        const storageUserName = await AsyncStorage.getItem('user');
-        const storageTestNumber = await AsyncStorage.getItem('testNumber');
-        const storageFirstLoginTime = await AsyncStorage.getItem('firstLoginTime');
-
-        setUserName(storageUserName);
-        setTestNumber(storageTestNumber);
-        setFristLoginTime(storageFirstLoginTime);
-
-        console.log("storage ", storageTestNumber, storageUserName, storageFirstLoginTime);
-
-        let now = new Date();
-
-        let calcDate = new Date(now.getTime() - storageFirstLoginTime);
-        
-             
-        
-        
-        navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={calcDate.getDate()} userName={userName}/>}   });
-    };
-
-    useEffect( () => {
-        getData();
-        console.log('---------------in useeffect');
-    });
->>>>>>> origin/master
     return (
         <View>
             <View style={styles.PickerContainer}>
