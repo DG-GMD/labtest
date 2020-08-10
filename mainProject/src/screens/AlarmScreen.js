@@ -12,24 +12,12 @@ import database from '@react-native-firebase/database';
 import {HOUR_DATA, MIN_DATA} from '../utils/timeData';
 import LogoutButton from '../components/Logout';
 
+import PopScreen from './PopScreen';
 
 const Stack = createStackNavigator();
 const reference = database().ref('/users/1000/alarm');
 
-export default function Alarm({navigation}){
-    const { user, logout } = useContext(AuthContext); 
-
-    //navigation.setOptions({ title: 'D-00 안녕하세요 000님' });
-
-    return (  
-    <Stack.Navigator>
-        <Stack.Screen name="AlarmMain" component={AlarmMain} />
-        <Stack.Screen name="AlarmSet" component={AlarmSet} />
-    </Stack.Navigator>
-    );
-}
-
-function AlarmMain({navigation}) {
+function AlarmMain({navigation, route}) {
     navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Alarm Loading...</Text> });
 
     async function getData() {
@@ -55,7 +43,8 @@ function AlarmMain({navigation}) {
     const [pickedMinValue, setPickedMinValue] = useState(0);
     const [flag, setFlag] = useState(false);
 
-    (function setAlarmTime() {
+    (function setAlarmMainTime() {
+        //console.log("setAlarmMainTime");
         if(!flag){
             reference
             .orderByChild('order')
@@ -85,7 +74,7 @@ function AlarmMain({navigation}) {
         <View>
             <View>
                 {flag && <Text>
-                    매일 {pickedHourValue} : {pickedMinValue}
+                    매일 {route.params !== undefined ? route.params.setHour : pickedHourValue} : {route.params !== undefined ? route.params.setMin : pickedMinValue}
                 </Text>}
             </View>
             <View>
@@ -196,7 +185,10 @@ function AlarmSet({navigation}) {
                     .update(json)
                     .then(() => {
                         console.log("alarm saved");
-                        navigation.navigate('AlarmMain');
+                        navigation.navigate('AlarmMain',{
+                            setHour: pickedHourValue,
+                            setMin: pickedMinValue,
+                        });
                     });
             });
     };
@@ -256,3 +248,16 @@ const styles = StyleSheet.create({
         marginTop: 50,
     },
 });
+
+export default function Alarm({navigation}){
+    const { user, logout } = useContext(AuthContext); 
+
+    //navigation.setOptions({ title: 'D-00 안녕하세요 000님' });
+
+    return (  
+    <Stack.Navigator>
+        <Stack.Screen name="AlarmMain" component={AlarmMain} />
+        <Stack.Screen name="AlarmSet" component={AlarmSet} />
+    </Stack.Navigator>
+    );
+}

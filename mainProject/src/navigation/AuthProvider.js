@@ -12,15 +12,18 @@ export const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [skip, setSkip] = useState(null);
+  const [skip, setSkip] = useState(0);
 
   //const navigation = useNavigation(); 
+
+  console.log("skip in AuthProvider ", skip);
 
   return (
     <AuthContext.Provider
       value={{
         user,
         setUser,
+        skip,
         setSkip,
         login: async (name, birth, testNumber) => {
           try {

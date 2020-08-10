@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { StyleSheet, Text, AsyncStorage, BackHandler} from "react-native";
+import { StyleSheet, Text, AsyncStorage } from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import AuthStack from './AuthStack';
@@ -15,14 +15,16 @@ import LoginScreen from '../screens/LoginScreen';
 
 export default function Routes() {
   const { user, setUser } = useContext(AuthContext);
-  const { skip, setSkip } = useContext(AuthContext);
+  const { skip } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
   const [initializing, setInitializing] = useState(true);
   const [Pop, setPop] = useState(true);
 
-  if(skip == 3){
-    BackHandler.exitApp();
-  }
+  console.log('skip in Routes', skip);
+  let irn = "Alarm";
+  if(skip == 2)
+    irn = "Test";
+  
 
   alarmModule.checkIsAlarm(
     (msg) => {
@@ -30,9 +32,11 @@ export default function Routes() {
     },
     (isAlarm) => {
       if(isAlarm){
+        console.log("is Alarm right?");
         setPop(true);
       }
       else{
+        console.log("is Alarm?");
         setPop(false);
       }
     }
@@ -89,7 +93,9 @@ export default function Routes() {
   } else {
     return (
       <NavigationContainer>
-        {user ? <HomeStack /> : <AuthStack />}
+        {user ? <HomeStack 
+                  initialRouteName={irn} 
+                /> : <AuthStack />}
       </NavigationContainer>
     );
   }
