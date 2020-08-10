@@ -57,16 +57,14 @@ export default function Routes() {
   //한번 로그인했었으면 해당 정보로 자동 로그인
   (async () => {
     const storageUserName = await AsyncStorage.getItem('user');
-    console.log("get name!");
+    // console.log("get name!");
       
     if( storageUserName != null){
       const storageUserBirth = await AsyncStorage.getItem('birth');
-          
-       
       const storageUserNumber = await AsyncStorage.getItem('testNumber');
           
-      console.log(typeof(storageUserName), typeof(storageUserBirth),typeof(storageUserNumber));
-      console.log(storageUserName, storageUserBirth, storageUserNumber);
+      // console.log(typeof(storageUserName), typeof(storageUserBirth),typeof(storageUserNumber));
+      // console.log(storageUserName, storageUserBirth, storageUserNumber);
       login(storageUserName, storageUserBirth, storageUserNumber);
     }
 
