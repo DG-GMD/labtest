@@ -77,6 +77,9 @@ function AlarmMain({navigation}) {
     return (
         <View>
             <View>
+                
+            </View>
+            <View>
                 <TouchableOpacity
                     style = {styles.buttonContainer}
                     onPress={() => navigation.navigate('AlarmSet')}
@@ -90,6 +93,46 @@ function AlarmMain({navigation}) {
 
 function AlarmSet({navigation}) {
     navigation.setOptions({ headerTitle: props => <LogoutButton /> });
+
+    const [userName, setUserName] = useState();
+    const [userTestNumber, setTestNumber] = useState();
+
+    async function getData() {
+        const storageUserName = await AsyncStorage.getItem('user');
+        
+        const storageTestNumber = await AsyncStorage.getItem('testNumber');
+        console.log("storage ", storageTestNumber, storageUserName);
+
+        
+        setUserName(storageUserName);
+        setTestNumber(storageTestNumber);
+        
+        database()
+        .ref('/users/' + storageTestNumber)
+        .once('value')
+        .then(snapshot => {
+            console.log("snapshot ", snapshot.val());
+            
+            return snapshot.val().startDate.millitime;
+        })
+        .then( (milliTime) => {        
+            console.log('time : ', milliTime);
+
+            let now = new Date();
+
+            let calcDate = new Date(now.getTime() - milliTime);
+            
+            return calcDate.getDate()
+        })
+        .then( (mililTime) => {
+            navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={mililTime} userName={userName}/>}   });
+        });
+    };
+
+    useEffect( () => {
+        getData();
+        console.log('---------------in useeffect');
+    });
 
     const [pickedHourValue, setPickedHourValue] = useState(5);
     const [pickedMinValue, setPickedMinValue] = useState(5);
@@ -160,49 +203,13 @@ function AlarmSet({navigation}) {
 
                 reference
                     .update(json)
-                    .then(() => console.log("alarm saved"));
+                    .then(() => {
+                        console.log("alarm saved");
+                        navigation.navigate('AlarmMain');
+                    });
             });
     };
 
-    const [userName, setUserName] = useState();
-    const [userTestNumber, setTestNumber] = useState();
-
-    async function getData() {
-        const storageUserName = await AsyncStorage.getItem('user');
-        
-        const storageTestNumber = await AsyncStorage.getItem('testNumber');
-        console.log("storage ", storageTestNumber, storageUserName);
-
-        
-        setUserName(storageUserName);
-        setTestNumber(storageTestNumber);
-        
-        database()
-        .ref('/users/' + storageTestNumber)
-        .once('value')
-        .then(snapshot => {
-            console.log("snapshot ", snapshot.val());
-            
-            return snapshot.val().startDate.millitime;
-        })
-        .then( (milliTime) => {        
-            console.log('time : ', milliTime);
-
-            let now = new Date();
-
-            let calcDate = new Date(now.getTime() - milliTime);
-            
-            return calcDate.getDate()
-        })
-        .then( (mililTime) => {
-            navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={mililTime} userName={userName}/>}   });
-        });
-    };
-
-    useEffect( () => {
-        getData();
-        console.log('---------------in useeffect');
-    });
     return (
         <View>
             <View style={styles.PickerContainer}>
