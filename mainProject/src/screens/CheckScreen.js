@@ -100,40 +100,24 @@ export default class Check extends Component {
   
     getData = async () => {
       const storageUserName = await AsyncStorage.getItem('user');
-      
       const storageTestNumber = await AsyncStorage.getItem('testNumber');
-      console.log("storage ", storageTestNumber, storageUserName);
-  
+      const storageFirstLoginTime = await AsyncStorage.getItem('firstLoginTime');
+
       this.setState({
-        userName: storageUserName,
-        userTestNumber: storageTestNumber
+          userName: storageUserName,
+          userTestNumber: storageTestNumber
       });
-  
-      database()
-      .ref('/users/' + storageTestNumber)
-      .once('value')
-      .then(snapshot => {
-        console.log("snapshot ", snapshot.val());
-        this.setState({
-          userDB: snapshot.val(),
-  
-        });
-        return snapshot.val().startDate.millitime;
-      })
-      .then( (milliTime) => {        
-        console.log('time : ', milliTime);
-  
-        let now = new Date();
-  
-        let calcDate = new Date(now.getTime() - milliTime);
-        this.setState({
+
+      console.log("storage ", storageTestNumber, storageUserName, storageFirstLoginTime);
+
+      let now = new Date();
+
+      let calcDate = new Date(now.getTime() - storageFirstLoginTime);
+      this.setState({
           howLongDate: calcDate.getDate()
-        });
-        
-      })
-      .then( () => {
-        this.props.navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={this.state.howLongDate} userName={this.state.userName}/>}   });
       });
+      
+      this.props.navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={this.state.howLongDate} userName={this.state.userName}/>}   });
     };
 
     render() {

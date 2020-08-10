@@ -17,10 +17,10 @@ export default function TestStack() {
   (async () => {
     try{
       setState( await AsyncStorage.getItem('day1') );
-      console.log("read day1 state!!", testState);
+      // console.log("read day1 state!!", testState);
     }
     catch(e){
-      console.log("fail to read day1", e);
+      // console.log("fail to read day1", e);
     }
     
   })();
@@ -28,12 +28,12 @@ export default function TestStack() {
 
   useEffect(() => {
     //시험 진행 상태에 따라 라우팅한다
-    console.log("in hook") ;
+    // console.log("in hook") ;
   });
   //시험 진행 상태에 따라 라우팅한다
   if(testState == 'testing' || testState == "after test"){
     
-    console.log(testState, "=============alreay done testing!!!!");
+    // console.log(testState, "=============alreay done testing!!!!");
     return(
       <Stack.Navigator
         initialRouteName="Test"
@@ -47,7 +47,7 @@ export default function TestStack() {
     );
   }
   else{
-    console.log("==================not yet!!");
+    // console.log("==================not yet!!");
     return (
       <Stack.Navigator
         initialRouteName="Memorize"
@@ -69,10 +69,10 @@ function writeTestState(state){
   (async () => {
       try{
           await AsyncStorage.setItem('day1', state);
-          console.log("check day1 as", state);
+          // console.log("check day1 as", state);
       }
       catch(e){
-          console.log("fail to check day1 ", state);
+          // console.log("fail to check day1 ", state);
       }
   })();
 }

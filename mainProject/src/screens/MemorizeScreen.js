@@ -68,42 +68,55 @@ export default class Memorize extends Component {
         console.log('---------------in didmout');
       }
     
+    //로컬 저장소의 기존 로그인 정보들로 header title 수정
     getData = async () => {
-        const storageUserName = await AsyncStorage.getItem('user');
         
+        const storageUserName = await AsyncStorage.getItem('user');
         const storageTestNumber = await AsyncStorage.getItem('testNumber');
-        console.log("storage ", storageTestNumber, storageUserName);
+        const storageFirstLoginTime = await AsyncStorage.getItem('firstLoginTime');
 
         this.setState({
             userName: storageUserName,
             userTestNumber: storageTestNumber
         });
 
-        database()
-        .ref('/users/' + storageTestNumber)
-        .once('value')
-        .then(snapshot => {
-            console.log("snapshot ", snapshot.val());
-            this.setState({
-            userDB: snapshot.val(),
+        console.log("storage ", storageTestNumber, storageUserName, storageFirstLoginTime);
 
-            });
-            return snapshot.val().startDate.millitime;
-        })
-        .then( (milliTime) => {        
-            console.log('time : ', milliTime);
+        let now = new Date();
 
-            let now = new Date();
-
-            let calcDate = new Date(now.getTime() - milliTime);
-            this.setState({
+        let calcDate = new Date(now.getTime() - storageFirstLoginTime);
+        this.setState({
             howLongDate: calcDate.getDate()
-            });
-            
-        })
-        .then( () => {
-            this.props.navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={this.state.howLongDate} userName={this.state.userName}/>}   });
         });
+        
+        this.props.navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={this.state.howLongDate} userName={this.state.userName}/>}   });
+    
+
+        // database()
+        // .ref('/users/' + storageTestNumber)
+        // .once('value')
+        // .then(snapshot => {
+        //     console.log("snapshot ", snapshot.val());
+        //     this.setState({
+        //     userDB: snapshot.val(),
+
+        //     });
+        //     return snapshot.val().startDate.millitime;
+        // })
+        // .then( (milliTime) => {        
+        //     console.log('time : ', milliTime);
+
+        //     let now = new Date();
+
+        //     let calcDate = new Date(now.getTime() - milliTime);
+        //     this.setState({
+        //     howLongDate: calcDate.getDate()
+        //     });
+            
+        // })
+        // .then( () => {
+        //     this.props.navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={this.state.howLongDate} userName={this.state.userName}/>}   });
+        // });
     };
 
     _onPressScreen(){
@@ -257,11 +270,11 @@ function writeTestStateTesting(){
         try{
             await AsyncStorage.setItem('day1', "testing");
             
-            console.log("check day1 as testing");
+            // console.log("check day1 as testing");
         }
         catch(e){
             
-            console.log("ddd fail to check day1 as testing", e);
+            // console.log("ddd fail to check day1 as testing", e);
 
         }
     })();

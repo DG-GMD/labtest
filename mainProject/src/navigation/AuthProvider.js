@@ -96,16 +96,41 @@ export const AuthProvider = ({ children }) => {
 };
 
 
-function writeStartTime(testNumber) {
-  var now = new Date();
+//최초 로그인 날짜를 firebase DB와 로컬 저장소에 저장
+async function writeStartTime(testNumber) {
+  let firstLoginTime = null;
+  //이미 로그인을 한번이라도 했다면 로그인 시 시간 정보 저장을 안한다.
+  try{
+    firstLoginTime = await AsyncStorage.getItem('firstLoginTime');
+  }
+  catch(e){
+    console.log('no login time in AsyncStorage');
+  }
 
-  // A post entry.
-  var postData = {
-    millitime: now.getTime()
-  };
+  //기록된 최초 로그인 시간 정보가 없다면 새로 기록
+  if(firstLoginTime == null){
+    var now = new Date();
 
-  database()
-  .ref('/users/'+ testNumber.toString() + '/startDate')
-  .update(postData)
-  .then(() => console.log('start data updated.'));
+    // A post entry to set tin firebase DB
+    var postData = {
+      millitime: now.getTime()
+    };
+
+    database()
+    .ref('/users/'+ testNumber.toString() + '/startDate')
+    .update(postData)
+    .then(() => console.log('start data updated.'));
+
+    //set data to local storage
+    try{
+      await AsyncStorage.setItem('firstLoginTime', now.getTime().toString());
+      console.log('----------first login : ', now.getTime().toString());
+    }
+    catch(e){
+      console.log("fail to set firstLoginTime", e);
+    }
+  }else{
+    console.log("---------- firstLoginTime", firstLoginTime);
+  }
+  
 }
