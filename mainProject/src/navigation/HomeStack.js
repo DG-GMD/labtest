@@ -97,6 +97,7 @@ export default class HomeStack extends Component {
             padding: 10,
           },
         }}
+        
       >
         <Tab.Screen name='Alarm' component={Alarm} 
          />

@@ -55,7 +55,9 @@ export default class Test extends Component{
                 [null, null, null],
                 [null, null, null],
             ],
-            correctCount: 0
+            correctCount: 0,
+            jsonTestResult: null,
+            isTestResultExist: false
         };
 
         database()
@@ -73,6 +75,48 @@ export default class Test extends Component{
 
         });
 
+        //시험 결과를 일단 불러와봄
+        // let jsonTestResult = readTesetResult();
+        (async () => {
+            try{
+                let result = await AsyncStorage.getItem('testResult');
+                console.log("load test result", result);
+                this.setState({
+                    jsonTestResult: JSON.parse(result)
+                });
+                // return JSON.parse(result);
+            }
+            catch(e){
+                console.log("fail to load result", e);
+                // return -1;
+            }
+        })()
+        .then( () => {
+            //불러올 시험 결과가 있다면
+            if(this.state.jsonTestResult != null){
+                let _savedTableData = this.state.jsonTestResult.tableData;
+                let _savedTableTitle = this.state.jsonTestResult.tableTitle;
+                let _savedCorrectCount = this.state.jsonTestResult.correctCount;
+
+                console.log('saved tabledata ::::::::', _savedTableData);
+                this.setState({
+                    isTestResultExist: true,
+                    testDone: true,
+                    start: true,
+                    tableData: _savedTableData,
+                    tableTtile: _savedTableTitle,
+                    correctCount: _savedCorrectCount
+                });
+
+                console.log('jsonTestResult ::::::::::: ', this.state.jsonTestResult);
+                
+            }else{
+                console.log('jsonResult is null');
+            }
+        });
+        
+        
+        
         //this.props.navigation.setOptions({ headerTitle: props => <LogoutButton /> });
     }
 
@@ -390,71 +434,81 @@ export default class Test extends Component{
             }
         }
 
-        if(!isAllProlbemChecked){
-            
-            console.log("toastVisible");
-
-            
+        //한 문제라도 안 풀려있다면 함수 종료
+        if(!isAllProlbemChecked){    
             Toast.show('반드시 모든 문제를 풀어야 채점이 가능합니다!', Toast.LONG);
-            
-        
             return;
         }
 
-        writeTestState("after test");
-
-        console.log("checkedlist : " + this.state.checkedList);
-
-        this.setState({
-            testDone: true
-        });
-        let _correctList = [false, false, false, false, false, false];
-        for(let i=1; i<=5; i++){
-            //답안지와 체크한 항목이 일치한다면
-            if(this.state.checkedList[i] == this.state.answerList[i]){
-                _correctList[i] = true;
-            }
-        }
-        this.setState({
-            correctList: _correctList
-        });
         
-        let _correctCount = 0;
+        //오늘 시험을 처음 보는 것이라면
+        if(!this.state.isTestResultExist){
+            // console.log("checkedlist : " + this.state.checkedList);
 
-        for(let i=0; i<5; i++){
-            //표의 title을 단어로 기입
-            this.state.tableTitle[i] = this.state.wordList[i+1].word;
-
-            //표의 data를 단어 뜻, 내 답변, 채점 결과로 기입
-
-            //단어 뜻
-            this.state.tableData[i][0] = this.state.wordList[i+1].meaning;
-
-            //내 답변
-            let myAnswerNumber = this.state.checkedList[i+1];
-            console.log("myAnswerNumber : " + myAnswerNumber);
-            this.state.tableData[i][1] = this.state.problemItemList[i+1][myAnswerNumber-1][1];
-
-            //채점 결과
-            //맞다면
-            if(this.state.checkedList[i+1] == this.state.answerList[i+1]){
-                this.state.tableData[i][2] = "O";
-                _correctCount++;
+            this.setState({
+                testDone: true
+            });
+            let _correctList = [false, false, false, false, false, false];
+            for(let i=1; i<=5; i++){
+                //답안지와 체크한 항목이 일치한다면
+                if(this.state.checkedList[i] == this.state.answerList[i]){
+                    _correctList[i] = true;
+                }
             }
-            else{
-                this.state.tableData[i][2] = "X";
+            this.setState({
+                correctList: _correctList
+            });
+            
+            let _correctCount = 0;
+
+            for(let i=0; i<5; i++){
+                //표의 title을 단어로 기입
+                this.state.tableTitle[i] = this.state.wordList[i+1].word;
+
+                //표의 data를 단어 뜻, 내 답변, 채점 결과로 기입
+
+                //단어 뜻
+                this.state.tableData[i][0] = this.state.wordList[i+1].meaning;
+
+                //내 답변
+                let myAnswerNumber = this.state.checkedList[i+1];
+                console.log("myAnswerNumber : " + myAnswerNumber);
+                this.state.tableData[i][1] = this.state.problemItemList[i+1][myAnswerNumber-1][1];
+
+                //채점 결과
+                //맞다면
+                if(this.state.checkedList[i+1] == this.state.answerList[i+1]){
+                    this.state.tableData[i][2] = "O";
+                    _correctCount++;
+                }
+                else{
+                    this.state.tableData[i][2] = "X";
+                }
             }
+
+            this.setState({
+                correctCount: _correctCount
+            });
+            
+            
+            //Async로 쓸 데이터를 1개의 json 객체로 묶기
+            let item = new Object();
+            item.tableData = this.state.tableData;
+            item.correctCount = _correctCount;
+            item.tableTitle = this.state.tableTitle;
+            
+            writeTestResult(item);
+
+            writeCorrectCount(_correctCount);
         }
 
-        this.setState({
-            correctCount: _correctCount
-        });
+        //이미 저장돼있는 시험 결과가 있다면 바로 여기로 와서 함수 종료
 
-        writeCorrectCount(_correctCount);
+
+        
     }
 
     render() {
-
         return(
             
             <View style={{flex: 1, backgroundColor: 'white'}}>
@@ -462,6 +516,22 @@ export default class Test extends Component{
             </View>
         );
     }
+}
+
+function writeTestResult(result){
+    (async () => {
+        try{
+            await AsyncStorage.setItem('testResult', JSON.stringify(result));
+            console.log("save test result", result);
+        }
+        catch(e){
+            console.log("fail to save result", e);
+        }
+    })();
+}
+
+function readTesetResult(thisClass){
+    
 }
 
 function writeTestState(state){
