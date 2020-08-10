@@ -35,6 +35,8 @@ function AlarmMain({navigation}) {
     const [userName, setUserName] = useState();
     const [userTestNumber, setTestNumber] = useState();
 
+    navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Alarm Loading...</Text> });
+
     async function getData() {
         const storageUserName = await AsyncStorage.getItem('user');
         

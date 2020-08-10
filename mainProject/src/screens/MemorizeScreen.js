@@ -60,7 +60,7 @@ export default class Memorize extends Component {
             });
         });
 
-        this.props.navigation.setOptions({ headerTitle: props => <LogoutButton /> });
+        this.props.navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Test Loading...</Text> });
         //writeTestState('before test');
     }
     componentDidMount(){

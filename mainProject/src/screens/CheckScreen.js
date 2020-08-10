@@ -18,6 +18,8 @@ export default class Check extends Component {
     constructor(props) {
       super(props);
 
+      
+      
       this.getData = this.getData.bind(this);
       
       this.state = {
@@ -86,7 +88,8 @@ export default class Check extends Component {
           }
       });
       
-      //this.props.navigation.setOptions({ headerTitle: props => <LogoutButton /> });
+      this.props.navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Check Loading...</Text> });
+      
     }
 
 

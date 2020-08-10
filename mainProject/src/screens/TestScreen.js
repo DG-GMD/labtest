@@ -31,6 +31,7 @@ export default class Test extends Component{
         this.TestScreen = this.TestScreen.bind(this);
         this.Grading = this.Grading.bind(this);
         this.GradingScreen = this.GradingScreen.bind(this);
+        this.initTestResult = this.initTestResult.bind(this);
 
         this.state = {
             toastVisible: false,
@@ -99,12 +100,13 @@ export default class Test extends Component{
                 let _savedCorrectCount = this.state.jsonTestResult.correctCount;
 
                 console.log('saved tabledata ::::::::', _savedTableData);
+                console.log('saved tableTtile::::', _savedTableTitle);
                 this.setState({
                     isTestResultExist: true,
                     testDone: true,
                     start: true,
                     tableData: _savedTableData,
-                    tableTtile: _savedTableTitle,
+                    tableTitle: _savedTableTitle,
                     correctCount: _savedCorrectCount
                 });
 
@@ -117,7 +119,7 @@ export default class Test extends Component{
         
         
         
-        //this.props.navigation.setOptions({ headerTitle: props => <LogoutButton /> });
+        this.props.navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Alarm Loading...</Text> });
     }
 
     //사용자가 체크한 현재 문제의 답을 저장
@@ -420,10 +422,37 @@ export default class Test extends Component{
                         맞은 개수 : {this.state.correctCount}개
                     </Text>
                 </View>
+
+                <Button title="init data" onPress={() => {this.initTestResult() }}/>
             </View>
         );
     }
 
+    initTestResult(){
+        this.setState({
+            tableTitle: [null, null, null, null, null],
+            tableData: [
+                [null, null, null],
+                [null, null, null],
+                [null, null, null],
+                [null, null, null],
+                [null, null, null],
+            ],
+            correctCount: 0,
+            jsonTestResult: null,
+            isTestResultExist: false
+        });
+
+        writeTestState('');
+
+        try{
+             AsyncStorage.removeItem('testResult');
+        }
+        catch(e){
+
+        }
+        
+    }
     Grading(){
         let isAllProlbemChecked = true;
         //모든 문제가 체크돼어있는지 확인
@@ -647,7 +676,7 @@ const styles = StyleSheet.create({
     wrapper: { flexDirection: 'row' },
     title: { flex: 1, backgroundColor: 'darkseagreen' },
     row: {  height: 60  },
-    text: { textAlign: 'center', fontSize: 18 },
+    text: { textAlign: 'center', fontSize: 15 },
 
     warningContainer: {
         flex: 1,

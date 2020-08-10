@@ -30,59 +30,8 @@ export default class HomeStack extends Component {
       userDB: null,
       returnDOM: ''
     };
-
-   
-
-    
     
   }
-
-  // componentDidMount(){
-  //   this.getData();
-  // }
-
-  // getData = async () => {
-  //   const storageUserName = await AsyncStorage.getItem('user');
-    
-  //   const storageTestNumber = await AsyncStorage.getItem('testNumber');
-  //   console.log("storage ", storageTestNumber, storageUserName);
-
-  //   this.setState({
-  //     userName: storageUserName,
-  //     userTestNumber: storageTestNumber
-  //   });
-
-  //   database()
-  //   .ref('/users/' + storageTestNumber)
-  //   .once('value')
-  //   .then(snapshot => {
-  //     console.log("snapshot ", snapshot.val());
-  //     this.setState({
-  //       userDB: snapshot.val(),
-
-  //     });
-  //   })
-  //   .then( () => {
-  //     let milliTime = this.state.userDB.startDate.millitime;
-  //     console.log('time : ', milliTime);
-
-  //     let now = new Date();
-
-  //     let calcDate = new Date(now.getTime() - milliTime);
-  //     this.setState({
-  //       howLongDate: calcDate
-  //     });
-
-  //     // this.setState(this.state);
-      
-  //   });
-
-  //   console.log("**************");
-  //   console.log("userDB", this.state.userDB);
-  //   console.log("username", this.state.userName);
-
-    
-  // };
 
  
 
