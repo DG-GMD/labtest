@@ -98,6 +98,9 @@ function logoutAndExit(){
     saveBirth();
     saveNumber();
 
+    (async () => {
+        await AsyncStorage.removeItem('firstLoginTime');
+    })();
     
 }
             
