@@ -107,6 +107,10 @@ function AlarmMain({navigation, route}) {
                     <Text>알람 설정</Text>
                 </TouchableOpacity>
             </View>
+            {/* <Button
+                title = "popScreen test"
+                onPress = {() => navigation.navigate("Pop")}
+            /> */}
         </View>
     );
 };
@@ -344,6 +348,7 @@ export default function Alarm({navigation}){
     <Stack.Navigator>
         <Stack.Screen name="AlarmMain" component={AlarmMain} />
         <Stack.Screen name="AlarmSet" component={AlarmSet} />
+        {/* <Stack.Screen name="Pop" component={PopScreen} /> */}
     </Stack.Navigator>
     );
 }
