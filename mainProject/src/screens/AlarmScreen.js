@@ -1,7 +1,7 @@
 import { AsyncStorage, View, Text, Image, ScrollView, TextInput, Button, Platform, StyleSheet, TouchableOpacity } from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, CommonActions } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { AuthContext } from '../navigation/AuthProvider';
 import { alarmModule } from '../utils/jvmodules';
@@ -29,7 +29,7 @@ export default function Alarm({navigation}){
     );
 }
 
-function AlarmMain({navigation}) {
+function AlarmMain({ navigation }) {
     const [userName, setUserName] = useState();
     const [userTestNumber, setTestNumber] = useState();
     const [firstLoginTime, setFristLoginTime] = useState();
@@ -58,10 +58,42 @@ function AlarmMain({navigation}) {
         console.log('---------------in useeffect');
     });
 
+    const [pickedHourValue, setPickedHourValue] = useState(0);
+    const [pickedMinValue, setPickedMinValue] = useState(0);
+    const [flag, setFlag] = useState(false);
+
+    (function setAlarmTime() {
+        if(!flag){
+            reference
+            .orderByChild('order')
+            .limitToLast(1)
+            .once('value')
+            .then(snapshot => {
+                let alarmDataJson = snapshot.val();
+                let alarmData = {};
+
+                for(let key in alarmDataJson){
+                    alarmData = alarmDataJson[key];
+                }
+
+                let order = parseInt(alarmData.order);
+
+                if(order > 0){
+                    setPickedHourValue(alarmData.setHour);
+                    setPickedMinValue(alarmData.setMin);
+
+                    setFlag(true);
+                }
+            })
+        }
+    })();
+
     return (
         <View>
             <View>
-                
+                {flag && <Text>
+                    매일 {pickedHourValue} : {pickedMinValue}
+                </Text>}
             </View>
             <View>
                 <TouchableOpacity
@@ -105,8 +137,8 @@ function AlarmSet({navigation}) {
         console.log('---------------in useeffect');
     });
 
-    const [pickedHourValue, setPickedHourValue] = useState(5);
-    const [pickedMinValue, setPickedMinValue] = useState(5);
+    const [pickedHourValue, setPickedHourValue] = useState(0);
+    const [pickedMinValue, setPickedMinValue] = useState(0);
     const [flag, setFlag] = useState(false);
 
     (function setAlarmTime() {
