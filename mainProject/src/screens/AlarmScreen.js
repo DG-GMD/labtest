@@ -29,14 +29,7 @@ export default function Alarm({navigation}){
     );
 }
 
-<<<<<<< HEAD
-function AlarmMain({ navigation }) {
-    const [userName, setUserName] = useState();
-    const [userTestNumber, setTestNumber] = useState();
-    const [firstLoginTime, setFristLoginTime] = useState();
-=======
 function AlarmMain({navigation}) {
->>>>>>> origin/master
     navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Alarm Loading...</Text> });
 
     async function getData() {
