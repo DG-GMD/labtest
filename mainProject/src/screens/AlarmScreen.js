@@ -1,10 +1,6 @@
-<<<<<<< HEAD
-import React, {useContext, useState} from 'react';
-import { View, Text, Image, ScrollView, TextInput, Button, Platform, StyleSheet, TouchableOpacity } from 'react-native';
-=======
+import { AsyncStorage, View, Text, Image, ScrollView, TextInput, Button, Platform, StyleSheet, TouchableOpacity } from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
-import { AsyncStorage, View, Text, Image, ScrollView, TextInput, Button, Platform } from 'react-native';
->>>>>>> origin/master
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { AuthContext } from '../navigation/AuthProvider';
@@ -16,7 +12,6 @@ import database from '@react-native-firebase/database';
 import {HOUR_DATA, MIN_DATA} from '../utils/timeData';
 import LogoutButton from '../components/Logout';
 
-import database from '@react-native-firebase/database';
 
 const Stack = createStackNavigator();
 const reference = database().ref('/users/1000/alarm');
@@ -92,7 +87,6 @@ function AlarmMain({navigation}) {
 };
 
 function AlarmSet({navigation}) {
-<<<<<<< HEAD
     navigation.setOptions({ headerTitle: props => <LogoutButton /> });
 
     const [pickedHourValue, setPickedHourValue] = useState(5);
@@ -168,7 +162,6 @@ function AlarmSet({navigation}) {
             });
     };
 
-=======
     const [userName, setUserName] = useState();
     const [userTestNumber, setTestNumber] = useState();
 
@@ -208,7 +201,6 @@ function AlarmSet({navigation}) {
         getData();
         console.log('---------------in useeffect');
     });
->>>>>>> origin/master
     return (
         <View>
             <View style={styles.PickerContainer}>
@@ -245,7 +237,6 @@ function AlarmSet({navigation}) {
     );
 }
 
-<<<<<<< HEAD
 const styles = StyleSheet.create({
     buttonContainer: {
         marginTop: 10,
@@ -265,15 +256,3 @@ const styles = StyleSheet.create({
         marginTop: 50,
     },
 });
-=======
-export default function Alarm({navigation}){
-    const { user, logout } = useContext(AuthContext); 
-
-    return (  
-    <Stack.Navigator>
-        <Stack.Screen name="AlarmMain" component={AlarmMain} />
-        <Stack.Screen name="AlarmSet" component={AlarmSet} />
-    </Stack.Navigator>
-    );
-}
->>>>>>> origin/master
