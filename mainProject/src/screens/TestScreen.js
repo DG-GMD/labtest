@@ -65,7 +65,7 @@ export default class Test extends Component{
         .ref('/words/day2')
         .once('value')
         .then(snapshot => {
-            console.log('User data: ', snapshot.val());
+            // console.log('User data: ', snapshot.val());
             dbList = snapshot.val(); 
             this.setState({
                 wordList: snapshot.val(),
@@ -81,14 +81,14 @@ export default class Test extends Component{
         (async () => {
             try{
                 let result = await AsyncStorage.getItem('testResult');
-                console.log("load test result", result);
+                // console.log("load test result", result);
                 this.setState({
                     jsonTestResult: JSON.parse(result)
                 });
                 // return JSON.parse(result);
             }
             catch(e){
-                console.log("fail to load result", e);
+                // console.log("fail to load result", e);
                 // return -1;
             }
         })()
@@ -99,8 +99,8 @@ export default class Test extends Component{
                 let _savedTableTitle = this.state.jsonTestResult.tableTitle;
                 let _savedCorrectCount = this.state.jsonTestResult.correctCount;
 
-                console.log('saved tabledata ::::::::', _savedTableData);
-                console.log('saved tableTtile::::', _savedTableTitle);
+                // console.log('saved tabledata ::::::::', _savedTableData);
+                // console.log('saved tableTtile::::', _savedTableTitle);
                 this.setState({
                     isTestResultExist: true,
                     testDone: true,
@@ -110,10 +110,10 @@ export default class Test extends Component{
                     correctCount: _savedCorrectCount
                 });
 
-                console.log('jsonTestResult ::::::::::: ', this.state.jsonTestResult);
+                // console.log('jsonTestResult ::::::::::: ', this.state.jsonTestResult);
                 
             }else{
-                console.log('jsonResult is null');
+                // console.log('jsonResult is null');
             }
         });
         
@@ -132,9 +132,6 @@ export default class Test extends Component{
             checkedList: _checkedList,
             checked: _value
         });
-
-        
-        
     }
     increaseCount(){
         let _checkedList = [...this.state.checkedList];
@@ -179,7 +176,7 @@ export default class Test extends Component{
     }
 
     componentDidMount(){
-        console.log("in componentDidMount()");
+        // console.log("in componentDidMount()");
         let problemDOM = tempProblemList;
         let _answerList = tempAnswerList;
         let _checkedList = [...this.state.checkedList];
@@ -227,8 +224,7 @@ export default class Test extends Component{
                         randomNumber = Math.floor(Math.random() * 5) + 1 ;
                         randomNumberList.forEach(element => {
                             if(element == randomNumber){
-                                flag = true;
-                                
+                                flag = true;  
                             }
                         });
             
@@ -259,11 +255,11 @@ export default class Test extends Component{
                 //한 문제에 해당하는 DOM 저장
                 
                 tempProblemList.push(returnDOM);
-                console.log(randomNumberList);
+                // console.log(randomNumberList);
             }
-            console.log("answerList : " + tempAnswerList);
-            console.log("problemitemlist : ");
-            console.log(tempProblemItemList);
+            // console.log("answerList : " + tempAnswerList);
+            // console.log("problemitemlist : ");
+            // console.log(tempProblemItemList);
             return tempProblemList[1];
         }
     }
@@ -539,7 +535,6 @@ export default class Test extends Component{
 
     render() {
         return(
-            
             <View style={{flex: 1, backgroundColor: 'white'}}>
                 <this.TestStartButtonScreen />
             </View>
@@ -550,11 +545,16 @@ export default class Test extends Component{
 function writeTestResult(result){
     (async () => {
         try{
+            //시험 결과를 1개의 json 객체에 넣어서 저장(String 형태로)
             await AsyncStorage.setItem('testResult', JSON.stringify(result));
-            console.log("save test result", result);
+
+            //시험 결과가 쓰여진 시간을 기록
+            let now = new Date();
+            await AsyncStorage.setItem('testResultTime', now.getTime().toString());
+            // console.log("save test result", result);
         }
         catch(e){
-            console.log("fail to save result", e);
+            // console.log("fail to save result", e);
         }
     })();
 }
@@ -567,10 +567,10 @@ function writeTestState(state){
     (async () => {
         try{
             await AsyncStorage.setItem('day1', state);
-            console.log("check day1 as", state);
+            // console.log("check day1 as", state);
         }
         catch(e){
-            console.log("fail to check day1 as", state);
+            // console.log("fail to check day1 as", state);
         }
     })();
 }
@@ -738,5 +738,3 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     }
 });
-
-

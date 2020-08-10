@@ -29,38 +29,38 @@ export const AuthProvider = ({ children }) => {
             .ref(`/users/${testNumber}`)
             .once('value', snapshot => {
 
-              console.log('User data: ', snapshot.val());
+              // console.log('User data: ', snapshot.val());
               let userDB = snapshot.val();
 
               let getName = userDB.name;
               let getBirth = userDB.birth;
-              console.log("getBirth : ", getBirth);
+              // console.log("getBirth : ", getBirth);
 
               const saveUser = async () => {
                 try{
                   await AsyncStorage.setItem('user', getName);
-                  console.log("save name");
+                  // console.log("save name");
                 }
                 catch(e){
-                  console.log("fail to save name", e);
+                  // console.log("fail to save name", e);
                 }
               }
               const saveBirth = async () => {
                 try{
                   await AsyncStorage.setItem('birth', getBirth.toString());
-                  console.log("save birth");
+                  // console.log("save birth");
                 }
                 catch(e){
-                  console.log("fail to save birth", e);
+                  // console.log("fail to save birth", e);
                 }
               }
               const saveNumber = async () => {
                 try{
                   await AsyncStorage.setItem('testNumber', testNumber);
-                  console.log("save number");
+                  // console.log("save number");
                 }
                 catch(e){
-                  console.log("fail to save number", e);
+                  // console.log("fail to save number", e);
                 }
               }
               
@@ -82,7 +82,7 @@ export const AuthProvider = ({ children }) => {
         
         logout: async () => {
           try {
-            console.log("logout!!!");
+            // console.log("logout!!!");
             setUser('');
           } catch (e) {
             console.error(e);
@@ -124,13 +124,13 @@ async function writeStartTime(testNumber) {
     //set data to local storage
     try{
       await AsyncStorage.setItem('firstLoginTime', now.getTime().toString());
-      console.log('----------first login : ', now.getTime().toString());
+      // console.log('----------first login : ', now.getTime().toString());
     }
     catch(e){
-      console.log("fail to set firstLoginTime", e);
+      // console.log("fail to set firstLoginTime", e);
     }
   }else{
-    console.log("---------- firstLoginTime", firstLoginTime);
+    // console.log("---------- firstLoginTime", firstLoginTime);
   }
   
 }

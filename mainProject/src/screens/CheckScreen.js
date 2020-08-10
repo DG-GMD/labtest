@@ -18,8 +18,6 @@ export default class Check extends Component {
     constructor(props) {
       super(props);
 
-      
-      
       this.getData = this.getData.bind(this);
       
       this.state = {
@@ -46,8 +44,6 @@ export default class Check extends Component {
         howLongDate: 0
       }
     
-      
-
       database()
       .ref('/investigation')
       .once('value')
@@ -88,14 +84,13 @@ export default class Check extends Component {
           }
       });
       
-      this.props.navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Check Loading...</Text> });
-      
+      this.props.navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Check Loading...</Text> });  
     }
 
 
     componentDidMount(){
       this.getData();
-      console.log('---------------in didmout');
+      // console.log('---------------in didmout');
     }
   
     getData = async () => {
@@ -108,7 +103,7 @@ export default class Check extends Component {
           userTestNumber: storageTestNumber
       });
 
-      console.log("storage ", storageTestNumber, storageUserName, storageFirstLoginTime);
+      // console.log("storage ", storageTestNumber, storageUserName, storageFirstLoginTime);
 
       let now = new Date();
 

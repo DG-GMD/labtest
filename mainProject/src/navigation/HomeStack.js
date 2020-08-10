@@ -30,10 +30,14 @@ export default class HomeStack extends Component {
       userDB: null,
       returnDOM: ''
     };
-    
+    let atime = new Date(0);
+    let btime = new Date(24 * 3600 * 1000);
+
+    let gap = new Date(btime.getTime() - atime.getTime());
+    console.log('testtttttttttttttttttttt ', gap.getDate());
   }
 
- 
+  //마지막 시험으로부터 며칠이 지났는지 확인
 
   render(){
     return (
@@ -58,6 +62,24 @@ export default class HomeStack extends Component {
     );
   }
  
+}
+
+//마지막 시험으로부터 며칠이 지났는지 확인
+async function CheckDate(){
+    let testResultTime = null;
+    try{
+      //마지막으로 시험 결과를 저장한 시간 가져오기
+      testResultTime = await AsyncStorage.getItem('testResultTime');
+      console.log('get testresulttime ', testResultTime);
+
+      let now = new Date();
+      let calcDate = new Date(now.getTime() - testResultTime);
+
+      // if(calcDate.getDate() )
+    }
+    catch(e){
+      console.log('fail to get testresulttime ', e);
+    }
 }
 
 function CheckStack({navigation}){

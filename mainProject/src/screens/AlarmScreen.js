@@ -30,9 +30,6 @@ export default function Alarm({navigation}){
 }
 
 function AlarmMain({navigation}) {
-    const [userName, setUserName] = useState();
-    const [userTestNumber, setTestNumber] = useState();
-    const [firstLoginTime, setFristLoginTime] = useState();
     navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Alarm Loading...</Text> });
 
     async function getData() {
@@ -40,22 +37,18 @@ function AlarmMain({navigation}) {
         const storageTestNumber = await AsyncStorage.getItem('testNumber');
         const storageFirstLoginTime = await AsyncStorage.getItem('firstLoginTime');
 
-        setUserName(storageUserName);
-        setTestNumber(storageTestNumber);
-        setFristLoginTime(storageFirstLoginTime);
-
-        console.log("storage ", storageTestNumber, storageUserName, storageFirstLoginTime);
+        // console.log("storage ", storageTestNumber, storageUserName, storageFirstLoginTime);
 
         let now = new Date();
 
         let calcDate = new Date(now.getTime() - storageFirstLoginTime);
         
-        navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={calcDate.getDate()} userName={userName}/>}   });
+        navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={calcDate.getDate()} userName={storageUserName}/>}   });
     };
 
     useEffect( () => {
         getData();
-        console.log('---------------in useeffect');
+        // console.log('---------------in useeffect');
     });
 
     return (
@@ -76,33 +69,28 @@ function AlarmMain({navigation}) {
 };
 
 function AlarmSet({navigation}) {
-    const [userName, setUserName] = useState();
-    const [userTestNumber, setTestNumber] = useState();
-    const [firstLoginTime, setFristLoginTime] = useState();
-
+    //set loading header title
     navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Alarm Loading...</Text> });
 
+
+    //set full header title
     async function getData() {
         const storageUserName = await AsyncStorage.getItem('user');
         const storageTestNumber = await AsyncStorage.getItem('testNumber');
         const storageFirstLoginTime = await AsyncStorage.getItem('firstLoginTime');
 
-        setUserName(storageUserName);
-        setTestNumber(storageTestNumber);
-        setFristLoginTime(storageFirstLoginTime);
-
-        console.log("storage ", storageTestNumber, storageUserName, storageFirstLoginTime);
+        // console.log("storage ", storageTestNumber, storageUserName, storageFirstLoginTime);
 
         let now = new Date();
-
         let calcDate = new Date(now.getTime() - storageFirstLoginTime);
         
-        navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={calcDate.getDate()} userName={userName}/>}   });
+        navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={calcDate.getDate()} userName={storageUserName}/>}   });
     };
 
+    
     useEffect( () => {
         getData();
-        console.log('---------------in useeffect');
+        // console.log('---------------in useeffect');
     });
 
     const [pickedHourValue, setPickedHourValue] = useState(5);
