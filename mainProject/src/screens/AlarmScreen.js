@@ -16,9 +16,11 @@ import PopScreen from './PopScreen';
 import { Row } from 'react-native-table-component';
 
 const Stack = createStackNavigator();
-const reference = database().ref('/users/1000/alarm');
 
 function AlarmMain({navigation, route}) {
+    const { testNumber } = useContext(AuthContext);
+    const reference = database().ref('/users/' + testNumber + '/alarm');
+
     navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Alarm Loading...</Text> });
 
     async function getData() {
@@ -116,6 +118,9 @@ function AlarmMain({navigation, route}) {
 };
 
 function AlarmSet({navigation}) {
+    const { testNumber } = useContext(AuthContext);
+    const reference = database().ref('/users/' + testNumber + '/alarm');
+
     //set loading header title
     navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Alarm Loading...</Text> });
 
