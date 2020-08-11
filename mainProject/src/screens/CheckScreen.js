@@ -65,21 +65,27 @@ export default class Check extends Component {
               testList: snapshot.val(),
           });
           
-          //해당 날짜에 시험을 수행했다면
+          (async () => {
+            //해당 날짜에 시험을 수행했다면
           try{
             let testListLength = this.state.testList.length;
+
+            //해당 날짜의 기호 변경
+            let _tableData = [...this.state.tableData1];
 
             for(let i=0; i<testListLength; i++){
               let correctCount = this.state.testList[i].correctCount;
               
-              //해당 날짜의 기호 변경
-              let _tableData = [...this.state.tableData1];
+              
 
               //시험 정보가 있는 날(correctCount != -1 )
               let dDate = await AsyncStorage.getItem('lastDate');
               
               if(correctCount != -1){
-                _tableData[0][0] = '✅';
+                let x = dDate / 2;
+                let y = dDate % 2;
+
+                _tableData[x][y] = '✅';
               }
               //시험 정보가 없는 날(correctCount == -1)
               else{
@@ -92,12 +98,13 @@ export default class Check extends Component {
             })
 
             console.log("change check table!!");
-          }
-          //해당 날짜에 시험을 수행하지 않았다면
-          catch{
-            console.log("there's no test result");
-          }
-      });
+            }
+            //해당 날짜에 시험을 수행하지 않았다면
+            catch{
+              console.log("there's no test result");
+            }
+          })();
+        });
       
       this.props.navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Check Loading...</Text> });  
     }
