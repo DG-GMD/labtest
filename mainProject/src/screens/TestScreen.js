@@ -584,14 +584,19 @@ function writeCorrectCount(item) {
       date: now.toUTCString()
     };
   
+    //현재 D+ 날짜 구하기
+    let firstLoginTime = await AsyncStorage.getItem('firstLoginTime');
+    let dDate = new Date(now.getTime() - firstLoginTime);
+    await AsyncStorage.setItem('lastDate', dDate.getDate());
     // Get a key for a new Post.
     //var newPostKey = database().ref().child('users/1000/test' + now.getTime()).push().key;
   
     // Write the new post's data simultaneously in the posts list and the user's post list.
-    var updates = {};
+    let updates = {};
     updates['/users/1000/test/' + '1'] = postData;
     // updates['/user-posts/' + uid + '/' + newPostKey] = postData;
   
+    
     return database().ref().update(updates);
 }
 
