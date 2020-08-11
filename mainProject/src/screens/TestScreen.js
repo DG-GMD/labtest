@@ -597,7 +597,7 @@ async function writeCorrectCount(item) {
   
     // Write the new post's data simultaneously in the posts list and the user's post list.
     let updates = {};
-    updates['/users/1000/test/' + '1'] = postData;
+    updates['/users/1000/test/' + dDate.getDate()] = postData;
     // updates['/user-posts/' + uid + '/' + newPostKey] = postData;
   
     

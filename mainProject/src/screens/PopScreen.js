@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { View, Text, Image, ScrollView, TextInput, Button, BackHandler, StyleSheet, Platform, TouchableOpacity } from 'react-native';
+import { View, Text, Image, ScrollView, TextInput, Button, BackHandler, StyleSheet, Platform, TouchableOpacity, AsyncStorage } from 'react-native';
 import { alarmModule } from '../utils/jvmodules'
 import { AuthContext } from '../navigation/AuthProvider';
 
@@ -10,6 +10,13 @@ function startDict(admit) {
 
 export default function Pop({navigation}){
     const { setSkip } = useContext(AuthContext);
+
+    //popScreen이 표시된 시간을 로컬 저장소에 저장
+    (async () => {
+        let now = new Date();
+        await AsyncStorage.setItem('popTime', now.getTime);
+    })();
+
     return (
         <View
             style={{

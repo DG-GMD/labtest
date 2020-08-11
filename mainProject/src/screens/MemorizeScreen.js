@@ -37,6 +37,7 @@ export default class Memorize extends Component {
             meaning :'',
             isWord: true,
             tochange: true,
+            isPop: false
         };
 
 
@@ -44,14 +45,17 @@ export default class Memorize extends Component {
         this._IsLastWord = this._IsLastWord.bind(this);
         this._BottomText = this._BottomText.bind(this);
         this.getData = this.getData.bind(this);
+        this.MemorizeRouter = this.MemorizeRouter.bind(this);
+        this.IsTestStart = this.IsTestStart.bind(this);
         getDB();
+
+        IsTestStart();
 
         database()
         .ref('/words/day2')
         .once('value')
         .then(snapshot => {
-            console.log('User data: ', snapshot.val());
-            
+            // console.log('User data: ', snapshot.val());
             this.setState({
                 wordList: snapshot.val(),
             });
@@ -65,9 +69,42 @@ export default class Memorize extends Component {
     }
     componentDidMount(){
         this.getData();
-        console.log('---------------in didmout');
+        // console.log('---------------in didmout');
       }
     
+    IsTestStart(){
+        (async () => {
+            //PopScreen이 표시된 시간 확인 확인
+            let popScreenTime = getPopScreenTime();
+
+            //firstLoginTime 가져오기
+            let firstLoginTime = await AsyncStorage.getItem('firstLoginTime');
+            
+            //현재 D+Date 구하기
+            let now = new Date();
+            let dDate = new Date(now.getTime() - firstLoginTime);
+            
+            //PopScreen이 마지막으로 표시된 D+Date
+            let popDate = new Date(popScreenTime - firstLoginTime);
+
+            //PopScreen이 뜬 날짜와 현재 날짜가 동일하다면
+            if(dDate.getDate() == popDate.getDate()){
+                //반드시 PopScreen이 오늘 떴던 것이므로 시험 시작 가능
+                this.setState({
+                    isPop: true
+                });
+            }
+            //PopScreen이 뜬 날짜와 현재 날짜가 다르다면
+            else{
+                //PopScreen이 오늘 아직 뜨지 않았다.
+                //= 아직 시험을 시작하면 안된다
+                this.setState({
+                    isPop: false
+                });
+            }
+        })();
+    }
+
     //로컬 저장소의 기존 로그인 정보들로 header title 수정
     getData = async () => {
         
@@ -80,7 +117,7 @@ export default class Memorize extends Component {
             userTestNumber: storageTestNumber
         });
 
-        console.log("storage ", storageTestNumber, storageUserName, storageFirstLoginTime);
+        // console.log("storage ", storageTestNumber, storageUserName, storageFirstLoginTime);
 
         let now = new Date();
 
@@ -212,19 +249,43 @@ export default class Memorize extends Component {
         );
     }
 
-    
-    render(){
-        const { count, word } = this.state;
-
-        
-        return (  
-            <View style={{
-                flex: 1,
-                backgroundColor: 'white',
-                padding: 10
-            }}
-                onStartShouldSetResponder = { (PressEvent) => this._onPressScreen() }
-            >
+    MemorizeRouter(){
+        //알람이 울리지않았다면
+        if(!this.state.isPop){
+            return(
+                <View style={{
+                    flex: 1,
+                    backgroundColor: 'white',
+                    padding: 10
+                    }}
+                >
+                    <View style={{
+                        flex: 1,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        padding: 20
+                    }}>
+                        <Text style={{
+                            textAlign: 'center',
+                            fontSize: 24
+                        }}>
+                            알람이 울리지 않아 단어 시험을 시작할 수 없습니다.
+                        </Text>
+                    </View>
+                </View>
+            );
+        }
+        //알람이 울렸다면
+        else{
+            const { count, word } = this.state;
+            return(
+                <View style={{
+                    flex: 1,
+                    backgroundColor: 'white',
+                    padding: 10
+                }}
+                    onStartShouldSetResponder = { (PressEvent) => this._onPressScreen() }
+                >
                     <View style={styles.head}>
                         <View style={{
                             alignItems: 'center'
@@ -237,15 +298,14 @@ export default class Memorize extends Component {
                             }}>{count}/5</Text>
                         </View>
                     </View>
-
+    
                     <View style={styles.middle}>
                         <Text style={{
                             fontSize: 40,
                             textAlign: 'center'
                         }}>{word}</Text>
                     </View>
-
-                    
+    
                     <View style={styles.end}>
                         
                         <View style={{
@@ -255,16 +315,32 @@ export default class Memorize extends Component {
                         }}>
                             <this._BottomText />
                             <this._IsLastWord count={this.state.count} flag={this.state.isWord}></this._IsLastWord>
-                        </View>
-
-                        
-                    
-                    </View>
-                    
-            </View>
+                        </View>      
+                    </View>       
+                </View>
+            );
+        }
+    }
+    
+    render(){
+        return (  
+            <this.MemorizeRouter />
         );
     }
 }
+
+//popscreen이 떴는지 확인
+async function getPopScreenTime(){
+    let item;
+    try{
+        isPop = await AsyncStorage.getItem('popTime');
+    }
+    catch(e){
+        console.log('fail to get popTime at MemorizeScreen', e);
+    }
+    return item;
+}
+
 function writeTestStateTesting(){
     (async () => {
         try{

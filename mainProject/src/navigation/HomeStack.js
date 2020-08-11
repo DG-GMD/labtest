@@ -80,7 +80,8 @@ async function CheckDate(){
     //하루가 지나지 않았을 때
     //= 마지막으로 기록된 테스트 날짜에 CheckDate()가 호출됐을 때
     if(durationDate == 1){
-
+      //마지막으로 기록된 테스트 날짜에 앱을 연 상황
+      //= 테스트를 이미봤다는 가정이기 때문에 아무것도 할 필요가 없음
     }
     //하루 이상이 지났을 때
     //= 마지막으로 기록된 테스트 날짜 다음날부터 CheckDate()가 호출됐을 때
@@ -106,11 +107,12 @@ async function CheckDate(){
       for(let i=lastDate+1; i<allDuration.getDate(); i++){
         try{
           let postData = {
-            
+            correctCount: -1,
+            date: now.toUTCString
           };
 
           let updates= {};
-          updates[''] = postData;
+          updates['/users/1000/test/' + i] = postData;
           database().ref().update(updates);
 
         }

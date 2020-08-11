@@ -101,6 +101,10 @@ export const AuthProvider = ({ children }) => {
 
 //최초 로그인 날짜를 firebase DB와 로컬 저장소에 저장
 async function writeStartTime(testNumber) {
+
+  // firstLoginTime = {
+
+  // }
   let firstLoginTime = null;
   //이미 로그인을 한번이라도 했다면 로그인 시 시간 정보 저장을 안한다.
   try{

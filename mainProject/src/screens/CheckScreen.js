@@ -41,7 +41,8 @@ export default class Check extends Component {
         userTestNumber: '',
         userDB: '',
         milliTime: 0,
-        howLongDate: 0
+        howLongDate: 0,
+        nowDdate: 0
       }
     
       database()
@@ -76,20 +77,20 @@ export default class Check extends Component {
               for(let i=1; i<=testListLength-1; i++){
                 let correctCount = this.state.testList[i].correctCount;
                 
-                //시험 정보가 있는 날(correctCount != -1 )
                 let dDate = await AsyncStorage.getItem('lastDate');
-                
+
+                //시험 정보가 있는 날(correctCount != -1 )
                 if(correctCount != -1){
                   let x = parseInt((i-1) / 2);
                   let y = parseInt((i-1) % 2);
-                  console.log('count != -1, i : ', i, x, y);
+                  // console.log('count != -1, i : ', i, x, y);
                   _tableData[x][y] = '✅';
                 }
                 //시험 정보가 없는 날(correctCount == -1)
                 else{
                   let x = i / 2;
                   let y = i % 2;
-                  console.log('count == -1, i : ', i);
+                  // console.log('count == -1, i : ', i);
                   _tableData[x][y] = '❌';
                 }
               }
@@ -99,7 +100,16 @@ export default class Check extends Component {
               })
 
               console.log("change check table!!");
-              }
+
+              //현재 D+date구하기
+              let now = new Date();
+              let firstLoginTime = await AsyncStorage.getItem('firstLoginTime');
+              
+              let _nowDdate = new Date(now.getTime() - firstLoginTime);
+              this.setState({
+                nowDdate: _nowDdate.getDate()
+              });
+            }
               //해당 날짜에 시험을 수행하지 않았다면
             catch{
               console.log("there's no test result");
@@ -165,7 +175,7 @@ export default class Check extends Component {
                         textAlign: 'center',
                         margin: 30
                         }}>
-                        실험 1일차
+                        실험 {this.state.nowDdate}일차
                     </Text>
                 </View>
                 
@@ -180,7 +190,7 @@ export default class Check extends Component {
                         textAlign: 'center',
                         margin: 10
                         }}>
-                        1일차 현황 진행표
+                        {this.state.nowDdate} 일차 현황 진행표
                     </Text>
 
                     <View style={{margin: 10}}>
@@ -206,14 +216,9 @@ export default class Check extends Component {
                 
                 
                   
-
+             {/* /  <InvestigationLink nowDdate={this.state.nowDdate} link={this.state.linkList[0]} /> */}
                   
-                <View style={{padding: 10}}>
-                  <Text style={{fontSize:18, alignContent:'center'}}>설문을 진행하시지 않은 피험자분들은 하단의 1주차 설문조사 링크로 접속해주시기 바랍니다. {"\n"}</Text>
-                  <Text style={{fontSize:20, color: 'blue', alignContent:'center', textAlign: 'center'}} onPress={() => Linking.openURL(this.state.linkList[0].link)}>
-                    설문조사 링크
-                  </Text>
-                </View>
+                
                       
                 
           </View>
@@ -221,7 +226,24 @@ export default class Check extends Component {
       )
     }
   }
-   
+
+function InvestigationLink(props){
+  let nowDdate = props.nowDdate;
+  let link = props.link;
+
+  let returnDOM = <View></View>;
+
+  if(nowDdate == 14){
+    returnDOM = <View style={{padding: 10}}>
+      <Text style={{fontSize:18, alignContent:'center'}}>설문을 진행하시지 않은 피험자분들은 하단의 1주차 설문조사 링크로 접속해주시기 바랍니다. {"\n"}</Text>
+      <Text style={{fontSize:20, color: 'blue', alignContent:'center', textAlign: 'center'}} onPress={() => Linking.openURL(link)}>
+        설문조사 링크
+      </Text>
+    </View>;
+  }
+
+  return returnDOM;
+}
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, paddingTop: 30, backgroundColor: 'white'},
