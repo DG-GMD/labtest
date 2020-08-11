@@ -13,6 +13,7 @@ export const AuthContext = createContext({});
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [skip, setSkip] = useState(0);
+  const [testNumber, setTestNumber] = useState(null);
 
   //const navigation = useNavigation(); 
 
@@ -23,6 +24,7 @@ export const AuthProvider = ({ children }) => {
       value={{
         user,
         setUser,
+        testNumber,
         skip,
         setSkip,
         login: async (name, birth, testNumber) => {
@@ -60,6 +62,7 @@ export const AuthProvider = ({ children }) => {
               const saveNumber = async () => {
                 try{
                   await AsyncStorage.setItem('testNumber', testNumber);
+                  setTestNumber(testNumber);
                   // console.log("save number");
                 }
                 catch(e){
