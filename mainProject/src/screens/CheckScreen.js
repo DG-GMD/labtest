@@ -67,11 +67,26 @@ export default class Check extends Component {
           
           //해당 날짜에 시험을 수행했다면
           try{
-            let temp = this.state.testList[1].correctCount;
+            let testListLength = this.state.testList.length;
 
-            //해당 날짜의 기호 변경
-            let _tableData = [...this.state.tableData1];
-            _tableData[0][0] = '✅';
+            for(let i=0; i<testListLength; i++){
+              let correctCount = this.state.testList[i].correctCount;
+              
+              //해당 날짜의 기호 변경
+              let _tableData = [...this.state.tableData1];
+
+              //시험 정보가 있는 날(correctCount != -1 )
+              let dDate = await AsyncStorage.getItem('lastDate');
+              
+              if(correctCount != -1){
+                _tableData[0][0] = '✅';
+              }
+              //시험 정보가 없는 날(correctCount == -1)
+              else{
+
+              }
+            }
+            
             this.setState({
               tableData1: _tableData
             })

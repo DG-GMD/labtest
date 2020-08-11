@@ -575,7 +575,7 @@ function writeTestState(state){
     })();
 }
 
-function writeCorrectCount(item) {
+async function writeCorrectCount(item) {
     var now = new Date();
 
     // A post entry.
@@ -587,7 +587,11 @@ function writeCorrectCount(item) {
     //현재 D+ 날짜 구하기
     let firstLoginTime = await AsyncStorage.getItem('firstLoginTime');
     let dDate = new Date(now.getTime() - firstLoginTime);
+
+    //현재 D+ 날짜 저장
     await AsyncStorage.setItem('lastDate', dDate.getDate());
+
+
     // Get a key for a new Post.
     //var newPostKey = database().ref().child('users/1000/test' + now.getTime()).push().key;
   

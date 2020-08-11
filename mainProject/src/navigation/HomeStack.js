@@ -101,6 +101,23 @@ async function CheckDate(){
       let lastDate = await AsyncStorage.getItem('lastDate');   
       // 1               2 3 4 5 6 7
       // 0               0 x x x 
+
+      //앱에 접속안한 기간만큼 DB에 시험을 안 봤다고 기록
+      for(let i=lastDate+1; i<allDuration.getDate(); i++){
+        try{
+          let postData = {
+            
+          };
+
+          let updates= {};
+          updates[''] = postData;
+          database().ref().update(updates);
+
+        }
+        catch(e){
+          console.log('fail to update non-test date', e);
+        }
+      }
     }
   }
   catch(e){

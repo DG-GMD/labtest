@@ -8,7 +8,7 @@ export default function LogoutButton({restDate, userName}) {
     const {name, setName} = useState('');
     const {date, setDate} = useState('');
 
-    console.log("----------------------in header", restDate, userName);
+    // console.log("----------------------in header", restDate, userName);
 
     return (
         <View style={{
@@ -65,32 +65,32 @@ function logoutAndExit(){
     
     
     
-    console.log("logout");
+    // console.log("logout");
     const saveUser = async () => {
         try{
         await AsyncStorage.setItem('user', '');
-        console.log("save name to null");
+        // console.log("save name to null");
         }
         catch(e){
-        console.log("fail to save name", e);
+        // console.log("fail to save name", e);
         }
     }
     const saveBirth = async () => {
         try{
         await AsyncStorage.setItem('birth', '');
-        console.log("save birth to null");
+        // console.log("save birth to null");
         }
         catch(e){
-        console.log("fail to save birth", e);
+        // console.log("fail to save birth", e);
         }
     }
     const saveNumber = async () => {
         try{
         await AsyncStorage.setItem('testNumber', '');
-        console.log("save number to null");
+        // console.log("save number to null");
         }
         catch(e){
-        console.log("fail to save number", e);
+        // console.log("fail to save number", e);
         }
     }
 
