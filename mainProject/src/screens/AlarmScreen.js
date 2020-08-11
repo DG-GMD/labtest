@@ -5,31 +5,20 @@ import { NavigationContainer, CommonActions } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { AuthContext } from '../navigation/AuthProvider';
 import { alarmModule } from '../utils/jvmodules';
-import RNDateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import {ScrollPicker} from 'react-native-value-picker';
 import database from '@react-native-firebase/database';
 
 import {HOUR_DATA, MIN_DATA} from '../utils/timeData';
 import LogoutButton from '../components/Logout';
 
+import PopScreen from './PopScreen';
+import { Row } from 'react-native-table-component';
 
 const Stack = createStackNavigator();
 const reference = database().ref('/users/1000/alarm');
 
-export default function Alarm({navigation}){
-    const { user, logout } = useContext(AuthContext); 
-
-    //navigation.setOptions({ title: 'D-00 안녕하세요 000님' });
-
-    return (  
-    <Stack.Navigator>
-        <Stack.Screen name="AlarmMain" component={AlarmMain} />
-        <Stack.Screen name="AlarmSet" component={AlarmSet} />
-    </Stack.Navigator>
-    );
-}
-
-function AlarmMain({navigation}) {
+function AlarmMain({navigation, route}) {
     navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Alarm Loading...</Text> });
 
     async function getData() {
@@ -55,7 +44,8 @@ function AlarmMain({navigation}) {
     const [pickedMinValue, setPickedMinValue] = useState(0);
     const [flag, setFlag] = useState(false);
 
-    (function setAlarmTime() {
+    (function setAlarmMainTime() {
+        //console.log("setAlarmMainTime");
         if(!flag){
             reference
             .orderByChild('order')
@@ -82,10 +72,31 @@ function AlarmMain({navigation}) {
     })();
 
     return (
-        <View>
-            <View>
-                {flag && <Text>
-                    매일 {pickedHourValue} : {pickedMinValue}
+        <View
+            style={{
+                flex: 1,
+                alignItems: 'center',
+            }}
+        >
+            <View style={{marginTop: 20}}>
+                <Text style={{fontSize: 30}}>
+                    단어 학습시간 알람
+                </Text>
+            </View>
+            <View
+                style={{
+                    width: "80%",
+                    margin: 30,
+                    alignItems: 'center',
+                    borderWidth: 2,
+                    borderColor: "grey",
+                }}
+            >
+                {flag && <Text style={{fontSize: 35}}>
+                    매일 {route.params !== undefined ? route.params.setHour : pickedHourValue} : {route.params !== undefined ? route.params.setMin : pickedMinValue}
+                </Text>}
+                {!flag && <Text style={{fontSize: 25}}>
+                    설정된 알람이 없습니다.
                 </Text>}
             </View>
             <View>
@@ -93,9 +104,13 @@ function AlarmMain({navigation}) {
                     style = {styles.buttonContainer}
                     onPress={() => navigation.navigate('AlarmSet')}
                 >
-                    <Text>설정</Text>
+                    <Text>알람 설정</Text>
                 </TouchableOpacity>
             </View>
+            {/* <Button
+                title = "popScreen test"
+                onPress = {() => navigation.navigate("Pop")}
+            /> */}
         </View>
     );
 };
@@ -125,6 +140,9 @@ function AlarmSet({navigation}) {
         // console.log('---------------in useeffect');
     });
 
+    const [date, setDate] = useState(new Date());
+    const [show, setShow] = useState(false);
+
     const [pickedHourValue, setPickedHourValue] = useState(0);
     const [pickedMinValue, setPickedMinValue] = useState(0);
     const [flag, setFlag] = useState(false);
@@ -145,17 +163,21 @@ function AlarmSet({navigation}) {
 
                 let order = parseInt(alarmData.order);
 
+                let dt = new Date();
                 if(order < 1){
-                    const dt = new Date();
                     setPickedHourValue(dt.getUTCHours());
                     setPickedMinValue(dt.getUTCMinutes());
                 }
                 else{
                     setPickedHourValue(alarmData.setHour);
                     setPickedMinValue(alarmData.setMin);
+
+                    dt.setUTCHours(alarmData.setHour);
+                    dt.setUTCMinutes(alarmData.setMin);
                 }
 
                 setFlag(true);
+                setDate(dt);
             })
         }
     })();
@@ -196,30 +218,80 @@ function AlarmSet({navigation}) {
                     .update(json)
                     .then(() => {
                         console.log("alarm saved");
-                        navigation.navigate('AlarmMain');
+                        navigation.navigate('AlarmMain',{
+                            setHour: pickedHourValue,
+                            setMin: pickedMinValue,
+                        });
                     });
             });
     };
 
+    const onChange = (event, selectedDate) => {
+        const currentDate = selectedDate || date;
+        
+        setShow(Platform.OS === 'ios');
+        setPickedHourValue(currentDate.getUTCHours());
+        setPickedMinValue(currentDate.getUTCMinutes());
+        setDate(currentDate);
+    };
+
     return (
-        <View>
-            <View style={styles.PickerContainer}>
-                <ScrollPicker
-                currentValue={pickedHourValue}
-                extraData={pickedHourValue}
-                list={HOUR_DATA}
-                onItemPress={setPickedHourValue}
-                />
+        <View
+            style={{
+                flex: 1,
+                alignItems: 'center',
+            }}
+        >
+            <View
+                style={{
+                    marginTop: 30,
+                    flex: 1,
+                    flexDirection: 'row',
+                }}
+            >
+                {/* <View style={styles.PickerContainer}>
+                    <ScrollPicker
+                        currentValue={pickedHourValue}
+                        list={HOUR_DATA}
+                        onItemPress={setPickedHourValue}
+                    />
+                </View>
+                <Text 
+                    style = {{
+                        alignSelf: 'center',
+                        fontSize: 40,
+                    }}
+                >
+                    :
+                </Text>
+                <View style={styles.PickerContainer}>
+                    <ScrollPicker
+                        currentValue={pickedMinValue}
+                        list={MIN_DATA}
+                        onItemPress={setPickedMinValue}
+                    />
+                </View> */}
+                <TouchableOpacity
+                    style={{
+                        alignSelf: 'center',
+                    }}
+                    onPress={()=>setShow(true)}
+                >
+                    <Text
+                        style = {{
+                            fontSize: 60,
+                        }}
+                    >
+                        {pickedHourValue} : {pickedMinValue}
+                    </Text>
+                </TouchableOpacity>
             </View>
-            <View style={styles.PickerContainer}>
-                <ScrollPicker
-                currentValue={pickedMinValue}
-                extraData={pickedMinValue}
-                list={MIN_DATA}
-                onItemPress={setPickedMinValue}
-                />
-            </View>
-            <View>
+            <View
+                style={{
+                    flex: 2,
+                    flexDirection: 'row',
+                }}
+            >
                 <TouchableOpacity
                     style = {styles.buttonContainer}
                     onPress={() => navigation.navigate('AlarmMain')}
@@ -233,6 +305,16 @@ function AlarmSet({navigation}) {
                     <Text>저장</Text>
                 </TouchableOpacity>
             </View>
+            {show && (
+                <DateTimePicker
+                testID="dateTimePicker"
+                value={date}
+                mode="time"
+                is24Hour={true}
+                display="spinner"
+                onChange={onChange}
+                />
+            )}
         </View>
     );
 }
@@ -240,8 +322,8 @@ function AlarmSet({navigation}) {
 const styles = StyleSheet.create({
     buttonContainer: {
         marginTop: 10,
-        width: 200,
-        height: 60,
+        width: 80,
+        height: 40,
         backgroundColor: 'lightgreen',
         padding: 10,
         margin: 20,
@@ -250,9 +332,23 @@ const styles = StyleSheet.create({
         borderRadius: 8
     },
     PickerContainer: {
-        height: 120,
         width: 100,
+        height: 170,
+        marginHorizontal: 20,
         alignItems: 'center',
-        marginTop: 50,
     },
 });
+
+export default function Alarm({navigation}){
+    const { user, logout } = useContext(AuthContext); 
+
+    //navigation.setOptions({ title: 'D-00 안녕하세요 000님' });
+
+    return (  
+    <Stack.Navigator>
+        <Stack.Screen name="AlarmMain" component={AlarmMain} />
+        <Stack.Screen name="AlarmSet" component={AlarmSet} />
+        {/* <Stack.Screen name="Pop" component={PopScreen} /> */}
+    </Stack.Navigator>
+    );
+}

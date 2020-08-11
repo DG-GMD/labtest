@@ -38,7 +38,8 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         Intent intent_ = new Intent(context, MainActivity.class);
         intent_.putExtra("AlarmOn",true);
-        intent_.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent_.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent_.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent_);
     }
 }
