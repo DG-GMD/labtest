@@ -67,39 +67,40 @@ export default class Check extends Component {
           
           (async () => {
             //해당 날짜에 시험을 수행했다면
-          try{
-            let testListLength = this.state.testList.length;
+            try{
+              let testListLength = this.state.testList.length;
+              console.log('testListLength : ', testListLength);
+              //해당 날짜의 기호 변경
+              let _tableData = [...this.state.tableData1];
 
-            //해당 날짜의 기호 변경
-            let _tableData = [...this.state.tableData1];
-
-            for(let i=0; i<testListLength; i++){
-              let correctCount = this.state.testList[i].correctCount;
-              
-              
-
-              //시험 정보가 있는 날(correctCount != -1 )
-              let dDate = await AsyncStorage.getItem('lastDate');
-              
-              if(correctCount != -1){
-                let x = dDate / 2;
-                let y = dDate % 2;
-
-                _tableData[x][y] = '✅';
+              for(let i=1; i<=testListLength-1; i++){
+                let correctCount = this.state.testList[i].correctCount;
+                
+                //시험 정보가 있는 날(correctCount != -1 )
+                let dDate = await AsyncStorage.getItem('lastDate');
+                
+                if(correctCount != -1){
+                  let x = parseInt((i-1) / 2);
+                  let y = parseInt((i-1) % 2);
+                  console.log('count != -1, i : ', i, x, y);
+                  _tableData[x][y] = '✅';
+                }
+                //시험 정보가 없는 날(correctCount == -1)
+                else{
+                  let x = i / 2;
+                  let y = i % 2;
+                  console.log('count == -1, i : ', i);
+                  _tableData[x][y] = '❌';
+                }
               }
-              //시험 정보가 없는 날(correctCount == -1)
-              else{
+              
+              this.setState({
+                tableData1: _tableData
+              })
 
+              console.log("change check table!!");
               }
-            }
-            
-            this.setState({
-              tableData1: _tableData
-            })
-
-            console.log("change check table!!");
-            }
-            //해당 날짜에 시험을 수행하지 않았다면
+              //해당 날짜에 시험을 수행하지 않았다면
             catch{
               console.log("there's no test result");
             }
