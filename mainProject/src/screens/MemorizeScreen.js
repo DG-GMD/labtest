@@ -30,6 +30,15 @@ export default class Memorize extends Component {
     constructor(props){
         super(props);
         
+        
+
+        this._IsTestStart = this._IsTestStart.bind(this);
+        this._setToFirstWord = this._setToFirstWord.bind(this);
+        this._IsLastWord = this._IsLastWord.bind(this);
+        this._BottomText = this._BottomText.bind(this);
+        this.getData = this.getData.bind(this);
+        this.MemorizeRouter = this.MemorizeRouter.bind(this);
+        
         this.state = { 
             count : 1 ,
             wordList : '',
@@ -40,17 +49,9 @@ export default class Memorize extends Component {
             isPop: false
         };
 
-
-        this._setToFirstWord = this._setToFirstWord.bind(this);
-        this._IsLastWord = this._IsLastWord.bind(this);
-        this._BottomText = this._BottomText.bind(this);
-        this.getData = this.getData.bind(this);
-        this.MemorizeRouter = this.MemorizeRouter.bind(this);
-        this.IsTestStart = this.IsTestStart.bind(this);
         getDB();
 
-        IsTestStart();
-
+        this._IsTestStart();
         database()
         .ref('/words/day2')
         .once('value')
@@ -69,14 +70,15 @@ export default class Memorize extends Component {
     }
     componentDidMount(){
         this.getData();
+        this._IsTestStart();
         // console.log('---------------in didmout');
       }
     
-    IsTestStart(){
+    _IsTestStart(){
         (async () => {
             //PopScreen이 표시된 시간 확인 확인
-            let popScreenTime = getPopScreenTime();
-
+            let popScreenTime = await getPopScreenTime();
+            console.log('popScreenTime: ', popScreenTime);
             //firstLoginTime 가져오기
             let firstLoginTime = await AsyncStorage.getItem('firstLoginTime');
             
@@ -87,6 +89,7 @@ export default class Memorize extends Component {
             //PopScreen이 마지막으로 표시된 D+Date
             let popDate = new Date(popScreenTime - firstLoginTime);
 
+            console.log('현재 날짜 ', dDate.getDate(), 'pop 날짜 ', popDate.getDate());
             //PopScreen이 뜬 날짜와 현재 날짜가 동일하다면
             if(dDate.getDate() == popDate.getDate()){
                 //반드시 PopScreen이 오늘 떴던 것이므로 시험 시작 가능
@@ -96,6 +99,7 @@ export default class Memorize extends Component {
             }
             //PopScreen이 뜬 날짜와 현재 날짜가 다르다면
             else{
+                
                 //PopScreen이 오늘 아직 뜨지 않았다.
                 //= 아직 시험을 시작하면 안된다
                 this.setState({
@@ -333,11 +337,12 @@ export default class Memorize extends Component {
 async function getPopScreenTime(){
     let item;
     try{
-        isPop = await AsyncStorage.getItem('popTime');
+        item = await AsyncStorage.getItem('popTime');
     }
     catch(e){
         console.log('fail to get popTime at MemorizeScreen', e);
     }
+    console.log('popTime : ', item);
     return item;
 }
 

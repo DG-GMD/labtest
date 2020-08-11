@@ -7,15 +7,24 @@ function startDict(admit) {
     console.log("admit", admit);
     alarmModule.startDict(admit);
 }
+async function savePopTime(){
+    //popScreen이 표시된 시간을 로컬 저장소에 저장
+    
+    let now = new Date();
+    try{
+        await AsyncStorage.setItem('popTime', now.getTime().toString());
+    }
+    catch(e){
+        console.log('fail to save poptime ', e);
+    }
+    
+}
 
 export default function Pop({navigation}){
     const { setSkip } = useContext(AuthContext);
 
-    //popScreen이 표시된 시간을 로컬 저장소에 저장
-    (async () => {
-        let now = new Date();
-        await AsyncStorage.setItem('popTime', now.getTime);
-    })();
+    
+    
 
     return (
         <View
@@ -36,6 +45,7 @@ export default function Pop({navigation}){
                 <TouchableOpacity
                     style={styles.buttonContainer}
                     onPress = {() => {
+                        savePopTime();
                         startDict(true);
                         setSkip(2);
                     }} 
@@ -48,6 +58,7 @@ export default function Pop({navigation}){
                 <TouchableOpacity
                     style={styles.buttonContainer}
                     onPress = {() => {
+                        savePopTime();
                         startDict(false);
                         BackHandler.exitApp();
                     }} 
