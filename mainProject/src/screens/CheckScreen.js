@@ -42,7 +42,7 @@ export default class Check extends Component {
         userDB: '',
         milliTime: 0,
         howLongDate: 0,
-        nowDdate: 0
+        nowDdate: 1
       }
     
       database()
@@ -105,6 +105,7 @@ export default class Check extends Component {
               let now = new Date();
               let firstLoginTime = await AsyncStorage.getItem('firstLoginTime');
               
+              console.log('현재시간, 최초로그인', now.getTime(), firstLoginTime);
               let _nowDdate = new Date(now.getTime() - firstLoginTime);
               this.setState({
                 nowDdate: _nowDdate.getDate()
