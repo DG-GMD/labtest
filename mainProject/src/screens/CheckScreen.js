@@ -216,8 +216,12 @@ export default class Check extends Component {
                 
                 
                   
-             {/* /  <InvestigationLink nowDdate={this.state.nowDdate} link={this.state.linkList[0]} /> */}
-                  
+               <InvestigationLink nowDdate={this.state.nowDdate} link={this.state.linkList[0]} />
+            <TouchableOpacity style={{width:80, backgroundColor:'beige'}} onPress={() => {initAsyncStorage()}}>
+              <Text>
+              delete AsyncStorage    
+              </Text>
+            </TouchableOpacity>   
                 
                       
                 
@@ -226,7 +230,16 @@ export default class Check extends Component {
       )
     }
   }
-
+async function initAsyncStorage(){
+  try{
+    await AsyncStorage.removeItem('popTime');
+    console.log('remove popItem');
+  }
+  catch(e){
+    console.log('fail to remove popItem');
+  }
+  
+}
 function InvestigationLink(props){
   let nowDdate = props.nowDdate;
   let link = props.link;

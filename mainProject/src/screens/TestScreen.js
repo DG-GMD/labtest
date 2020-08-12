@@ -583,25 +583,29 @@ async function writeCorrectCount(item) {
       correctCount: item,
       date: now.toUTCString()
     };
-  
-    //현재 D+ 날짜 구하기
-    let firstLoginTime = await AsyncStorage.getItem('firstLoginTime');
-    let dDate = new Date(now.getTime() - firstLoginTime);
+    try{
+        //현재 D+ 날짜 구하기
+        let firstLoginTime = await AsyncStorage.getItem('firstLoginTime');
+        let dDate = new Date(now.getTime() - firstLoginTime);
 
-    //현재 D+ 날짜 저장
-    await AsyncStorage.setItem('lastDate', dDate.getDate());
+        //현재 D+ 날짜 저장
+        await AsyncStorage.setItem('lastDate', dDate.getDate().toString());
 
 
-    // Get a key for a new Post.
-    //var newPostKey = database().ref().child('users/1000/test' + now.getTime()).push().key;
-  
-    // Write the new post's data simultaneously in the posts list and the user's post list.
-    let updates = {};
-    updates['/users/1000/test/' + dDate.getDate()] = postData;
-    // updates['/user-posts/' + uid + '/' + newPostKey] = postData;
-  
+        // Get a key for a new Post.
+        //var newPostKey = database().ref().child('users/1000/test' + now.getTime()).push().key;
     
-    return database().ref().update(updates);
+        // Write the new post's data simultaneously in the posts list and the user's post list.
+        let updates = {};
+        updates['/users/1000/test/' + dDate.getDate().toString()] = postData;
+        // updates['/user-posts/' + uid + '/' + newPostKey] = postData;
+        console.log('update test db', dDate.getDate());
+        
+        database().ref().update(updates);
+    }
+    catch(e){
+        console.log(e);
+    }
 }
 
 function MeaningRadioButton(props){

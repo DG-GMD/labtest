@@ -79,6 +79,14 @@ export default class Memorize extends Component {
             //PopScreen이 표시된 시간 확인 확인
             let popScreenTime = await getPopScreenTime();
             console.log('popScreenTime: ', popScreenTime);
+
+            //popItem이 AsyncStorage에 없을 때
+            if(popScreenTime == -1){
+                this.setState({
+                    isPop: false
+                });
+                return;
+            }
             //firstLoginTime 가져오기
             let firstLoginTime = await AsyncStorage.getItem('firstLoginTime');
             
@@ -335,9 +343,10 @@ export default class Memorize extends Component {
 
 //popscreen이 떴는지 확인
 async function getPopScreenTime(){
-    let item;
+    let item = -1;
     try{
         item = await AsyncStorage.getItem('popTime');
+        console.log('get popItem');
     }
     catch(e){
         console.log('fail to get popTime at MemorizeScreen', e);

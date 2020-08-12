@@ -22,10 +22,7 @@ async function savePopTime(){
 
 export default function Pop({navigation}){
     const { setSkip } = useContext(AuthContext);
-
     
-    
-
     return (
         <View
             style={{
