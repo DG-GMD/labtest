@@ -8,6 +8,8 @@ import { alarmModule } from '../utils/jvmodules';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {ScrollPicker} from 'react-native-value-picker';
 import database from '@react-native-firebase/database';
+import storage from '@react-native-firebase/storage';
+import { utils } from '@react-native-firebase/app';
 
 import {HOUR_DATA, MIN_DATA} from '../utils/timeData';
 import LogoutButton from '../components/Logout';
@@ -15,32 +17,34 @@ import LogoutButton from '../components/Logout';
 import PopScreen from './PopScreen';
 import { Row } from 'react-native-table-component';
 
+import RNFS from 'react-native-fs';
+
 const Stack = createStackNavigator();
 
 function AlarmMain({navigation, route}) {
     const { testNumber } = useContext(AuthContext);
     const reference = database().ref('/users/' + testNumber + '/alarm');
 
-    navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Alarm Loading...</Text> });
+    // navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Alarm Loading...</Text> });
 
-    async function getData() {
-        const storageUserName = await AsyncStorage.getItem('user');
-        const storageTestNumber = await AsyncStorage.getItem('testNumber');
-        const storageFirstLoginTime = await AsyncStorage.getItem('firstLoginTime');
+    // async function getData() {
+    //     const storageUserName = await AsyncStorage.getItem('user');
+    //     const storageTestNumber = await AsyncStorage.getItem('testNumber');
+    //     const storageFirstLoginTime = await AsyncStorage.getItem('firstLoginTime');
 
-        // console.log("storage ", storageTestNumber, storageUserName, storageFirstLoginTime);
+    //     // console.log("storage ", storageTestNumber, storageUserName, storageFirstLoginTime);
 
-        let now = new Date();
+    //     let now = new Date();
 
-        let calcDate = new Date(now.getTime() - storageFirstLoginTime);
+    //     let calcDate = new Date(now.getTime() - storageFirstLoginTime);
         
-        navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={calcDate.getDate()} userName={storageUserName}/>}   });
-    };
+    //     navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={calcDate.getDate()} userName={storageUserName}/>}   });
+    // };
 
-    useEffect( () => {
-        getData();
-        // console.log('---------------in useeffect');
-    });
+    // useEffect( () => {
+    //     getData();
+    //     // console.log('---------------in useeffect');
+    // });
 
     const [pickedHourValue, setPickedHourValue] = useState(0);
     const [pickedMinValue, setPickedMinValue] = useState(0);
@@ -72,6 +76,88 @@ function AlarmMain({navigation, route}) {
             })
         }
     })();
+
+    const downloadAlarm = async () => {
+        let filePath = RNFS.DocumentDirectoryPath;
+        console.log("filePath", filePath)
+        const downloadTo = `${filePath}/Alarm-ringtone.mp3`;
+
+        // const task = storage()
+        //     .ref('/test/Alarm-ringtone.mp3')
+        //     .writeToFile(downloadTo);
+        
+        // task.on('state_changed', taskSnapshot => {
+        //     console.log(`${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`);
+        // });
+        
+        // task.then(() => {
+        //     console.log('alarm uploaded to the bucket!');
+        // }).catch((err)=>{
+        //     console.log(err.message);
+        // })
+
+        // const task = await storage()
+        //     .ref('/test/Alarm-ringtone.mp3')
+        //     .getDownloadURL();
+        
+        // console.log('ringtone downloadURL ' + task);
+
+        // if(task !== undefined){
+        //     console.log("1 ", task);
+        //     RNFS.downloadFile({
+        //         fromUrl: task,
+        //         toFile: RNFS.DocumentDirectoryPath + '/alarm.mp3'
+        //     }).then((jobId, result) => {
+        //         console.log("jobId ", jobId);
+        //         console.log("result ", result);
+        //     }).catch((err) => {
+        //         console.log(err.message);
+        //     })
+        // }
+        // else{
+        //     console.log("2 ", task);
+        // }
+        
+
+        // create a path you want to write to
+        // :warning: on iOS, you cannot write into `RNFS.MainBundlePath`,
+        // but `RNFS.DocumentDirectoryPath` exists on both platforms and is writable
+        // var path = RNFS.DocumentDirectoryPath + '/test.txt';
+        // console.log("RNFS path ",path);
+
+        // // write the file
+        // RNFS.writeFile(path, 'Lorem ipsum dolor sit amet', 'utf8')
+        // .then((success) => {
+        //     console.log('FILE WRITTEN!');
+        // })
+        // .catch((err) => {
+        //     console.log(err.message);
+        // });
+
+        RNFS.readDir(RNFS.DocumentDirectoryPath) // On Android, use "RNFS.DocumentDirectoryPath" (MainBundlePath is not defined)
+        .then((result) => {
+            console.log('GOT RESULT', result);
+
+            // stat the first file
+            return Promise.all([RNFS.stat(result[1].path), result[1].path]);
+        })
+        .then((statResult) => {
+            console.log("statResult ",statResult)
+            if (statResult[0].isFile()) {
+            // if we have a file, read it
+            return RNFS.readFile(statResult[1], 'utf8');
+            }
+
+            return 'no file';
+        })
+        .then((contents) => {
+            // log the file contents
+            console.log("contents", contents);
+        })
+        .catch((err) => {
+            console.log(err.message, err.code);
+        });
+    }
 
     return (
         <View
@@ -113,6 +199,10 @@ function AlarmMain({navigation, route}) {
                 title = "popScreen test"
                 onPress = {() => navigation.navigate("Pop")}
             /> */}
+            <Button
+                title = "download alarm test"
+                onPress = {() => downloadAlarm()}
+            />
         </View>
     );
 };
@@ -121,29 +211,29 @@ function AlarmSet({navigation}) {
     const { testNumber } = useContext(AuthContext);
     const reference = database().ref('/users/' + testNumber + '/alarm');
 
-    //set loading header title
-    navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Alarm Loading...</Text> });
+    // //set loading header title
+    // navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Alarm Loading...</Text> });
 
 
-    //set full header title
-    async function getData() {
-        const storageUserName = await AsyncStorage.getItem('user');
-        const storageTestNumber = await AsyncStorage.getItem('testNumber');
-        const storageFirstLoginTime = await AsyncStorage.getItem('firstLoginTime');
+    // //set full header title
+    // async function getData() {
+    //     const storageUserName = await AsyncStorage.getItem('user');
+    //     const storageTestNumber = await AsyncStorage.getItem('testNumber');
+    //     const storageFirstLoginTime = await AsyncStorage.getItem('firstLoginTime');
 
-        // console.log("storage ", storageTestNumber, storageUserName, storageFirstLoginTime);
+    //     // console.log("storage ", storageTestNumber, storageUserName, storageFirstLoginTime);
 
-        let now = new Date();
-        let calcDate = new Date(now.getTime() - storageFirstLoginTime);
+    //     let now = new Date();
+    //     let calcDate = new Date(now.getTime() - storageFirstLoginTime);
         
-        navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={calcDate.getDate()} userName={storageUserName}/>}   });
-    };
+    //     navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={calcDate.getDate()} userName={storageUserName}/>}   });
+    // };
 
     
-    useEffect( () => {
-        getData();
-        // console.log('---------------in useeffect');
-    });
+    // useEffect( () => {
+    //     getData();
+    //     // console.log('---------------in useeffect');
+    // });
 
     const [date, setDate] = useState(new Date());
     const [show, setShow] = useState(false);

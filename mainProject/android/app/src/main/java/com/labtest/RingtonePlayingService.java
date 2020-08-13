@@ -68,6 +68,7 @@ public class RingtonePlayingService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
+        RingtoneManager.setActualDefaultRingtoneUri(this,RingtoneManager.TYPE_ALARM, Uri.parse(this.getFilesDir().getAbsolutePath() + "/Alarm-ringtone.mp3"));
         Uri uri = RingtoneManager.getActualDefaultRingtoneUri(this, RingtoneManager.TYPE_ALARM);
         this.ringtone = RingtoneManager.getRingtone(this, uri);
         if (ringtone != null) {
