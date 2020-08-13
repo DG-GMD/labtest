@@ -32,6 +32,8 @@ export default class Test extends Component{
         this.Grading = this.Grading.bind(this);
         this.GradingScreen = this.GradingScreen.bind(this);
         this.initTestResult = this.initTestResult.bind(this);
+        this.initTest = this.initTest.bind(this);
+        this.setProblemItems = this.setProblemItems.bind(this);
 
         this.state = {
             toastVisible: false,
@@ -42,7 +44,7 @@ export default class Test extends Component{
             start: false,
             problemState: [[], [], [], [], [], []],
             checkedList: [-1, -1, -1, -1, -1, -1],
-            problemDOM: [],
+            problemDOM: null,
             answerList: [-1, -1, -1, -1, -1, -1],
             correctList: [false, false, false, false, false, false],
             testDone: false,
@@ -116,9 +118,6 @@ export default class Test extends Component{
                 // console.log('jsonResult is null');
             }
         });
-        
-        
-        
         this.props.navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Alarm Loading...</Text> });
     }
 
@@ -176,8 +175,11 @@ export default class Test extends Component{
     }
 
     componentDidMount(){
-        // console.log("in componentDidMount()");
-        let problemDOM = tempProblemList;
+        this.setProblemItems();
+    }
+
+    setProblemItems(){
+        let _problemDOM = tempProblemList;
         let _answerList = tempAnswerList;
         let _checkedList = [...this.state.checkedList];
         let _checked = _checkedList[this.state.count];
@@ -186,17 +188,15 @@ export default class Test extends Component{
         let _probelmItemList = tempProblemItemList;
         this.setState({    
             checked: _checked,
-            problemDOM : problemDOM,
+            problemDOM : _problemDOM,
             answerList: _answerList,
             problemItemList: _probelmItemList
         });
-        // console.log("checkedState : " + this.state.checkedState[this.state.count]);
     }
-
     ProblemButton() {
-        if(this.state.problemDOM && this.state.problemDOM.length){
+        if(this.state.problemDOM != null && this.state.problemDOM.length != 0){
             let item;
-            // console.log("DOM is existed : " + this.state.count);
+            console.log("DOM is existed : " + this.state.count);
             
             item = this.state.problemDOM[this.state.count];
             // console.log(item);
@@ -204,7 +204,7 @@ export default class Test extends Component{
         }
         else{
             writeTestState('testing');
-
+            console.log('making new 5 Problems...');
             // console.log("in else");
             let randomNumber = 0;
             let randomNumberList = [];
@@ -260,6 +260,7 @@ export default class Test extends Component{
             // console.log("answerList : " + tempAnswerList);
             // console.log("problemitemlist : ");
             // console.log(tempProblemItemList);
+            console.log('first prolbem ', tempProblemItemList[1]);
             return tempProblemList[1];
         }
     }
@@ -315,7 +316,7 @@ export default class Test extends Component{
                                 style={styles.buttonContainer}  
                                 
                                 
-                                onPress={() => { writeTestState(''); this.props.navigation.navigate('Memorize');}  }
+                                onPress={() => { writeTestState(''); }  }
                             >
                                 <Text>
                                     로컬 파일 초기화
@@ -419,12 +420,19 @@ export default class Test extends Component{
                     </Text>
                 </View>
 
-                <Button title="init data" onPress={() => {this.initTestResult() }}/>
+                <View>
+                    <TouchableOpacity style={styles.buttonContainer} onPress={() => {this.initTest()}}>
+                        <Text>
+                            다시 학습하기
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+                <Button title="init testIndex" onPress={() => {this.initTestResult() }}/>
             </View>
         );
     }
-
-    initTestResult(){
+    initTest(){
+        //local에 저장된 단어시험 결과들을 삭제
         this.setState({
             tableTitle: [null, null, null, null, null],
             tableData: [
@@ -436,18 +444,50 @@ export default class Test extends Component{
             ],
             correctCount: 0,
             jsonTestResult: null,
-            isTestResultExist: false
+            isTestResultExist: false,
+            checked: -1,
+            count: 1,
+            word: this.state.wordList[1].word,
+            problemState: [[], [], [], [], [], []],
+            checkedList: [-1, -1, -1, -1, -1, -1],
+            problemDOM: null,
+            answerList: [-1, -1, -1, -1, -1, -1],
+            correctList: [false, false, false, false, false, false],
+            problemItemList: [[], [], [], [], [], []],
         });
 
         writeTestState('');
+        
+        //단어 시험 종료 여부 flag 초기화
+        this.setState({
+            testDone: false,
+            start: false
+        });
+
+        tempProblemList = [];
+        tempAnswerList = [];
+        tempProblemItemList = [];
+
+        
+        this.ProblemButton();
+        this.setProblemItems();
 
         try{
-             AsyncStorage.removeItem('testResult');
+            AsyncStorage.removeItem('testResult');
         }
         catch(e){
 
         }
-        
+    }
+
+    //local에 저장된 단어시험결과 관련 저장소와 변수들을 초기화
+    initTestResult(){
+        try{
+             AsyncStorage.removeItem('testIndex');
+        }
+        catch(e){
+
+        }      
     }
     Grading(){
         let isAllProlbemChecked = true;
@@ -515,10 +555,10 @@ export default class Test extends Component{
                 correctCount: _correctCount
             });
             
-            (async () => {
-                console.log('first!!!!!!!!!!!!!!!!!11');
 
-                //Async로 쓸 데이터를 1개의 json 객체로 묶기
+            //단어 시험결과를 저장
+            (async () => {
+                //Async에 쓸 데이터를 1개의 json 객체로 묶기
                 let item = new Object();
                 item.tableData = this.state.tableData;
                 item.correctCount = _correctCount;
@@ -526,14 +566,14 @@ export default class Test extends Component{
 
                 return item;
             })().then( async (item) => {
-                console.log('second!!!!!!!!!!!1111');
-
+                //가장 최근에 본 시험의 n회차인지 구하고 n+1을 반환한다
                 let lastIndex = await writeIndexOfTestResult();
+
                 //AsyncStorage에 단어 시험 결과 저장
                 writeTestResultToLocal(item);
 
                 //Firebase DB에 단어 시험 결과 저장
-                writeTestResultToDB(_correctCount);
+                writeTestResultToDB(_correctCount, lastIndex);
             });
         }
 
@@ -585,6 +625,7 @@ function writeTestState(state){
 //오늘 n회차 시험인지 구한다.
 //오늘 n+1회차 시험을 봤다고 기록한다.
 //n+1을 반환한다.
+//testIndex는 0부터 시작
 async function writeIndexOfTestResult(){
     let testIndexArrayString = null;
     let testIndexArray = [];
@@ -606,10 +647,13 @@ async function writeIndexOfTestResult(){
     //testIndex가 기록된 적이 있음
     //= 가장 최근에 본 단어 시험의 회차를 구해야 함
     else{
+        
         testIndexArray = JSON.parse(testIndexArrayString);
         let n = testIndexArray.length;
         testIndexArray.push(lastIndex);
+
         lastIndex = n;
+        console.log('last index is', lastIndex-1, 'new last index is', lastIndex);
     }
 
     //최신 정보가 기록된 IndexArray를 AsyncStorage에 저장
@@ -625,13 +669,13 @@ async function writeIndexOfTestResult(){
     return lastIndex;
 }
 
-async function writeTestResultToDB(item) {
+async function writeTestResultToDB(item, _lastIndex) {
     var now = new Date();
 
     // A post entry.
     var postData = {
       correctCount: item,
-      date: now.toUTCString()
+      date: now.toString()
     };
     try{
         //현재 D+ 날짜 구하기
@@ -641,20 +685,23 @@ async function writeTestResultToDB(item) {
         //현재 D+ 날짜 저장
         await AsyncStorage.setItem('lastDate', dDate.getDate().toString());
 
-        //실험 시작 n일째에서 몇번째 시험 결과를 저장할 것인지 확인
-        //= 오늘 마지막으로 본 시험이 몇회차인지 구하기
-        
+        //현재 로그인한 testNumber 구하기
+        let testNumber = await AsyncStorage.getItem('testNumber');
 
-        // Get a key for a new Post.
-        //var newPostKey = database().ref().child('users/1000/test' + now.getTime()).push().key;
-    
-        // Write the new post's data simultaneously in the posts list and the user's post list.
-        let updates = {};
-        updates['/users/1000/test/' + dDate.getDate().toString()] = postData;
-        // updates['/user-posts/' + uid + '/' + newPostKey] = postData;
-        console.log('update test db', dDate.getDate());
+        //실험 시작 n일째에서 몇번째 시험 결과를 저장할 것인지 확인
+        let lastIndex = _lastIndex;
+        console.log('before write to db, lastIndex=', lastIndex);
+
+        //firebase db에 update
+        var ref = database().ref('/users/' + testNumber + '/test/' + dDate.getDate().toString() + '/' + lastIndex);
+        ref.update(postData);
         
-        database().ref().update(updates);
+        // let updates = {};
+        // updates['/users/' + testNumber + '/test/' + dDate.getDate().toString()] = postData;
+        // // updates['/user-posts/' + uid + '/' + newPostKey] = postData;
+        // console.log('update test db', dDate.getDate());
+        
+        // database().ref().update(updates);
     }
     catch(e){
         console.log(e);
