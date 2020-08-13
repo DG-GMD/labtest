@@ -58,8 +58,7 @@ export default class Check extends Component {
       
       database()
       .ref('/users/1000/test')
-      .once('value')
-      .then(snapshot => {
+      .on('value', snapshot => {
           console.log('test data: ', snapshot.val());
           
           this.setState({
