@@ -54,11 +54,11 @@ export default class HomeStack extends Component {
         }}
         initialRouteName={this.props.initialRouteName}
       >
-        <Tab.Screen name='Alarm' component={Alarm} 
+        <Tab.Screen name='알람 설정' component={Alarm} 
          />
-        <Tab.Screen name='Test' component={TestStack} 
+        <Tab.Screen name='단어 학습' component={TestStack} 
         />
-        <Tab.Screen name='Check' component={CheckStack} 
+        <Tab.Screen name='진행 확인' component={CheckStack} 
         />   
       </Tab.Navigator>
     );

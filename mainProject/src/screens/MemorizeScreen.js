@@ -31,7 +31,7 @@ export default class Memorize extends Component {
         super(props);
         
         
-
+        this.ShowWordsAndMeaning = this.ShowWordsAndMeaning.bind(this);
         this._IsTestStart = this._IsTestStart.bind(this);
         this._setToFirstWord = this._setToFirstWord.bind(this);
         this._IsLastWord = this._IsLastWord.bind(this);
@@ -64,7 +64,7 @@ export default class Memorize extends Component {
                 word: this.state.wordList[this.state.count].word
             });
         });
-
+        
         this.props.navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Test Loading...</Text> });
         //writeTestState('before test');
     }
@@ -176,15 +176,16 @@ export default class Memorize extends Component {
 
         //마지막 5번째 단어가 아니다
         else{
-            //현재 영단어가 표기되고 있다면
+            //현재 영단어가 표기되고 있다면 영단어와 한글뜻을 보여줘야 한다.
             if(this.state.isWord){
                 this.setState({
-                    word: this.state.wordList[this.state.count].meaning,
+                    word: this.state.wordList[this.state.count].word,
+                    meaning: this.state.wordList[this.state.count].meaning,
                     isWord: false
                 });
             }
 
-            //현재 한글 뜻이 표기되고 있다면
+            //현재 영단어와 한글 뜻이 표기되고 있다면 다음 차례의 영단어만 보여줘야 한다.
             else{
                 this.setState({
                     count: this.state.count+1,
@@ -261,6 +262,40 @@ export default class Memorize extends Component {
         );
     }
 
+    ShowWordsAndMeaning(){
+        const flag = this.state.isWord;
+        let returnDOM = null;
+        const word = this.state.word;
+        const meaning = this.state.meaning;
+
+        //영단어만 보여줘야하는 차례
+        if(flag){
+            returnDOM = <View style={styles.middle}>
+            <Text style={{
+                fontSize: 40,
+                textAlign: 'center'
+            }}>{word}</Text>
+            </View>; 
+        }
+        //영단어와 한글 뜻을 함께 보여줘야하는 차례
+        else{
+            // console.log('word and meaing ', word, meaning);
+            returnDOM = <View style={styles.middle}>
+            <Text style={{
+                fontSize: 30,
+                textAlign: 'center'
+            }}>{word}</Text>
+            <Text style={{
+                fontSize: 40,
+                marginTop: 20,
+                textAlign: 'center'
+            }}>{meaning}</Text>
+            </View>;
+        }
+        // console.log('isWord is ', flag);
+        
+        return returnDOM;
+    }
     MemorizeRouter(){
         //알람이 울리지않았다면
         if(!this.state.isPop){
@@ -284,6 +319,7 @@ export default class Memorize extends Component {
                             알람이 울리지 않아 단어 시험을 시작할 수 없습니다.
                         </Text>
                     </View>
+                    <Button title='set pop time' onPress={() => {testSetPoptime()}}/>
                 </View>
             );
         }
@@ -311,12 +347,7 @@ export default class Memorize extends Component {
                         </View>
                     </View>
     
-                    <View style={styles.middle}>
-                        <Text style={{
-                            fontSize: 40,
-                            textAlign: 'center'
-                        }}>{word}</Text>
-                    </View>
+                    <this.ShowWordsAndMeaning />
     
                     <View style={styles.end}>
                         
@@ -337,8 +368,23 @@ export default class Memorize extends Component {
     render(){
         return (  
             <this.MemorizeRouter />
+            
         );
     }
+}
+
+async function testSetPoptime(){
+    //popScreen이 표시된 시간을 로컬 저장소에 저장
+    
+    let now = new Date();
+    try{
+        await AsyncStorage.setItem('popTime', now.getTime().toString());
+        console.log('save poptime to test');
+    }
+    catch(e){
+        console.log('fail to save poptime ', e);
+    }
+    
 }
 
 //popscreen이 떴는지 확인
@@ -379,11 +425,11 @@ const styles = StyleSheet.create({
     },
     middle:{
         flex: 1,
-        
+        // backgroundColor: 'blue',
         justifyContent: 'center'
     },
     end:{
-        flex: 2,
+        flex: 1,
         flexDirection: 'column',
         
     },

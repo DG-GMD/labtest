@@ -515,22 +515,29 @@ export default class Test extends Component{
                 correctCount: _correctCount
             });
             
-            
-            //Async로 쓸 데이터를 1개의 json 객체로 묶기
-            let item = new Object();
-            item.tableData = this.state.tableData;
-            item.correctCount = _correctCount;
-            item.tableTitle = this.state.tableTitle;
-            
-            writeTestResult(item);
+            (async () => {
+                console.log('first!!!!!!!!!!!!!!!!!11');
 
-            writeCorrectCount(_correctCount);
+                //Async로 쓸 데이터를 1개의 json 객체로 묶기
+                let item = new Object();
+                item.tableData = this.state.tableData;
+                item.correctCount = _correctCount;
+                item.tableTitle = this.state.tableTitle;
+
+                return item;
+            })().then( async (item) => {
+                console.log('second!!!!!!!!!!!1111');
+
+                let lastIndex = await writeIndexOfTestResult();
+                //AsyncStorage에 단어 시험 결과 저장
+                writeTestResultToLocal(item);
+
+                //Firebase DB에 단어 시험 결과 저장
+                writeTestResultToDB(_correctCount);
+            });
         }
 
         //이미 저장돼있는 시험 결과가 있다면 바로 여기로 와서 함수 종료
-
-
-        
     }
 
     render() {
@@ -542,7 +549,7 @@ export default class Test extends Component{
     }
 }
 
-function writeTestResult(result){
+function writeTestResultToLocal(result){
     (async () => {
         try{
             //시험 결과를 1개의 json 객체에 넣어서 저장(String 형태로)
@@ -575,7 +582,50 @@ function writeTestState(state){
     })();
 }
 
-async function writeCorrectCount(item) {
+//오늘 n회차 시험인지 구한다.
+//오늘 n+1회차 시험을 봤다고 기록한다.
+//n+1을 반환한다.
+async function writeIndexOfTestResult(){
+    let testIndexArrayString = null;
+    let testIndexArray = [];
+    let lastIndex = -1;
+    try{
+        testIndexArrayString = await AsyncStorage.getItem('testIndex');
+    }
+    catch(e){
+        console.log('there are no testIndex in AsyncStorage');
+    }
+
+    //testIndex가 한번도 기록이 안됐다면
+    //= 처음 단어 시험 보는 것
+    if(testIndexArrayString == null){
+        lastIndex = 0;
+        testIndexArray.push(lastIndex);
+    }
+
+    //testIndex가 기록된 적이 있음
+    //= 가장 최근에 본 단어 시험의 회차를 구해야 함
+    else{
+        testIndexArray = JSON.parse(testIndexArrayString);
+        let n = testIndexArray.length;
+        testIndexArray.push(lastIndex);
+        lastIndex = n;
+    }
+
+    //최신 정보가 기록된 IndexArray를 AsyncStorage에 저장
+    try{
+        await AsyncStorage.setItem('testIndex', JSON.stringify(testIndexArray));
+    }
+    catch(e){
+        console.log('fail to write IndexArray');
+    }
+    
+    //가장 마지막 단어 시험 회차가 몇번째 단어시험인지 반환
+    console.log('return lastIndex ', lastIndex);
+    return lastIndex;
+}
+
+async function writeTestResultToDB(item) {
     var now = new Date();
 
     // A post entry.
@@ -591,6 +641,9 @@ async function writeCorrectCount(item) {
         //현재 D+ 날짜 저장
         await AsyncStorage.setItem('lastDate', dDate.getDate().toString());
 
+        //실험 시작 n일째에서 몇번째 시험 결과를 저장할 것인지 확인
+        //= 오늘 마지막으로 본 시험이 몇회차인지 구하기
+        
 
         // Get a key for a new Post.
         //var newPostKey = database().ref().child('users/1000/test' + now.getTime()).push().key;
