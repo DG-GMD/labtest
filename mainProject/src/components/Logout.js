@@ -3,6 +3,7 @@ import { View, StyleSheet, TouchableOpacity, Text, AsyncStorage } from 'react-na
                 
 import { AuthContext } from '../navigation/AuthProvider';
              
+//로그아웃 버튼, 상단 헤더 DOM 생성 후 출력
 export default function LogoutButton({restDate, userName}) {
     const { logout } = useContext(AuthContext);
     const {name, setName} = useState('');
@@ -13,7 +14,7 @@ export default function LogoutButton({restDate, userName}) {
     return (
         <View style={{
             flex: 1,
-            flexDirection: 'row'
+            flexDirection: 'row',
         }}>
             <View style={{
                 flex: 3,
@@ -21,6 +22,7 @@ export default function LogoutButton({restDate, userName}) {
                 
             }}>
                 <Text style={{
+                    marginLeft: 10,
                     fontSize: 20
                 }}>
                     D+{restDate} 안녕하세요 {userName}님
@@ -30,16 +32,13 @@ export default function LogoutButton({restDate, userName}) {
             <View style={{
                 flex: 1,
                 flexDirection: 'row',
-                justifyContent: 'space-around',
-                
-                
+                justifyContent: 'center',
             }}>
                 <TouchableOpacity 
                     style={styles.buttonContainer} onPress={ () => {logoutAndExit(); logout();} }>
                     <Text>Log out</Text>
                 </TouchableOpacity>
             </View>
-            
         </View>
     );
 }
@@ -47,16 +46,15 @@ export default function LogoutButton({restDate, userName}) {
 
   
 const styles = StyleSheet.create({
-    
     buttonContainer: {
-        marginTop: 10,
+        
         width: 100,
         height: 40,
-        backgroundColor: 'lightgreen',
+        backgroundColor: '#F4DECB',
         padding: 10,
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 8
+        borderRadius: 40
       },
 });
 

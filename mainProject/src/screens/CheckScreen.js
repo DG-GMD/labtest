@@ -19,7 +19,8 @@ export default class Check extends Component {
       super(props);
 
       this.getData = this.getData.bind(this);
-      
+      this.MakeInvestigationLink = this.MakeInvestigationLink.bind(this);
+
       this.state = {
         tableHead1: 
           ['1', '2', '3', '4', '5', '6', '7']
@@ -27,15 +28,13 @@ export default class Check extends Component {
         tableHead2: 
           ['8', '9', '10', '11', '12', '13', '14']
         ,
-        tableData1: [
-          ['❌', '❌', '❌', '❌', '❌', '❌', '❌'],
-          
-        ],
-        tableData2: [
-          ['❌', '❌', '❌', '❌', '❌', '❌', '❌'],
-        ],
+        tableData1: 
+          [['', '','', '', '', '', '', ]],
+        tableData2: 
+          [['', '','', '', '', '', '', ]],
+        
         visible: false,
-        linkList: '',
+        linkList: [],
         testList: '',
         userName: '',
         userTestNumber: '',
@@ -43,24 +42,21 @@ export default class Check extends Component {
         milliTime: 0,
         howLongDate: 0,
         nowDdate: 1
-      }
-    
-      database()
-      .ref('/investigation')
-      .once('value')
-      .then(snapshot => {
-          console.log('investigation data: ', snapshot.val());
-          
-          this.setState({
-              linkList: snapshot.val(),
-          });
-      });
+      };
       
-      database()
-      .ref('/users/1000/test')
-      .on('value', snapshot => {
+      //현재 로그인한 사용자의 연구번호를 가져온다
+      (async () => {
+        let testNumber = await AsyncStorage.getItem('testNumber');
+        // console.log("first testNumber ", testNumber);
+        return testNumber;
+      })()
+      .then((testNumber) => {
+        //연구번호를 이용해 해당 유저의 시험 정보에 접근
+        // console.log("second testNumber ", testNumber);
+        database()
+        .ref('/users/' + testNumber + '/test')
+        .on('value', snapshot => {
           console.log('test data: ', snapshot.val());
-          
           this.setState({
               testList: snapshot.val(),
           });
@@ -79,18 +75,18 @@ export default class Check extends Component {
                 let dDate = await AsyncStorage.getItem('lastDate');
 
                 //시험 정보가 있는 날(correctCount != -1 )
-                if(correctCount != -1){
+                if(correctCount != -1 && i != 7 && i != 14){
                   let x = parseInt((i-1) / 2);
                   let y = parseInt((i-1) % 2);
                   // console.log('count != -1, i : ', i, x, y);
                   _tableData[x][y] = '✅';
                 }
                 //시험 정보가 없는 날(correctCount == -1)
-                else{
+                else if(i != 7 && i != 14){
                   let x = i / 2;
                   let y = i % 2;
                   // console.log('count == -1, i : ', i);
-                  _tableData[x][y] = '❌';
+                  _tableData[x][y] = '';
                 }
               }
               
@@ -116,7 +112,19 @@ export default class Check extends Component {
             }
           })();
         });
-      
+      });
+
+      database()
+      .ref('/investigation')
+      .once('value')
+      .then(snapshot => {
+          console.log('investigation data: ', snapshot.val());
+          
+          this.setState({
+              linkList: snapshot.val(),
+          });
+          this.MakeInvestigationLink();
+      });
       this.props.navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Check Loading...</Text> });  
     }
 
@@ -148,6 +156,46 @@ export default class Check extends Component {
       this.props.navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={this.state.howLongDate} userName={this.state.userName}/>}   });
     };
 
+    MakeInvestigationLink(){
+      let linkDB = this.state.linkList;
+    
+      let link1 = linkDB[0]["link"];
+      let link2 = linkDB[1]["link"];
+    
+      console.log('link1 link2', link1, link2);
+      let returnDOM1;
+      let returnDOM2;
+    
+      returnDOM1 = <View style={{padding: 10}}>
+        <Text style={{fontSize:13, color: 'blue', alignContent:'center', textAlign: 'center'}} onPress={() => {OpenInvestigationLink(this.state.nowDdate, link1, 7)}}>
+          설문조사
+        </Text>
+      </View>;
+    
+      returnDOM2 = <View style={{padding: 10}}>
+        <Text style={{fontSize:13, color: 'blue', alignContent:'center', textAlign: 'center'}} onPress={() => {OpenInvestigationLink(this.state.nowDdate, link2, 14)}}>
+          설문조사
+        </Text>
+      </View>;
+      
+      //class state에서 tabledata들을 복사k
+      let _tableData1 = [...this.state.tableData1];
+      let _tableData2 = [...this.state.tableData2];
+      
+      //7, 14일차 설문조사 링크 포함
+      _tableData1[0][6] = returnDOM1;
+      _tableData2[0][6] = returnDOM2;
+
+      console.log("tabledata ", _tableData1, _tableData2);
+
+      this.setState({
+        tableData1: _tableData1,
+        tableData2: _tableData2
+      });
+    }
+
+    
+
     render() {
       const state = this.state;
       const element = () => (
@@ -162,16 +210,17 @@ export default class Check extends Component {
         <View style={styles.container}>
             <View style={{
                 flex: 1,
-                justifyContent: 'center',
-                
+                backgroundColor: '#8EE4AF',
+                justifyContent: 'center', 
             }}>
-
                 <View style={{
                     flex: 1,
                     
+                    borderRadius: 10,
+                    justifyContent: 'center'
                 }}>
                     <Text style={{
-                        fontSize: 40,
+                        fontSize: 35,
                         textAlign: 'center',
                         margin: 30
                         }}>
@@ -183,8 +232,21 @@ export default class Check extends Component {
                 <View style={{
                     flex: 4,
                     justifyContent: 'center',
-                    
+                    backgroundColor: '#EFEFEF',
+                    borderTopLeftRadius: 40,
+                    borderTopRightRadius: 40
                 }}>
+                  <View style={{
+                    margin: 25,
+                    padding: 10,
+                    flex: 1,
+                    justifyContent: 'center',
+                    backgroundColor: 'white',
+                    borderTopLeftRadius: 15,
+                    borderTopRightRadius: 15,
+                    borderBottomLeftRadius: 15,
+                    borderBottomRightRadius: 15
+                  }}>
                     <Text style={{
                         fontSize: 20,
                         textAlign: 'center',
@@ -197,7 +259,7 @@ export default class Check extends Component {
                       <Table borderStyle={{borderWidth: 1}}>
                           <Row data={this.state.tableHead1} flexArr={[1, 1, 1, 1, 1, 1, 1]} style={styles.head} textStyle={styles.text}/>
                           <TableWrapper style={styles.wrapper}>
-                              <Col data={this.state.tableTitle} style={{height: 40, backgroundColor: '#f1f8ff'}} heightArr={[40,40,40,40,40]} textStyle={styles.text}/>
+                              <Col data={this.state.tableTitle} style={{height: 70, backgroundColor: '#f1f8ff'}} heightArr={[40,40,40,40,40]} textStyle={styles.text}/>
                               <Rows data={this.state.tableData1} flexArr={[1, 1, 1]} style={styles.row} textStyle={styles.text}/>
                           </TableWrapper>
                       </Table>
@@ -207,21 +269,21 @@ export default class Check extends Component {
                       <Table borderStyle={{borderWidth: 1}}>
                           <Row data={this.state.tableHead2} flexArr={[1, 1, 1, 1]} style={styles.head} textStyle={styles.text}/>
                           <TableWrapper style={styles.wrapper}>
-                              <Col data={this.state.tableTitle} style={{height: 40, backgroundColor: '#f1f8ff'}} heightArr={[40,40,40,40,40]} textStyle={styles.text}/>
+                              <Col data={this.state.tableTitle} style={{height: 70, backgroundColor: '#f1f8ff'}} heightArr={[40,40,40,40,40]} textStyle={styles.text}/>
                               <Rows data={this.state.tableData2} flexArr={[1, 1, 1]} style={styles.row} textStyle={styles.text}/>
                           </TableWrapper>
                       </Table>
                     </View>
-                </View>
-                
-                
-                  
-               <InvestigationLink nowDdate={this.state.nowDdate} link={this.state.linkList[0]} />
-            <TouchableOpacity style={{width:80, backgroundColor:'beige'}} onPress={() => {initAsyncStorage()}}>
+                    <TouchableOpacity style={{width:80, backgroundColor:'beige'}} onPress={() => {initAsyncStorage()}}>
               <Text>
               delete AsyncStorage    
               </Text>
-            </TouchableOpacity>   
+            </TouchableOpacity>  
+                  </View>
+                  
+              </View>
+            
+             
                 
                       
                 
@@ -230,6 +292,16 @@ export default class Check extends Component {
       )
     }
   }
+
+//7, 14일차에만 링크가 열리도록
+//targetDate로 7 혹은 14를 받음
+function OpenInvestigationLink(nowDdate, link, targetDate){
+  console.log("open link?? nowDdate is", nowDdate, targetDate);
+  if(nowDdate == targetDate){
+    Linking.openURL(link);  
+  }
+}
+
 async function initAsyncStorage(){
   try{
     await AsyncStorage.removeItem('popTime');
@@ -238,33 +310,17 @@ async function initAsyncStorage(){
   catch(e){
     console.log('fail to remove popItem');
   }
-  
 }
-function InvestigationLink(props){
-  let nowDdate = props.nowDdate;
-  let link = props.link;
 
-  let returnDOM = <View></View>;
 
-  if(nowDdate == 14){
-    returnDOM = <View style={{padding: 10}}>
-      <Text style={{fontSize:18, alignContent:'center'}}>설문을 진행하시지 않은 피험자분들은 하단의 1주차 설문조사 링크로 접속해주시기 바랍니다. {"\n"}</Text>
-      <Text style={{fontSize:20, color: 'blue', alignContent:'center', textAlign: 'center'}} onPress={() => Linking.openURL(link)}>
-        설문조사 링크
-      </Text>
-    </View>;
-  }
-
-  return returnDOM;
-}
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, paddingTop: 30, backgroundColor: 'white'},
+  container: { flex: 1, backgroundColor: 'white'},
   
-  head: {  height: 30,  backgroundColor: 'palegreen'  },
+  head: {  height: 30,  backgroundColor: '#8EE4AF'  },
   wrapper: { flexDirection: 'row' },
   title: { flex: 1, backgroundColor: '#f6f8fa' },
-  row: {  height: 30  },
+  row: {  height: 50  },
   text: { textAlign: 'center' },
   
   

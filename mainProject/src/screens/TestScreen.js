@@ -118,7 +118,7 @@ export default class Test extends Component{
                 // console.log('jsonResult is null');
             }
         });
-        this.props.navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Alarm Loading...</Text> });
+        this.props.navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Test Loading...</Text> });
     }
 
     //사용자가 체크한 현재 문제의 답을 저장
@@ -273,58 +273,44 @@ export default class Test extends Component{
                 <View style={styles.warningContainer}>
                     <View style={styles.warningWordsContainer}>
                         <Text style={{
-                            fontSize: 25
+                            fontSize: 28
                         }}>
                             오늘의 단어 테스트{"\n"}
-                        {"\n"}
-
+                            {"\n"}
                         </Text>
-
                         <Text style={{
                             fontSize: 17
                         }}>
-
-                        
-                        {"\n"}
-                        하단의 ‘테스트 시작’ 버튼을 누르시면 단어테스트를 시작합니다.{"\n"}
-                        객관식의 총 5 문항입니다.{"\n"}
-                        
+                            {"\n"}
+                            하단의 ‘테스트 시작’ 버튼을 누르시면 단어테스트를 시작합니다.{"\n"}
+                            객관식의 총 5 문항입니다.{"\n"} 
                         </Text>
-                    
+
+                        <TouchableOpacity
+                                    style={{width: 200, height: 50, }}  
+                                    onPress={() => { writeTestState(''); }  }
+                                >
+                                    <Text>
+                                        단어 암기로 돌아가도록 초기화
+                                    </Text>
+                        </TouchableOpacity>
                     </View>
                     
-                    <View style={styles.warningButtonContainer}>
-                        <TouchableOpacity
-                            style={styles.buttonContainer}  
-                            
-                            
-                            onPress={ () => { this.setState({ start: true }) } } 
-                        >
-                            <Text style={{
-                                fontSize: 19
-                            }}>
-                                테스트 시작
-                            </Text>
-                        </TouchableOpacity>
-
-
-                        
-                    </View>  
-
-                    <View style={styles.warningButtonContainer}>
-                        <TouchableOpacity
+                    <View style={{flex:1, backgroundColor:'white'}}>
+                        <View style={styles.warningButtonContainer}>
+                            <TouchableOpacity
                                 style={styles.buttonContainer}  
-                                
-                                
-                                onPress={() => { writeTestState(''); }  }
+                                onPress={ () => { this.setState({ start: true }) } } 
                             >
-                                <Text>
-                                    로컬 파일 초기화
+                                <Text style={{
+                                    fontSize: 35
+                                }}>
+                                    테스트 시작
                                 </Text>
-                        </TouchableOpacity>
-                    </View>
+                            </TouchableOpacity>
+                        </View>
+                    </View>      
                 </View>
-                
             );
         }
         //단어 시험 페이지
@@ -478,6 +464,7 @@ export default class Test extends Component{
         catch(e){
 
         }
+        this.changeChecked(-1);
     }
 
     //local에 저장된 단어시험결과 관련 저장소와 변수들을 초기화
@@ -793,34 +780,36 @@ const styles = StyleSheet.create({
 
     warningContainer: {
         flex: 1,
-        padding: 40,
-        backgroundColor: 'white'
+        backgroundColor: '#8EE4AF'
     }, 
     warningWordsContainer: {
-        flex: 3
-        
+        flex: 3,
+        padding: 40,
+        backgroundColor: 'white',
+        borderBottomLeftRadius: 40
     },
     warningButtonContainer: {
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'center', alignItems: 'center',
         
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center', alignItems: 'center',
+        backgroundColor: '#8EE4AF',
+        borderTopRightRadius: 40
     },
     buttonContainer: {
-        marginTop: 10,
-        width: 200,
+        width: 400,
         height: 60,
-        backgroundColor: 'lightgreen',
+        backgroundColor: '#8EE4AF',
         padding: 10,
         margin: 20,
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 8
+        borderRadius: 40
     },
     problemButtonContainer: {  
         width: 100,
         height: 60,
-        backgroundColor: 'lightgreen',
+        backgroundColor: '#8EE4AF',
         padding: 10,
         marginLeft: 20,
         marginRight: 20,
