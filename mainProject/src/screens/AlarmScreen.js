@@ -18,6 +18,12 @@ import { Row } from 'react-native-table-component';
 import storage from '@react-native-firebase/storage';
 import RNFS from 'react-native-fs';
 
+Number.prototype.pad = function(size) {
+    var s = String(this);
+    while (s.length < (size || 2)) {s = "0" + s;}
+    return s;
+}
+
 const Stack = createStackNavigator();
 
 function AlarmMain({navigation, route}) {
@@ -119,6 +125,27 @@ function AlarmMain({navigation, route}) {
         });
     };
 
+    const timeString = () => {
+        var currentHour = (route.params !== undefined ? route.params.setHour : pickedHourValue);
+        var currentMin = (route.params !== undefined ? route.params.setMin : pickedMinValue);
+
+        var str = "";
+        
+        if(currentHour > 12)
+            str += (currentHour-12).pad();
+        else
+            str += (currentHour).pad();
+        
+        str += " : "+(currentMin).pad();
+
+        if(currentHour > 11)
+            str += " PM";
+        else
+            str += " AM";
+
+        return str;
+    };
+
     return (
         <View
             style={{
@@ -141,7 +168,7 @@ function AlarmMain({navigation, route}) {
                 }}
             >
                 {flag && <Text style={{fontSize: 35}}>
-                    매일 {route.params !== undefined ? route.params.setHour : pickedHourValue} : {route.params !== undefined ? route.params.setMin : pickedMinValue}
+                    매일 {timeString()}
                 </Text>}
                 {!flag && <Text style={{fontSize: 25}}>
                     설정된 알람이 없습니다.
@@ -220,15 +247,15 @@ function AlarmSet({navigation}) {
 
                 let dt = new Date();
                 if(order < 1){
-                    setPickedHourValue(dt.getUTCHours());
-                    setPickedMinValue(dt.getUTCMinutes());
+                    setPickedHourValue(dt.getHours());
+                    setPickedMinValue(dt.getMinutes());
                 }
                 else{
                     setPickedHourValue(alarmData.setHour);
                     setPickedMinValue(alarmData.setMin);
 
-                    dt.setUTCHours(alarmData.setHour);
-                    dt.setUTCMinutes(alarmData.setMin);
+                    dt.setHours(alarmData.setHour);
+                    dt.setMinutes(alarmData.setMin);
                 }
 
                 setFlag(true);
@@ -265,7 +292,7 @@ function AlarmSet({navigation}) {
                 json[order] = {
                     setHour: pickedHourValue,
                     setMin: pickedMinValue,
-                    saveTime: new Date().toUTCString(),
+                    saveTime: new Date().toString(),
                     order: parseInt(order),
                 };
 
@@ -285,9 +312,30 @@ function AlarmSet({navigation}) {
         const currentDate = selectedDate || date;
         
         setShow(Platform.OS === 'ios');
-        setPickedHourValue(currentDate.getUTCHours());
-        setPickedMinValue(currentDate.getUTCMinutes());
+        setPickedHourValue(currentDate.getHours());
+        setPickedMinValue(currentDate.getMinutes());
         setDate(currentDate);
+    };
+
+    const timeString = () => {
+        var currentHour = pickedHourValue;
+        var currentMin = pickedMinValue;
+
+        var str = "";
+        
+        if(currentHour > 12)
+            str += (currentHour-12).pad();
+        else
+            str += (currentHour).pad();
+        
+        str += " : "+(currentMin).pad();
+
+        if(currentHour > 11)
+            str += " PM";
+        else
+            str += " AM";
+
+        return str;
     };
 
     return (
@@ -337,7 +385,7 @@ function AlarmSet({navigation}) {
                             fontSize: 60,
                         }}
                     >
-                        {pickedHourValue} : {pickedMinValue}
+                        {timeString()}
                     </Text>
                 </TouchableOpacity>
             </View>
@@ -365,7 +413,7 @@ function AlarmSet({navigation}) {
                 testID="dateTimePicker"
                 value={date}
                 mode="time"
-                is24Hour={true}
+                is24Hour={false}
                 display="spinner"
                 onChange={onChange}
                 />

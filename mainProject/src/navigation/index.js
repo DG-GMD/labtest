@@ -11,7 +11,6 @@ export default function Providers() {
       console.log(msg);
     },
     (pCode, isPermitted) => {
-      console.log(pCode, isPermitted);
       if(!isPermitted)
         Alert.alert(
           title="권한설정",
@@ -32,7 +31,6 @@ export default function Providers() {
       console.log(msg);
     },
     (pCode, isPermitted) => {
-      console.log(pCode, isPermitted);
       if(!isPermitted)
         Alert.alert(
           title="권한설정",
