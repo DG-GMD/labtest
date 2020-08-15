@@ -2,11 +2,14 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import {FormButton} from '../components/FormButton';
 import React, { Component, useState, useEffect } from 'react';
-import { AsyncStorage, Button, TouchableHighlight, View, Text, Image, ScrollView, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { LogBox, AsyncStorage, Button, TouchableHighlight, View, Text, Image, ScrollView, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import database from '@react-native-firebase/database';
 
 
 import LogoutButton from '../components/Logout';
+
+// LogBox.ignoreLogs(['Warning: ...']);
+console.disableYellowBox = true;
 
 const Stack = createStackNavigator();
 
@@ -52,6 +55,16 @@ export default class Memorize extends Component {
         getDB();
 
         this._IsTestStart();
+
+        //현재 D+Date를 구해서 해당 날짜의 단어 가져오기
+        (async () => {
+            try{
+
+            }
+            catch(e){
+
+            }
+        })
         database()
         .ref('/words/day2')
         .once('value')
@@ -198,9 +211,6 @@ export default class Memorize extends Component {
     }
 
     _setToFirstWord(){
-        console.log('aaa');
-
-        
         this.setState({
             count: 1,
             isWord: true,
@@ -431,30 +441,41 @@ async function getPopScreenTime(){
     let item = -1;
     try{
         item = await AsyncStorage.getItem('popTime');
-        console.log('get popItem');
+        // console.log('get popItem');
     }
     catch(e){
-        console.log('fail to get popTime at MemorizeScreen', e);
+        // console.log('fail to get popTime at MemorizeScreen', e);
     }
-    console.log('popTime : ', item);
+    // console.log('popTime : ', item);
     return item;
 }
 
-function writeTestStateTesting(){
-    (async () => {
-        try{
-            await AsyncStorage.setItem('day1', "testing");
-            
-            // console.log("check day1 as testing");
-        }
-        catch(e){
-            
-            // console.log("ddd fail to check day1 as testing", e);
+async function getCurrentDate(){
+    let now = new Date();
+    let firstLoginTime = await AsyncStorage.getItem('firstLoginTime');
+    let dDate = new Date(now.getTime() - firstLoginTime);
 
-        }
-    })();
+    return dDate.getDate();
 }
 
+
+function writeTestStateTesting(){
+    (async () => {
+        let nowdDate = await getCurrentDate();
+        return nowdDate;
+    })()
+    .then( (nowdDate) => {
+        (async () => {
+            try{
+                await AsyncStorage.setItem('day' + nowdDate.toString(), "testing");
+                // console.log("check day1 as", state);
+            }
+            catch(e){
+                // console.log("fail to check day1 as", state);
+            }
+        });
+    });
+}
 
 const styles = StyleSheet.create({
     head:{

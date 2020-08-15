@@ -30,11 +30,10 @@ export default class HomeStack extends Component {
       userDB: null,
       returnDOM: ''
     };
-    let atime = new Date(0);
-    let btime = new Date(24 * 3600 * 1000 -1);
-
-    let gap = new Date(btime.getTime() - atime.getTime());
-    console.log('testtttttttttttttttttttt ', gap.getDate());
+    
+    (async () => {
+      await CheckDate();
+    })();
   }
 
   //마지막 시험으로부터 며칠이 지났는지 확인
@@ -79,6 +78,7 @@ async function CheckDate(){
     //하루가 지나지 않았을 때
     //= 마지막으로 기록된 테스트 날짜에 CheckDate()가 호출됐을 때
     if(durationDate == 1){
+      console.log("durationDate:", durationDate);
       //마지막으로 기록된 테스트 날짜에 앱을 연 상황
       //= 테스트를 이미봤다는 가정이기 때문에 아무것도 할 필요가 없음
     }
@@ -86,10 +86,11 @@ async function CheckDate(){
     //= 마지막으로 기록된 테스트 날짜 다음날부터 CheckDate()가 호출됐을 때
     //= 접속을 그 동안 안했으니 해당 기간에 시험을 안봤다고 표기/저장해야함
     else if(durationDate >= 2){
+      console.log("durationDate:", durationDate);
       //AsyncStorage에 저장된 정보들 삭제
       await AsyncStorage.removeItem('testResult');
       await AsyncStorage.removeItem('testResultTime');
-
+      await AsyncStorage.removeItem('popTime');
 
       //시험을 보지 않은 날짜가 있다면 해당 내용들은 DB에 null로 기록
       let firstLoginTime = await AsyncStorage.getItem('firstLoginTime');
@@ -98,27 +99,30 @@ async function CheckDate(){
       let allDuration = new Date(now.getTime() - firstLoginTime);
 
       //마지막 테스트 결과 D+날짜를 얻기
-      let lastDate = await AsyncStorage.getItem('lastDate');   
+      let lastDate = await AsyncStorage.getItem('lastDate');  
+      
+      console.log("all duration", allDuration.getDate());
+      console.log("last test date", lastDate); 
       // 1               2 3 4 5 6 7
       // 0               0 x x x 
 
       //앱에 접속안한 기간만큼 DB에 시험을 안 봤다고 기록
-      for(let i=lastDate+1; i<allDuration.getDate(); i++){
-        try{
-          let postData = {
-            correctCount: -1,
-            date: now.toUTCString
-          };
+      // for(let i=lastDate+1; i<allDuration.getDate(); i++){
+      //   try{
+      //     let postData = {
+      //       correctCount: -1,
+      //       date: now.toString()
+      //     };
 
-          let updates= {};
-          updates['/users/1000/test/' + i] = postData;
-          database().ref().update(updates);
+      //     let updates= {};
+      //     updates['/users/1000/test/' + i] = postData;
+      //     database().ref().update(updates);
 
-        }
-        catch(e){
-          console.log('fail to update non-test date', e);
-        }
-      }
+      //   }
+      //   catch(e){
+      //     console.log('fail to update non-test date', e);
+      //   }
+      // }
     }
   }
   catch(e){

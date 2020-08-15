@@ -1,4 +1,4 @@
-import { AsyncStorage, View, Text, Image, ScrollView, TextInput, Button, Platform, StyleSheet, TouchableOpacity } from 'react-native';
+import { LogBox, AsyncStorage, View, Text, Image, ScrollView, TextInput, Button, Platform, StyleSheet, TouchableOpacity } from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 
 import { NavigationContainer, CommonActions } from '@react-navigation/native';
@@ -17,6 +17,9 @@ import { Row } from 'react-native-table-component';
 
 import storage from '@react-native-firebase/storage';
 import RNFS from 'react-native-fs';
+
+// LogBox.ignoreLogs(['Warning: ...']);
+console.disableYellowBox = true;
 
 Number.prototype.pad = function(size) {
     var s = String(this);
@@ -167,7 +170,7 @@ function AlarmMain({navigation, route}) {
                     justifyContent: 'center',
                 }}>
                     <Text style={{
-                        fontSize: 30,
+                        fontSize: 25,
                         margin: 20,
                         textAlign: 'center'
                     }}>
@@ -199,7 +202,7 @@ function AlarmMain({navigation, route}) {
                         alignItems: 'center'
                     }}>
                         <Text style={{
-                            fontSize: 20,
+                            fontSize: 18,
                             color: 'white'
                         }}>
                             설정된 알람 시간
@@ -254,7 +257,7 @@ function AlarmMain({navigation, route}) {
                         style = {styles.buttonContainer}
                         onPress={() => navigation.navigate('AlarmSet')}
                     >
-                        <Text style={{fontSize:26}}>알람 설정</Text>
+                        <Text style={{fontSize:20}}>알람 설정</Text>
                     </TouchableOpacity>
                 </View>
             </View>

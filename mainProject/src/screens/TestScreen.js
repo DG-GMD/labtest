@@ -2,9 +2,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import React, { Component, useState, useEffect } from 'react';
-import {AsyncStorage, Button, TouchableOpacity, TouchableHighlight, View, Image, ScrollView, TextInput, StyleSheet } from 'react-native';
-
-import { Text, RadioButton } from 'react-native-paper';
+import { Yellow, AsyncStorage, Button, TouchableOpacity, TouchableHighlight, View, Image, ScrollView, TextInput, StyleSheet, LogBox } from 'react-native';
+import {RadioButton, Text} from 'react-native-paper';
 import database from '@react-native-firebase/database';
 
 import { Table, TableWrapper, Row, Rows, Cell, Col } from 'react-native-table-component';
@@ -14,6 +13,10 @@ import Toast from 'react-native-simple-toast';
 import { windowHeight, windowWidth } from '../utils/Dimensions';
 
 import LogoutButton from '../components/Logout';
+
+// LogBox.ignoreLogs(['Warning: ...']);
+console.disableYellowBox = true;
+
 let dbList;
 
 let tempProblemList = [];
@@ -64,20 +67,30 @@ export default class Test extends Component{
             isTestResultExist: false
         };
 
-        database()
-        .ref('/words/day2')
-        .once('value')
-        .then(snapshot => {
-            // console.log('User data: ', snapshot.val());
-            dbList = snapshot.val(); 
-            this.setState({
-                wordList: snapshot.val(),
+        (async () =>{
+            let nowdDate = await getCurrentDate();
+            console.log(nowdDate);
+            return nowdDate;
+        })()
+        .then( (nowdDate) => {
+            database()
+            .ref('/words/day' + nowdDate.toString())
+            .once('value')
+            .then(snapshot => {
+                console.log('Word data: ', snapshot.val());
+                dbList = snapshot.val(); 
+                this.setState({
+                    wordList: snapshot.val(),
+                });
+                this.setState({
+                    word: this.state.wordList[this.state.count].word
+                });
             });
-            this.setState({
-                word: this.state.wordList[this.state.count].word
-            });
-
         });
+
+        
+
+        
 
         //시험 결과를 일단 불러와봄
         // let jsonTestResult = readTesetResult();
@@ -517,6 +530,7 @@ export default class Test extends Component{
 
     //local에 저장된 단어시험결과 관련 저장소와 변수들을 초기화
     initTestResult(){
+        this.initTest();
         try{
              AsyncStorage.removeItem('testIndex');
         }
@@ -646,16 +660,30 @@ function writeTestResultToLocal(result){
     })();
 }
 
+async function getCurrentDate(){
+    let now = new Date();
+    let firstLoginTime = await AsyncStorage.getItem('firstLoginTime');
+    let dDate = new Date(now.getTime() - firstLoginTime);
+
+    return dDate.getDate();
+}
+
 function writeTestState(state){
     (async () => {
-        try{
-            await AsyncStorage.setItem('day1', state);
-            // console.log("check day1 as", state);
-        }
-        catch(e){
-            // console.log("fail to check day1 as", state);
-        }
-    })();
+        let nowdDate = await getCurrentDate();
+        return nowdDate;
+    })()
+    .then( (nowdDate) => {
+        (async () => {
+            try{
+                await AsyncStorage.setItem('day' + nowdDate.toString(), state);
+                // console.log("check day1 as", state);
+            }
+            catch(e){
+                // console.log("fail to check day1 as", state);
+            }
+        });
+    });
 }
 
 //오늘 n회차 시험인지 구한다.
@@ -729,7 +757,7 @@ async function writeTestResultToDB(item, _lastIndex) {
         console.log('before write to db, lastIndex=', lastIndex);
 
         //firebase db에 update
-        var ref = database().ref('/users/' + testNumber + '/test/' + dDate.getDate().toString() + '/' + lastIndex);
+        var ref = database().ref('/users/' + testNumber.toString() + '/test/' + dDate.getDate().toString() + '/' + lastIndex);
         ref.update(postData);
         
         // let updates = {};
