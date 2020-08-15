@@ -30,26 +30,26 @@ function AlarmMain({navigation, route}) {
     const { testNumber } = useContext(AuthContext);
     const reference = database().ref('/users/' + testNumber + '/alarm');
 
-    // navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Alarm Loading...</Text> });
+    navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Alarm Loading...</Text> });
 
-    // async function getData() {
-    //     const storageUserName = await AsyncStorage.getItem('user');
-    //     const storageTestNumber = await AsyncStorage.getItem('testNumber');
-    //     const storageFirstLoginTime = await AsyncStorage.getItem('firstLoginTime');
+    async function getData() {
+        const storageUserName = await AsyncStorage.getItem('user');
+        const storageTestNumber = await AsyncStorage.getItem('testNumber');
+        const storageFirstLoginTime = await AsyncStorage.getItem('firstLoginTime');
 
-    //     // console.log("storage ", storageTestNumber, storageUserName, storageFirstLoginTime);
+        // console.log("storage ", storageTestNumber, storageUserName, storageFirstLoginTime);
 
-    //     let now = new Date();
+        let now = new Date();
 
-    //     let calcDate = new Date(now.getTime() - storageFirstLoginTime);
+        let calcDate = new Date(now.getTime() - storageFirstLoginTime);
         
-    //     navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={calcDate.getDate()} userName={storageUserName}/>}   });
-    // };
+        navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={calcDate.getDate()} userName={storageUserName}/>}   });
+    };
 
-    // useEffect( () => {
-    //     getData();
-    //     // console.log('---------------in useeffect');
-    // });
+    useEffect( () => {
+        getData();
+        // console.log('---------------in useeffect');
+    });
 
     const [pickedHourValue, setPickedHourValue] = useState(0);
     const [pickedMinValue, setPickedMinValue] = useState(0);
@@ -125,6 +125,27 @@ function AlarmMain({navigation, route}) {
         });
     };
 
+    const timeString = () => {
+        var currentHour = (route.params !== undefined ? route.params.setHour : pickedHourValue);
+        var currentMin = (route.params !== undefined ? route.params.setMin : pickedMinValue);
+
+        var str = "";
+        
+        if(currentHour > 12)
+            str += (currentHour-12).pad();
+        else
+            str += (currentHour).pad();
+        
+        str += " : "+(currentMin).pad();
+
+        if(currentHour > 11)
+            str += " PM";
+        else
+            str += " AM";
+
+        return str;
+    };
+
     return (
         <View
             style={{
@@ -147,7 +168,7 @@ function AlarmMain({navigation, route}) {
                 }}
             >
                 {flag && <Text style={{fontSize: 35}}>
-                    매일 {(route.params !== undefined ? route.params.setHour : pickedHourValue).pad()} : {(route.params !== undefined ? route.params.setMin : pickedMinValue).pad()}
+                    매일 {timeString()}
                 </Text>}
                 {!flag && <Text style={{fontSize: 25}}>
                     설정된 알람이 없습니다.
@@ -177,29 +198,29 @@ function AlarmSet({navigation}) {
     const { testNumber } = useContext(AuthContext);
     const reference = database().ref('/users/' + testNumber + '/alarm');
 
-    // //set loading header title
-    // navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Alarm Loading...</Text> });
+    //set loading header title
+    navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Alarm Loading...</Text> });
 
 
-    // //set full header title
-    // async function getData() {
-    //     const storageUserName = await AsyncStorage.getItem('user');
-    //     const storageTestNumber = await AsyncStorage.getItem('testNumber');
-    //     const storageFirstLoginTime = await AsyncStorage.getItem('firstLoginTime');
+    //set full header title
+    async function getData() {
+        const storageUserName = await AsyncStorage.getItem('user');
+        const storageTestNumber = await AsyncStorage.getItem('testNumber');
+        const storageFirstLoginTime = await AsyncStorage.getItem('firstLoginTime');
 
-    //     // console.log("storage ", storageTestNumber, storageUserName, storageFirstLoginTime);
+        // console.log("storage ", storageTestNumber, storageUserName, storageFirstLoginTime);
 
-    //     let now = new Date();
-    //     let calcDate = new Date(now.getTime() - storageFirstLoginTime);
+        let now = new Date();
+        let calcDate = new Date(now.getTime() - storageFirstLoginTime);
         
-    //     navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={calcDate.getDate()} userName={storageUserName}/>}   });
-    // };
+        navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={calcDate.getDate()} userName={storageUserName}/>}   });
+    };
 
     
-    // useEffect( () => {
-    //     getData();
-    //     // console.log('---------------in useeffect');
-    // });
+    useEffect( () => {
+        getData();
+        // console.log('---------------in useeffect');
+    });
 
     const [date, setDate] = useState(new Date());
     const [show, setShow] = useState(false);
@@ -226,15 +247,15 @@ function AlarmSet({navigation}) {
 
                 let dt = new Date();
                 if(order < 1){
-                    setPickedHourValue(dt.getUTCHours());
-                    setPickedMinValue(dt.getUTCMinutes());
+                    setPickedHourValue(dt.getHours());
+                    setPickedMinValue(dt.getMinutes());
                 }
                 else{
                     setPickedHourValue(alarmData.setHour);
                     setPickedMinValue(alarmData.setMin);
 
-                    dt.setUTCHours(alarmData.setHour);
-                    dt.setUTCMinutes(alarmData.setMin);
+                    dt.setHours(alarmData.setHour);
+                    dt.setMinutes(alarmData.setMin);
                 }
 
                 setFlag(true);
@@ -271,7 +292,7 @@ function AlarmSet({navigation}) {
                 json[order] = {
                     setHour: pickedHourValue,
                     setMin: pickedMinValue,
-                    saveTime: new Date().toUTCString(),
+                    saveTime: new Date().toString(),
                     order: parseInt(order),
                 };
 
@@ -291,9 +312,30 @@ function AlarmSet({navigation}) {
         const currentDate = selectedDate || date;
         
         setShow(Platform.OS === 'ios');
-        setPickedHourValue(currentDate.getUTCHours());
-        setPickedMinValue(currentDate.getUTCMinutes());
+        setPickedHourValue(currentDate.getHours());
+        setPickedMinValue(currentDate.getMinutes());
         setDate(currentDate);
+    };
+
+    const timeString = () => {
+        var currentHour = pickedHourValue;
+        var currentMin = pickedMinValue;
+
+        var str = "";
+        
+        if(currentHour > 12)
+            str += (currentHour-12).pad();
+        else
+            str += (currentHour).pad();
+        
+        str += " : "+(currentMin).pad();
+
+        if(currentHour > 11)
+            str += " PM";
+        else
+            str += " AM";
+
+        return str;
     };
 
     return (
@@ -343,7 +385,7 @@ function AlarmSet({navigation}) {
                             fontSize: 60,
                         }}
                     >
-                        {(pickedHourValue).pad()} : {(pickedMinValue).pad()}
+                        {timeString()}
                     </Text>
                 </TouchableOpacity>
             </View>
@@ -371,7 +413,7 @@ function AlarmSet({navigation}) {
                 testID="dateTimePicker"
                 value={date}
                 mode="time"
-                is24Hour={true}
+                is24Hour={false}
                 display="spinner"
                 onChange={onChange}
                 />
