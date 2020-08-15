@@ -150,46 +150,119 @@ function AlarmMain({navigation, route}) {
         <View
             style={{
                 flex: 1,
-                alignItems: 'center',
+                backgroundColor: '#EFEFEF'
             }}
         >
-            <View style={{marginTop: 20}}>
-                <Text style={{fontSize: 30}}>
-                    단어 학습시간 알람
-                </Text>
+            {/* 시간 표시 */}
+            <View style={{
+                flex: 4,
+                backgroundColor: '#8EE4AF',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderBottomLeftRadius: 40
+            }}>
+                <View style={{
+                    flex: 1,
+                    marginTop: 20,
+                    justifyContent: 'center',
+                }}>
+                    <Text style={{
+                        fontSize: 30,
+                        margin: 20,
+                        textAlign: 'center'
+                    }}>
+                        단어 학습시간 알람
+                    </Text>
+                </View>
+
+                <View elevation={10} style={{
+                    flex: 2,
+                    backgroundColor: 'white',
+                    margin: 10,
+                    borderRadius: 30,
+                    shadowColor: "#000000",
+                    shadowOpacity: 0.9,
+                    shadowRadius: 2,
+                    shadowOffset: {
+                    height: 10,
+                    width: 10
+                    },
+                    marginTop: 70,
+                    marginBottom: 50
+                }}>
+                    <View style={{
+                        flex: 1,
+                        backgroundColor: '#659DBD',
+                        borderTopLeftRadius: 30,
+                        borderTopRightRadius: 30,
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}>
+                        <Text style={{
+                            fontSize: 20,
+                            color: 'white'
+                        }}>
+                            설정된 알람 시간
+                        </Text>
+                    </View>
+                    <View
+                        style={{
+                            flex: 2,
+                            margin: 20,
+                            
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                        }}
+                    >
+                        {flag && <Text style={{fontSize: 32}}>
+                            매일 {timeString()}
+                        </Text>}
+                        {!flag && <Text style={{fontSize: 25}}>
+                            설정된 알람이 없습니다.
+                        </Text>}
+                    </View>
+                </View>
+                
+
+                <Button
+                title = "storage test"
+                onPress = {() => storageTest()}
+                />
             </View>
-            <View
-                style={{
-                    width: "80%",
-                    margin: 30,
-                    alignItems: 'center',
-                    borderWidth: 2,
-                    borderColor: "grey",
-                }}
-            >
-                {flag && <Text style={{fontSize: 35}}>
-                    매일 {timeString()}
-                </Text>}
-                {!flag && <Text style={{fontSize: 25}}>
-                    설정된 알람이 없습니다.
-                </Text>}
-            </View>
-            <View>
-                <TouchableOpacity
-                    style = {styles.buttonContainer}
-                    onPress={() => navigation.navigate('AlarmSet')}
-                >
-                    <Text>알람 설정</Text>
-                </TouchableOpacity>
+
+            {/* 하단 버튼 */}
+            <View style={{
+                flex:1,
+                backgroundColor: '#8EE4AF'
+            }}>
+                <View elevation={10} style={{
+                    flex: 1,
+                    // borderTopLeftRadius: 30,
+                    borderTopRightRadius: 40,
+                    backgroundColor: '#EFEFEF',
+                    shadowColor: "#000000",
+                    shadowOpacity: 0.9,
+                    shadowRadius: 2,
+                    shadowOffset: {
+                    height: 10,
+                    width: 10
+                    },
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }}> 
+                    <TouchableOpacity
+                        style = {styles.buttonContainer}
+                        onPress={() => navigation.navigate('AlarmSet')}
+                    >
+                        <Text style={{fontSize:26}}>알람 설정</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
             {/* <Button
                 title = "popScreen test"
                 onPress = {() => navigation.navigate("Pop")}
             /> */}
-            <Button
-                title = "storage test"
-                onPress = {() => storageTest()}
-            />
+            
         </View>
     );
 };
@@ -341,15 +414,34 @@ function AlarmSet({navigation}) {
     return (
         <View
             style={{
+                width:'100%',
                 flex: 1,
                 alignItems: 'center',
+                backgroundColor: 'rgba(142,228,175,0.3)',
             }}
         >
+            <View style={{
+                flex: 1,
+                width: '100%',
+                backgroundColor: '#8EE4AF',
+                justifyContent: 'center',
+                alignItems: 'center'
+            }}>
+                <Text style={{
+                    padding: 15,
+                    fontSize: 16
+                }}>
+                    하단의 시간을 터치하여 설정을 시작해주세요.
+                </Text>
+            </View>
             <View
                 style={{
-                    marginTop: 30,
-                    flex: 1,
+                    width: '100%',
+                    flex: 3,
                     flexDirection: 'row',
+                    backgroundColor: 'rgba(142,228,175,0.1)',
+                    justifyContent: 'center',
+                    alignItems: 'center'
                 }}
             >
                 {/* <View style={styles.PickerContainer}>
@@ -374,6 +466,8 @@ function AlarmSet({navigation}) {
                         onItemPress={setPickedMinValue}
                     />
                 </View> */}
+                
+                
                 <TouchableOpacity
                     style={{
                         alignSelf: 'center',
@@ -392,20 +486,27 @@ function AlarmSet({navigation}) {
             <View
                 style={{
                     flex: 2,
+                    width: '100%',
                     flexDirection: 'row',
+                    padding: 20,
+                    borderTopLeftRadius: 40,
+                    borderTopRightRadius: 40,
+                    backgroundColor: '#EFEFEF',
+                    justifyContent: 'center',
+                    alignItems: 'center'
                 }}
             >
                 <TouchableOpacity
-                    style = {styles.buttonContainer}
+                    style = {styles.setbuttonContainer}
                     onPress={() => navigation.navigate('AlarmMain')}
                 >
-                    <Text>취소</Text>
+                    <Text style={{fontSize:20}}>취소</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style = {styles.buttonContainer}
+                    style = {styles.setbuttonContainer}
                     onPress={() => saveAlarm()}
                 >
-                    <Text>저장</Text>
+                    <Text style={{fontSize:20}}>저장</Text>
                 </TouchableOpacity>
             </View>
             {show && (
@@ -425,14 +526,43 @@ function AlarmSet({navigation}) {
 const styles = StyleSheet.create({
     buttonContainer: {
         marginTop: 10,
-        width: 80,
-        height: 40,
-        backgroundColor: 'lightgreen',
+        width: "50%",
+        height: 60,
+        backgroundColor: '#8EE4AF',
         padding: 10,
         margin: 20,
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 8
+        borderRadius: 30,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 2,
+            height: 2,
+        },
+        shadowOpacity: 0.39,
+        shadowRadius: 8.30,
+
+        elevation: 5,
+    },
+    setbuttonContainer: {
+        marginTop: 10,
+        width: "35%",
+        height: 50,
+        backgroundColor: '#8EE4AF',
+        padding: 10,
+        margin: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 30,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 2,
+            height: 2,
+        },
+        shadowOpacity: 0.39,
+        shadowRadius: 8.30,
+
+        elevation: 5,
     },
     PickerContainer: {
         width: 100,

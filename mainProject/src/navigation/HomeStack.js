@@ -45,9 +45,10 @@ export default class HomeStack extends Component {
         tabBarOptions={{
           activeTintColor: 'lightseagreen',
           labelStyle: {
-            fontSize: 22,
-            margin: 0,
-            padding: 10,
+            fontSize: 20,
+            margin: 5,
+            paddingBottom: 5
+    
           },
         }}
         initialRouteName={this.props.initialRouteName}

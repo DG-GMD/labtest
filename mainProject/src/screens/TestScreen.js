@@ -34,6 +34,7 @@ export default class Test extends Component{
         this.initTestResult = this.initTestResult.bind(this);
         this.initTest = this.initTest.bind(this);
         this.setProblemItems = this.setProblemItems.bind(this);
+        this.getData = this.getData.bind(this);
 
         this.state = {
             toastVisible: false,
@@ -121,6 +122,29 @@ export default class Test extends Component{
         this.props.navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Test Loading...</Text> });
     }
 
+    //header 수정
+    getData = async () => {
+        const storageUserName = await AsyncStorage.getItem('user');
+        const storageTestNumber = await AsyncStorage.getItem('testNumber');
+        const storageFirstLoginTime = await AsyncStorage.getItem('firstLoginTime');
+  
+        this.setState({
+            userName: storageUserName,
+            userTestNumber: storageTestNumber
+        });
+  
+        // console.log("storage ", storageTestNumber, storageUserName, storageFirstLoginTime);
+  
+        let now = new Date();
+  
+        let calcDate = new Date(now.getTime() - storageFirstLoginTime);
+        this.setState({
+            howLongDate: calcDate.getDate()
+        });
+        
+        this.props.navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={this.state.howLongDate} userName={this.state.userName}/>}   });
+      };
+
     //사용자가 체크한 현재 문제의 답을 저장
     changeChecked(value){
         const _value = value;
@@ -176,6 +200,7 @@ export default class Test extends Component{
 
     componentDidMount(){
         this.setProblemItems();
+        this.getData();
     }
 
     setProblemItems(){
@@ -273,7 +298,7 @@ export default class Test extends Component{
                 <View style={styles.warningContainer}>
                     <View style={styles.warningWordsContainer}>
                         <Text style={{
-                            fontSize: 38,
+                            fontSize: 35,
                             color: 'midnightblue',
                             fontWeight: 'bold'
                         }}>
@@ -281,7 +306,7 @@ export default class Test extends Component{
                         </Text>
                         <Text style={{
                             color: '#605050',
-                            fontSize: 25
+                            fontSize: 23
                         }}>
                             {"\n"}
                             하단의 ‘테스트 시작’ 버튼을 누르시면 단어테스트를 시작합니다.{"\n"}
@@ -361,11 +386,20 @@ export default class Test extends Component{
         return(
             <View style={{
                 flex: 1,
-                backgroundColor: '#8EE4AF',
+                backgroundColor: '#EFEFEF',
             }}>
-                <View style={{
+                <View elevation={10} style={{
                     flex: 1,
-                    backgroundColor: '#8EE4AF'
+                    backgroundColor: '#8EE4AF',
+                    shadowColor: "#000000",
+                    shadowOpacity: 0.9,
+                    shadowRadius: 2,
+                    shadowOffset: {
+                    height: 10,
+                    width: 10
+                    },
+                    borderBottomLeftRadius: 30,
+                    borderBottomRightRadius: 30,
                 }}>
                     <View style={{
                         flex: 1,
@@ -375,12 +409,12 @@ export default class Test extends Component{
                         <Text style={{
                             fontSize: 20,
                             textAlign: 'center',
-                            
+                            margin:8
                         }}>
                             단어 테스트 결과
                         </Text>
                         <Text style={{
-                            fontSize: 20,
+                            fontSize: 17,
                             textAlign: 'center'
                         }}>
                             {year}년 {month+1}월 {date}일
@@ -388,19 +422,12 @@ export default class Test extends Component{
                     </View>
                 </View>
                 
-                <View elevation={10} style={{
+                <View style={{
                     flex: 5,
                     padding: 18,
                     backgroundColor: '#EFEFEF',
-                    borderTopLeftRadius: 40,
-                    borderTopRightRadius: 40,
-                    shadowColor: "#000000",
-                    shadowOpacity: 0.9,
-                    shadowRadius: 2,
-                    shadowOffset: {
-                    height: 10,
-                    width: 10
-                    }
+                    
+                
                 }}>
                     <View style={{
                         flex: 2,

@@ -61,17 +61,20 @@ export default class Check extends Component {
               testList: snapshot.val(),
           });
           
+          //표 수정 기능
           (async () => {
             //해당 날짜에 시험을 수행했다면
             try{
               let testListLength = this.state.testList.length;
               console.log('testListLength : ', testListLength);
               //해당 날짜의 기호 변경
-              let _tableData = [...this.state.tableData1];
+              let _tableData1 = [...this.state.tableData1];
+              let _tableData2 = [...this.state.tableData2];
 
+              //표의 모든 요소를 loop로 돌아본다
               for(let i=1; i<=testListLength-1; i++){
                 let correctCount = this.state.testList[i].correctCount;
-                
+                 
                 let dDate = await AsyncStorage.getItem('lastDate');
 
                 //시험 정보가 있는 날(correctCount != -1 )
@@ -79,14 +82,55 @@ export default class Check extends Component {
                   let x = parseInt((i-1) / 2);
                   let y = parseInt((i-1) % 2);
                   // console.log('count != -1, i : ', i, x, y);
-                  _tableData[x][y] = '✅';
+
+                  // 0<=i<=6
+                  if( ((i-1) / 7) < 1){
+                    _tableData1[0][i-1] = '✅';  
+                  }
+                  // 7<=i<=13
+                  else{
+                    _tableData2[0][i-1] = '✅';  
+                  }
+                }
+                //시험 정보가 있는 날인데 그 날이 7, 14일째라면
+                else if(correctCount != -1 && (i == 7 || i == 14)){
+                  //체크 표시와 링크 문구를 함계 표에 표기해한다
+
+                  //link DB를 가져온다
+                  let linkDB = this.state.linkList;
+                  //7일째라면
+                  if(i==7){
+                    let link1 = linkDB[0]["link"];
+                    let returnDOM1;
+
+                    returnDOM1 = <View >
+                      <Text style={{fontSize:11}}>✅</Text>
+                      <Text style={{fontSize:11, color: 'blue', alignContent:'center', textAlign: 'center'}} onPress={() => {OpenInvestigationLink(this.state.nowDdate, link1, 7)}}>
+                        설문조사
+                      </Text>
+                    </View>;
+
+                    _tableData1[0][6] = returnDOM1;
+                  }
+
+                  //14일째라면
+                  else if(i==14){
+                    let link2 = linkDB[1]["link"];
+                    let returnDOM2;
+
+                    returnDOM2 = <View >
+                      <Text style={{fontSize:11}}>✅</Text>
+                      <Text style={{fontSize:11, color: 'blue', alignContent:'center', textAlign: 'center'}} onPress={() => {OpenInvestigationLink(this.state.nowDdate, link2, 14)}}>
+                        설문조사
+                      </Text>
+                    </View>;
+
+                    _tableData2[0][6] = returnDOM2;
+                  }
                 }
                 //시험 정보가 없는 날(correctCount == -1)
                 else if(i != 7 && i != 14){
-                  let x = i / 2;
-                  let y = i % 2;
-                  // console.log('count == -1, i : ', i);
-                  _tableData[x][y] = '';
+                  //do nothing
                 }
               }
               
@@ -130,10 +174,12 @@ export default class Check extends Component {
 
 
     componentDidMount(){
+      //헤더를 수정
       this.getData();
       // console.log('---------------in didmout');
     }
   
+    //헤더 수정 함수
     getData = async () => {
       const storageUserName = await AsyncStorage.getItem('user');
       const storageTestNumber = await AsyncStorage.getItem('testNumber');
@@ -156,6 +202,7 @@ export default class Check extends Component {
       this.props.navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={this.state.howLongDate} userName={this.state.userName}/>}   });
     };
 
+    //설문조사 링크를 DOM으로 생성 후 표에 넣는 함수
     MakeInvestigationLink(){
       let linkDB = this.state.linkList;
     
@@ -166,14 +213,14 @@ export default class Check extends Component {
       let returnDOM1;
       let returnDOM2;
     
-      returnDOM1 = <View style={{padding: 10}}>
-        <Text style={{fontSize:13, color: 'blue', alignContent:'center', textAlign: 'center'}} onPress={() => {OpenInvestigationLink(this.state.nowDdate, link1, 7)}}>
+      returnDOM1 = <View >
+        <Text style={{fontSize:11, color: 'blue', alignContent:'center', textAlign: 'center'}} onPress={() => {OpenInvestigationLink(this.state.nowDdate, link1, 7)}}>
           설문조사
         </Text>
       </View>;
     
-      returnDOM2 = <View style={{padding: 10}}>
-        <Text style={{fontSize:13, color: 'blue', alignContent:'center', textAlign: 'center'}} onPress={() => {OpenInvestigationLink(this.state.nowDdate, link2, 14)}}>
+      returnDOM2 = <View >
+        <Text style={{fontSize:11, color: 'blue', alignContent:'center', textAlign: 'center'}} onPress={() => {OpenInvestigationLink(this.state.nowDdate, link2, 14)}}>
           설문조사
         </Text>
       </View>;
@@ -229,6 +276,7 @@ export default class Check extends Component {
                 </View>
                 
 
+                {/* 회색 바탕 */}
                 <View elevation={10} style={{
                     flex: 4,
                     justifyContent: 'center',
@@ -243,9 +291,11 @@ export default class Check extends Component {
                     width: 10
                     }
                 }}>
+                  {/* 하얀색 카드 */}
                   <View elevation={10} style={{
-                    margin: 25,
-                    padding: 10,
+                    margin: 15,
+                    marginTop: 35,
+                    padding: 5,
                     flex: 1,
                     justifyContent: 'center',
                     backgroundColor: 'white',

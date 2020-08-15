@@ -23,7 +23,7 @@ export default function LogoutButton({restDate, userName}) {
             }}>
                 <Text style={{
                     marginLeft: 10,
-                    fontSize: 20
+                    fontSize: 17
                 }}>
                     D+{restDate} 안녕하세요 {userName}님
                 </Text>
@@ -47,7 +47,6 @@ export default function LogoutButton({restDate, userName}) {
   
 const styles = StyleSheet.create({
     buttonContainer: {
-        
         width: 100,
         height: 40,
         backgroundColor: '#F4DECB',
