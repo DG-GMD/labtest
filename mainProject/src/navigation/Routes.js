@@ -20,10 +20,9 @@ export default function Routes() {
   const [initializing, setInitializing] = useState(true);
   const [Pop, setPop] = useState(true);
 
-  console.log('skip in Routes', skip);
-  let irn = "Alarm";
+  let irn = "알람 설정";
   if(skip == 2)
-    irn = "Test";
+    irn = "단어 학습";
   
 
   alarmModule.checkIsAlarm(
@@ -32,11 +31,9 @@ export default function Routes() {
     },
     (isAlarm) => {
       if(isAlarm){
-        console.log("is Alarm right?");
         setPop(true);
       }
       else{
-        console.log("is Alarm?");
         setPop(false);
       }
     }
@@ -62,7 +59,7 @@ export default function Routes() {
   (async () => {
     const storageUserName = await AsyncStorage.getItem('user');
     // console.log("get name!");
-      
+    
     if( storageUserName != null){
       const storageUserBirth = await AsyncStorage.getItem('birth');
       const storageUserNumber = await AsyncStorage.getItem('testNumber');
@@ -71,7 +68,6 @@ export default function Routes() {
       // console.log(storageUserName, storageUserBirth, storageUserNumber);
       login(storageUserName, storageUserBirth, storageUserNumber);
     }
-
   })();
   
 

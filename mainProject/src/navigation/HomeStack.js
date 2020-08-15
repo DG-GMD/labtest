@@ -21,8 +21,6 @@ export default class HomeStack extends Component {
   constructor(props){
     super(props);
 
-    console.log('home stack props is ', props);
-
     // this.getData = this.getData.bind(this);
     
     this.state = {

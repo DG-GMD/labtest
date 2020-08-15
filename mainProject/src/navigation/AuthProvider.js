@@ -15,9 +15,7 @@ export const AuthProvider = ({ children }) => {
   const [skip, setSkip] = useState(0);
   const [testNumber, setTestNumber] = useState(null);
 
-  //const navigation = useNavigation(); 
-
-  console.log("skip in AuthProvider ", skip);
+  //const navigation = useNavigation();
 
   return (
     <AuthContext.Provider
@@ -33,7 +31,6 @@ export const AuthProvider = ({ children }) => {
             const onValueChange = database()
             .ref(`/users/${testNumber}`)
             .once('value', snapshot => {
-
               // console.log('User data: ', snapshot.val());
               let userDB = snapshot.val();
 

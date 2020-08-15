@@ -18,32 +18,38 @@ import { Row } from 'react-native-table-component';
 import storage from '@react-native-firebase/storage';
 import RNFS from 'react-native-fs';
 
+Number.prototype.pad = function(size) {
+    var s = String(this);
+    while (s.length < (size || 2)) {s = "0" + s;}
+    return s;
+}
+
 const Stack = createStackNavigator();
 
 function AlarmMain({navigation, route}) {
     const { testNumber } = useContext(AuthContext);
     const reference = database().ref('/users/' + testNumber + '/alarm');
 
-    navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Alarm Loading...</Text> });
+    // navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Alarm Loading...</Text> });
 
-    async function getData() {
-        const storageUserName = await AsyncStorage.getItem('user');
-        const storageTestNumber = await AsyncStorage.getItem('testNumber');
-        const storageFirstLoginTime = await AsyncStorage.getItem('firstLoginTime');
+    // async function getData() {
+    //     const storageUserName = await AsyncStorage.getItem('user');
+    //     const storageTestNumber = await AsyncStorage.getItem('testNumber');
+    //     const storageFirstLoginTime = await AsyncStorage.getItem('firstLoginTime');
 
-        // console.log("storage ", storageTestNumber, storageUserName, storageFirstLoginTime);
+    //     // console.log("storage ", storageTestNumber, storageUserName, storageFirstLoginTime);
 
-        let now = new Date();
+    //     let now = new Date();
 
-        let calcDate = new Date(now.getTime() - storageFirstLoginTime);
+    //     let calcDate = new Date(now.getTime() - storageFirstLoginTime);
         
-        navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={calcDate.getDate()} userName={storageUserName}/>}   });
-    };
+    //     navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={calcDate.getDate()} userName={storageUserName}/>}   });
+    // };
 
-    useEffect( () => {
-        getData();
-        // console.log('---------------in useeffect');
-    });
+    // useEffect( () => {
+    //     getData();
+    //     // console.log('---------------in useeffect');
+    // });
 
     const [pickedHourValue, setPickedHourValue] = useState(0);
     const [pickedMinValue, setPickedMinValue] = useState(0);
@@ -141,7 +147,7 @@ function AlarmMain({navigation, route}) {
                 }}
             >
                 {flag && <Text style={{fontSize: 35}}>
-                    매일 {route.params !== undefined ? route.params.setHour : pickedHourValue} : {route.params !== undefined ? route.params.setMin : pickedMinValue}
+                    매일 {(route.params !== undefined ? route.params.setHour : pickedHourValue).pad()} : {(route.params !== undefined ? route.params.setMin : pickedMinValue).pad()}
                 </Text>}
                 {!flag && <Text style={{fontSize: 25}}>
                     설정된 알람이 없습니다.
@@ -171,29 +177,29 @@ function AlarmSet({navigation}) {
     const { testNumber } = useContext(AuthContext);
     const reference = database().ref('/users/' + testNumber + '/alarm');
 
-    //set loading header title
-    navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Alarm Loading...</Text> });
+    // //set loading header title
+    // navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Alarm Loading...</Text> });
 
 
-    //set full header title
-    async function getData() {
-        const storageUserName = await AsyncStorage.getItem('user');
-        const storageTestNumber = await AsyncStorage.getItem('testNumber');
-        const storageFirstLoginTime = await AsyncStorage.getItem('firstLoginTime');
+    // //set full header title
+    // async function getData() {
+    //     const storageUserName = await AsyncStorage.getItem('user');
+    //     const storageTestNumber = await AsyncStorage.getItem('testNumber');
+    //     const storageFirstLoginTime = await AsyncStorage.getItem('firstLoginTime');
 
-        // console.log("storage ", storageTestNumber, storageUserName, storageFirstLoginTime);
+    //     // console.log("storage ", storageTestNumber, storageUserName, storageFirstLoginTime);
 
-        let now = new Date();
-        let calcDate = new Date(now.getTime() - storageFirstLoginTime);
+    //     let now = new Date();
+    //     let calcDate = new Date(now.getTime() - storageFirstLoginTime);
         
-        navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={calcDate.getDate()} userName={storageUserName}/>}   });
-    };
+    //     navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={calcDate.getDate()} userName={storageUserName}/>}   });
+    // };
 
     
-    useEffect( () => {
-        getData();
-        // console.log('---------------in useeffect');
-    });
+    // useEffect( () => {
+    //     getData();
+    //     // console.log('---------------in useeffect');
+    // });
 
     const [date, setDate] = useState(new Date());
     const [show, setShow] = useState(false);
@@ -337,7 +343,7 @@ function AlarmSet({navigation}) {
                             fontSize: 60,
                         }}
                     >
-                        {pickedHourValue} : {pickedMinValue}
+                        {(pickedHourValue).pad()} : {(pickedMinValue).pad()}
                     </Text>
                 </TouchableOpacity>
             </View>
