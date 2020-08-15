@@ -1,0 +1,6 @@
+검정파랑 : midnightblue
+회색 : #605050
+
+초록 : #8EE4AF
+
+연한 갈색 : #F4DECB

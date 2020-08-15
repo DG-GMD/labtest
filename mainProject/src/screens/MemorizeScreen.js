@@ -217,15 +217,15 @@ export default class Memorize extends Component {
             //단어 테스트 여부 질의 버튼, 다시보기 버튼
             return (
                 <View style={{justifyContent: 'center', flexDirection: 'row'}}>
-                    <TouchableOpacity style={styles.buttonContainer} onPress={ () => this._setToFirstWord() } >
-                        <Text style={styles.buttonText}>다시 한번 학습할래요</Text>
+                    <TouchableOpacity style={styles.returnbuttonContainer} onPress={ () => this._setToFirstWord() } >
+                        <Text style={styles.buttonText}>다시 학습</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.buttonContainer} onPress={ () => { 
                         this.props.navigation.navigate('Test');
                         writeTestStateTesting(); 
                         
                     }} >
-                        <Text style={styles.buttonText}>단어 테스트 볼래요</Text>
+                        <Text style={styles.buttonText}>단어 테스트 시작</Text>
                     </TouchableOpacity>
                 </View>
             );
@@ -270,7 +270,7 @@ export default class Memorize extends Component {
 
         //영단어만 보여줘야하는 차례
         if(flag){
-            returnDOM = <View style={styles.middle}>
+            returnDOM = <View elevation={20} style={styles.middle}>
             <Text style={{
                 fontSize: 40,
                 textAlign: 'center'
@@ -280,7 +280,7 @@ export default class Memorize extends Component {
         //영단어와 한글 뜻을 함께 보여줘야하는 차례
         else{
             // console.log('word and meaing ', word, meaning);
-            returnDOM = <View style={styles.middle}>
+            returnDOM = <View elevation={20} style={styles.middle}>
             <Text style={{
                 fontSize: 30,
                 textAlign: 'center'
@@ -302,22 +302,59 @@ export default class Memorize extends Component {
             return(
                 <View style={{
                     flex: 1,
-                    backgroundColor: 'white',
-                    padding: 10
+                    backgroundColor: '#EFEFEF',
+                    padding: 10,
                     }}
                 >
-                    <View style={{
+                    <View elevation={10} style={{
                         flex: 1,
                         justifyContent: 'center',
                         alignItems: 'center',
-                        padding: 20
+                        margin: 40,
+                        marginTop: 100,
+                        marginBottom: 100,
+                        backgroundColor: '#E67D60',
+                        borderRadius: 30,
+                        shadowColor: "#000000",
+                        shadowOpacity: 0.9,
+                        shadowRadius: 2,
+                        shadowOffset: {
+                        height: 10,
+                        width: 10
+                        }
                     }}>
-                        <Text style={{
-                            textAlign: 'center',
-                            fontSize: 24
+                        <View style={{
+                            flex: 1,
+                            backgroundColor: 'white',
+                            alignSelf: 'stretch',
+                            borderTopLeftRadius: 30,
+                            borderTopRightRadius: 30,
+                            justifyContent: 'center',
+                            padding: 20
                         }}>
-                            알람이 울리지 않아 단어 시험을 시작할 수 없습니다.
-                        </Text>
+                            <Text style={{
+                                textAlign: 'center',
+                                fontSize: 22,
+                            }}>
+                                ✋🙂
+                            </Text>
+                        </View>
+                        <View style={{
+                            flex:3,
+                            borderBottomLeftRadius: 30,
+                            borderBottomRightRadius: 30,
+                            justifyContent: 'center',
+                            padding: 20
+                        }}>
+                            <Text style={{
+                                textAlign: 'center',
+                                fontSize: 22,
+                                
+                            }}>
+                                알람이 울리지 않아 단어 시험을 시작할 수 없습니다.
+                            </Text>
+                        </View>
+                        
                     </View>
                     <Button title='set pop time' onPress={() => {testSetPoptime()}}/>
                 </View>
@@ -329,8 +366,7 @@ export default class Memorize extends Component {
             return(
                 <View style={{
                     flex: 1,
-                    backgroundColor: 'white',
-                    padding: 10
+                    backgroundColor: '#8EE4AF'
                 }}
                     onStartShouldSetResponder = { (PressEvent) => this._onPressScreen() }
                 >
@@ -346,8 +382,11 @@ export default class Memorize extends Component {
                             }}>{count}/5</Text>
                         </View>
                     </View>
-    
-                    <this.ShowWordsAndMeaning />
+                        
+                    
+                    <this.ShowWordsAndMeaning />        
+                    
+                    
     
                     <View style={styles.end}>
                         
@@ -420,25 +459,33 @@ function writeTestStateTesting(){
 const styles = StyleSheet.create({
     head:{
         flex: 1,
-        
-        justifyContent: 'center'
+        justifyContent: 'center',
+        backgroundColor: 'rgba(255,255,255,0.6)'
     },
     middle:{
-        flex: 1,
-        // backgroundColor: 'blue',
-        justifyContent: 'center'
+        flex: 2,
+        
+        justifyContent: 'center',
+        shadowColor: "#000000",
+        shadowOpacity: 0.9,
+        shadowRadius: 2,
+        shadowOffset: {
+        height: 10,
+        width: 10
+        },
+        backgroundColor: '#8EE4AF',
     },
     end:{
-        flex: 1,
+        flex: 2,
         flexDirection: 'column',
-        
+        backgroundColor: 'rgba(255,255,255,0.7)'
     },
     bottom:{
         flex: 1,
     },
     buttonContainer: {
         marginTop: 10,
-        width: 180,
+        width: 130,
         height: 60,
         backgroundColor: 'lightgreen',
         padding: 10,
@@ -446,8 +493,19 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 8
-      },
+    },
+    returnbuttonContainer: {
+        marginTop: 10,
+        width: 130,
+        height: 60,
+        backgroundColor: '#F4DECB',
+        padding: 10,
+        margin: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 8
+    },
     buttonText:{
-        fontSize: 18
+        fontSize: 15
     }
 });

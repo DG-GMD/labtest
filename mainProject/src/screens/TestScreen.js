@@ -273,13 +273,15 @@ export default class Test extends Component{
                 <View style={styles.warningContainer}>
                     <View style={styles.warningWordsContainer}>
                         <Text style={{
-                            fontSize: 28
+                            fontSize: 38,
+                            color: 'midnightblue',
+                            fontWeight: 'bold'
                         }}>
                             오늘의 단어 테스트{"\n"}
-                            {"\n"}
                         </Text>
                         <Text style={{
-                            fontSize: 17
+                            color: '#605050',
+                            fontSize: 25
                         }}>
                             {"\n"}
                             하단의 ‘테스트 시작’ 버튼을 누르시면 단어테스트를 시작합니다.{"\n"}
@@ -288,22 +290,22 @@ export default class Test extends Component{
 
                         <TouchableOpacity
                                     style={{width: 200, height: 50, }}  
-                                    onPress={() => { writeTestState(''); }  }
+                                    onPress={() => {returnToMemorize();}  }
                                 >
-                                    <Text>
+                                    <Text style={{color: 'white'}}>
                                         단어 암기로 돌아가도록 초기화
                                     </Text>
                         </TouchableOpacity>
                     </View>
                     
-                    <View style={{flex:1, backgroundColor:'white'}}>
+                    <View elevator={10} style={{flex:1, backgroundColor:'#8EE4AF'}}>
                         <View style={styles.warningButtonContainer}>
                             <TouchableOpacity
                                 style={styles.buttonContainer}  
                                 onPress={ () => { this.setState({ start: true }) } } 
                             >
                                 <Text style={{
-                                    fontSize: 35
+                                    fontSize: 20
                                 }}>
                                     테스트 시작
                                 </Text>
@@ -325,23 +327,23 @@ export default class Test extends Component{
     TestScreen(){
         return(
             <View style={{flex: 1}}>
-                <View style={{flex: 1, padding: 10, alignItems: 'center'}}>
-                    <Text style={{fontSize: 20}}>
+                <View style={styles.testTitle}>
+                    <Text style={{fontSize: 17}}>
                         단어 테스트  {this.state.count} / 5
                     </Text>
 
-                    <Text style={{fontSize : 50}}>
+                    <Text style={{fontSize : 45}}>
                         {this.state.word}
 
                     </Text>
                 </View>
-                <View style={{flex: 4, padding: 15}}>
+                <View style={styles.testProblem}>
                     <RadioButton.Group onValueChange={(value) => this.changeChecked(value)} value={this.state.checked}>
                         <this.ProblemButton />
                         
                     </RadioButton.Group>
                 </View>
-                <View style={{flex: 1}}>
+                <View style={styles.testButton}>
                     <BottomButton count={this.state.count} grading={this.Grading} increase={this.increaseCount} decrease={this.decreaseCount}/>
                 </View>
                 
@@ -359,61 +361,80 @@ export default class Test extends Component{
         return(
             <View style={{
                 flex: 1,
-                padding: 11
+                backgroundColor: '#8EE4AF',
             }}>
                 <View style={{
                     flex: 1,
-                    justifyContent: 'center',
-                    padding: 10
+                    backgroundColor: '#8EE4AF'
                 }}>
-                    <Text style={{
-                        fontSize: 30,
-                        textAlign: 'center'
+                    <View style={{
+                        flex: 1,
+                        justifyContent: 'center',
+                        margin: 20
                     }}>
-                        단어 테스트 결과
-                    </Text>
-                    <Text style={{
-                        fontSize: 20,
-                        textAlign: 'center'
-                    }}>
-                        {year}년 {month+1}월 {date}일
-                    </Text>    
+                        <Text style={{
+                            fontSize: 20,
+                            textAlign: 'center',
+                            
+                        }}>
+                            단어 테스트 결과
+                        </Text>
+                        <Text style={{
+                            fontSize: 20,
+                            textAlign: 'center'
+                        }}>
+                            {year}년 {month+1}월 {date}일
+                        </Text>    
+                    </View>
                 </View>
                 
-                <View style={{
-                    flex: 3,
-                    justifyContent: 'center'
-
+                <View elevation={10} style={{
+                    flex: 5,
+                    padding: 18,
+                    backgroundColor: '#EFEFEF',
+                    borderTopLeftRadius: 40,
+                    borderTopRightRadius: 40,
+                    shadowColor: "#000000",
+                    shadowOpacity: 0.9,
+                    shadowRadius: 2,
+                    shadowOffset: {
+                    height: 10,
+                    width: 10
+                    }
                 }}>
-                    <Table borderStyle={{borderWidth: 1}}>
-                        <Row data={this.state.tableHead} flexArr={[1, 1, 1, 1]} style={styles.head} textStyle={styles.text}/>
-                        <TableWrapper style={styles.wrapper}>
-                            <Col data={this.state.tableTitle} style={{height: 60}} heightArr={[60,60,60,60,60]} textStyle={styles.text}/>
-                            <Rows data={this.state.tableData} flexArr={[1, 1, 1]} style={styles.row} textStyle={styles.text}/>
-                        </TableWrapper>
-                    </Table>
-                </View>
+                    <View style={{
+                        flex: 2,
+                        justifyContent: 'center'
+                    }}>
+                        <Table borderStyle={{borderWidth: 1}}>
+                            <Row data={this.state.tableHead} flexArr={[1, 1, 1, 1]} style={styles.head} textStyle={styles.text}/>
+                            <TableWrapper style={styles.wrapper}>
+                                <Col data={this.state.tableTitle} style={{height: 60}} heightArr={[50,50,50,50,50]} textStyle={styles.text}/>
+                                <Rows data={this.state.tableData} flexArr={[1, 1, 1]} style={styles.row} textStyle={styles.text}/>
+                            </TableWrapper>
+                        </Table>
+                    </View>
 
-                <View style={{
-                    flex: 1,
-                    justifyContent: 'center'
-                }}>
+
+                    <View style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    flex: 1
+                    }}>
                     <Text style={{
                         fontSize: 20,
                         textAlign: 'center'
                     }}>
                         맞은 개수 : {this.state.correctCount}개
                     </Text>
-                </View>
-
-                <View>
-                    <TouchableOpacity style={styles.buttonContainer} onPress={() => {this.initTest()}}>
+                    <TouchableOpacity style={styles.reMembuttonContainer} onPress={() => {this.initTest()}}>
                         <Text>
                             다시 학습하기
                         </Text>
                     </TouchableOpacity>
+                    <Button title="init testIndex" onPress={() => {this.initTestResult() }}/>
                 </View>
-                <Button title="init testIndex" onPress={() => {this.initTestResult() }}/>
+                </View>
             </View>
         );
     }
@@ -576,6 +597,11 @@ export default class Test extends Component{
     }
 }
 
+async function returnToMemorize(){
+    writeTestState(''); 
+    await AsyncStorage.removeItem('popTime');
+}
+
 function writeTestResultToLocal(result){
     (async () => {
         try{
@@ -591,10 +617,6 @@ function writeTestResultToLocal(result){
             // console.log("fail to save result", e);
         }
     })();
-}
-
-function readTesetResult(thisClass){
-    
 }
 
 function writeTestState(state){
@@ -704,8 +726,6 @@ function MeaningRadioButton(props){
     );
 }
 
-
-
 function NextButton(props){
     return (
         <TouchableOpacity style={styles.problemButtonContainer} onPress={props.onPress}>
@@ -775,58 +795,75 @@ const styles = StyleSheet.create({
     head: {  height: 40,  backgroundColor: 'darkseagreen'  },
     wrapper: { flexDirection: 'row' },
     title: { flex: 1, backgroundColor: 'darkseagreen' },
-    row: {  height: 60  },
-    text: { textAlign: 'center', fontSize: 15 },
+    row: {  height: 50  },
+    text: { textAlign: 'center', fontSize: 13 },
 
     warningContainer: {
         flex: 1,
-        backgroundColor: '#8EE4AF'
+        backgroundColor: 'white'
     }, 
     warningWordsContainer: {
         flex: 3,
         padding: 40,
-        backgroundColor: 'white',
-        borderBottomLeftRadius: 40
+        backgroundColor: '#8EE4AF',
+        borderBottomLeftRadius: 40,
     },
     warningButtonContainer: {
-        
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 8,
+        },
+        shadowOpacity: 0.46,
+        shadowRadius: 11.14,
+
+        elevation: 17,
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'center', alignItems: 'center',
-        backgroundColor: '#8EE4AF',
+        backgroundColor: 'white',
         borderTopRightRadius: 40
     },
     buttonContainer: {
-        width: 400,
+        width: 200,
         height: 60,
         backgroundColor: '#8EE4AF',
         padding: 10,
         margin: 20,
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 40
+        borderRadius: 40,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 2,
+            height: 2,
+        },
+        shadowOpacity: 0.39,
+        shadowRadius: 8.30,
+
+        elevation: 5,
     },
     problemButtonContainer: {  
-        width: 100,
+        width: 150,
         height: 60,
-        backgroundColor: '#8EE4AF',
+        // backgroundColor: 'red',
         padding: 10,
-        marginLeft: 20,
-        marginRight: 20,
+        marginLeft: 10,
+        marginRight: 10,
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 8
     },
     problemButtonText:{
-        fontSize: 16
+        fontSize: 20
     },
     gradingButtonContainer: {
-        width: 100,
+        width: 150,
         height: 60,
-        backgroundColor: 'sandybrown',
+        // backgroundColor: 'sandybrown',
         padding: 10,
-        marginLeft: 20,
-        marginRight: 20,
+        marginLeft: 10,
+        marginRight: 10,
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 8
@@ -838,5 +875,59 @@ const styles = StyleSheet.create({
     problemBottomButton:{
         alignItems: 'center', justifyContent: 'center',
         flexDirection: 'row'
-    }
+    },
+    testTitle:{
+        flex: 1, padding: 30, alignItems: 'center',
+        backgroundColor: '#8EE4AF',
+        borderBottomLeftRadius: 40,
+        borderBottomRightRadius: 40,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 4,
+        },
+        shadowOpacity: 0.32,
+        shadowRadius: 5.46,
+
+        elevation: 9,
+    },
+    testProblem:{
+        flex: 4, padding: 15,
+
+    },
+    testButton:{
+        flex: 1,
+        justifyContent: 'center',
+        backgroundColor: '#8EE4AF',
+        borderTopLeftRadius: 40,
+        borderTopRightRadius: 40,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 12,
+        },
+        shadowOpacity: 0.58,
+        shadowRadius: 16.00,
+
+        elevation: 24,
+    },
+    reMembuttonContainer: {
+        width: 150,
+        height: 50,
+        backgroundColor: '#8EE4AF',
+        padding: 10,
+        margin: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 40,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 2,
+            height: 2,
+        },
+        shadowOpacity: 0.39,
+        shadowRadius: 8.30,
+
+        elevation: 5,
+    },
 });

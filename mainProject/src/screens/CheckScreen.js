@@ -229,14 +229,21 @@ export default class Check extends Component {
                 </View>
                 
 
-                <View style={{
+                <View elevation={10} style={{
                     flex: 4,
                     justifyContent: 'center',
                     backgroundColor: '#EFEFEF',
                     borderTopLeftRadius: 40,
-                    borderTopRightRadius: 40
+                    borderTopRightRadius: 40,
+                    shadowColor: "#000000",
+                    shadowOpacity: 0.9,
+                    shadowRadius: 2,
+                    shadowOffset: {
+                    height: 10,
+                    width: 10
+                    }
                 }}>
-                  <View style={{
+                  <View elevation={10} style={{
                     margin: 25,
                     padding: 10,
                     flex: 1,
@@ -245,7 +252,14 @@ export default class Check extends Component {
                     borderTopLeftRadius: 15,
                     borderTopRightRadius: 15,
                     borderBottomLeftRadius: 15,
-                    borderBottomRightRadius: 15
+                    borderBottomRightRadius: 15,
+                    shadowColor: "#000000",
+                    shadowOpacity: 0.9,
+                    shadowRadius: 2,
+                    shadowOffset: {
+                    height: 10,
+                    width: 10
+                    }
                   }}>
                     <Text style={{
                         fontSize: 20,
