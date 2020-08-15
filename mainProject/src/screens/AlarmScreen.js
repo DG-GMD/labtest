@@ -15,9 +15,6 @@ import LogoutButton from '../components/Logout';
 import PopScreen from './PopScreen';
 import { Row } from 'react-native-table-component';
 
-import storage from '@react-native-firebase/storage';
-import RNFS from 'react-native-fs';
-
 // LogBox.ignoreLogs(['Warning: ...']);
 console.disableYellowBox = true;
 
@@ -84,49 +81,6 @@ function AlarmMain({navigation, route}) {
             })
         }
     })();
-
-    const storageTest = () => {
-        let filePath = RNFS.DocumentDirectoryPath;
-        console.log("filePath", filePath)
-        const downloadTo = `${filePath}/alarm.mp3`;
-
-        const task = storage()
-            .ref('/test/Alarm-ringtone.mp3')
-            .writeToFile(downloadTo);
-        
-        task.on('state_changed', taskSnapshot => {
-            console.log(`${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`);
-        });
-        
-        task.then(() => {
-            console.log('alarm uploaded to the bucket!');
-        }).catch((err)=>{
-            console.log(err.message);
-        })
-
-        RNFS.readDir(RNFS.DocumentDirectoryPath) // On Android, use "RNFS.DocumentDirectoryPath" (MainBundlePath is not defined)
-        .then((result) => {
-            console.log('GOT RESULT', result);
-
-            // stat the first file
-            return Promise.all([RNFS.stat(result[0].path), result[0].path]);
-        })
-        .then((statResult) => {
-            if (statResult[0].isFile()) {
-            // if we have a file, read it
-            return RNFS.readFile(statResult[1], 'utf8');
-            }
-
-            return 'no file';
-        })
-        .then((contents) => {
-            // log the file contents
-            console.log(contents);
-        })
-        .catch((err) => {
-            console.log(err.message, err.code);
-        });
-    };
 
     const timeString = () => {
         var currentHour = (route.params !== undefined ? route.params.setHour : pickedHourValue);
@@ -226,12 +180,9 @@ function AlarmMain({navigation, route}) {
                     </View>
                 </View>
                 
-
-                <Button
                 {/* <Button
                 title = "storage test"
                 onPress = {() => storageTest()}
-                />
                 /> */}
             </View>
 
@@ -254,7 +205,6 @@ function AlarmMain({navigation, route}) {
                     },
                     justifyContent: 'center',
                     alignItems: 'center'
-                    alignItems: 'center',
                 }}> 
                     <TouchableOpacity
                         style = {styles.buttonContainer}
@@ -353,8 +303,6 @@ function AlarmSet({navigation}) {
                 dt.setHours(pickedHourValue);
                 dt.setMinutes(pickedMinValue);
 
-                console.log("alarm ISO time is ", dt.toISOString());
-                alarmModule.diaryNotification(dt.toISOString());
                 alarmModule.diaryNotification(dt.getTime().toString());
 
                 let alarmDataJson = snapshot.val();
