@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import java.util.Calendar;
 
 import android.os.Build;
@@ -35,6 +37,15 @@ public class AlarmReceiver extends BroadcastReceiver {
         editor.putLong("nextNotifyTime", nextNotifyTime.getTimeInMillis());
         editor.putBoolean("isAlarm", true);
         editor.apply();
+
+        Intent alarmIntent = new Intent(context, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, alarmIntent, 0);
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        if (alarmManager != null){
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextNotifyTime.getTimeInMillis(), pendingIntent);
+        }
 
         Intent intent_ = new Intent(context, MainActivity.class);
         intent_.putExtra("AlarmOn",true);

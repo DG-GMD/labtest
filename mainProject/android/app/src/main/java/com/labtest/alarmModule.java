@@ -168,7 +168,7 @@ public class alarmModule extends ReactContextBaseJavaModule {
   // };
 
   @ReactMethod
-  public void diaryNotification(String isoString)
+  public void diaryNotification(String milliString)
   {
     Context context = reactContext;
     Activity activity = getCurrentActivity();
@@ -180,9 +180,11 @@ public class alarmModule extends ReactContextBaseJavaModule {
     Intent alarmIntent = new Intent(context, AlarmReceiver.class);
     PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, alarmIntent, 0);
     
-    LocalDateTime ldt = LocalDateTime.parse(isoString, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
-    ZonedDateTime zdt = ldt.atZone(ZoneId.of("UTC"));
-    long millis = zdt.toInstant().toEpochMilli();
+    // LocalDateTime ldt = LocalDateTime.parse(isoString, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+    // ZonedDateTime zdt = ldt.atZone(ZoneId.of("UTC"));
+    // long millis = zdt.toInstant().toEpochMilli();
+
+    long millis = Long.parseLong(milliString);
 
     Calendar current_calendar = Calendar.getInstance();
     Calendar nextNotifyTime = new GregorianCalendar();
@@ -198,8 +200,8 @@ public class alarmModule extends ReactContextBaseJavaModule {
     Toast.makeText(context.getApplicationContext(),"다음 알람은 " + date_text + "으로 알람이 설정되었습니다!", Toast.LENGTH_SHORT).show();
 
     if (alarmManager != null){
-      //alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextNotifyTime.getTimeInMillis(), pendingIntent);
-      alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, nextNotifyTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+      alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextNotifyTime.getTimeInMillis(), pendingIntent);
+      //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, nextNotifyTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
     }
 
     // 부팅 후 실행되는 리시버 사용가능하게 설정

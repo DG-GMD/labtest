@@ -228,9 +228,11 @@ function AlarmMain({navigation, route}) {
                 
 
                 <Button
+                {/* <Button
                 title = "storage test"
                 onPress = {() => storageTest()}
                 />
+                /> */}
             </View>
 
             {/* 하단 버튼 */}
@@ -252,6 +254,7 @@ function AlarmMain({navigation, route}) {
                     },
                     justifyContent: 'center',
                     alignItems: 'center'
+                    alignItems: 'center',
                 }}> 
                     <TouchableOpacity
                         style = {styles.buttonContainer}
@@ -352,6 +355,7 @@ function AlarmSet({navigation}) {
 
                 console.log("alarm ISO time is ", dt.toISOString());
                 alarmModule.diaryNotification(dt.toISOString());
+                alarmModule.diaryNotification(dt.getTime().toString());
 
                 let alarmDataJson = snapshot.val();
                 let alarmData = {};
