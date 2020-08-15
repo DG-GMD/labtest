@@ -85,11 +85,11 @@ export default class Check extends Component {
 
                   // 0<=i<=6
                   if( ((i-1) / 7) < 1){
-                    _tableData1[0][i-1] = '✅';  
+                    _tableData1[0][i-1] = 'v';  
                   }
                   // 7<=i<=13
                   else{
-                    _tableData2[0][i-1] = '✅';  
+                    _tableData2[0][i-1] = 'v';  
                   }
                 }
                 //시험 정보가 있는 날인데 그 날이 7, 14일째라면
@@ -104,7 +104,7 @@ export default class Check extends Component {
                     let returnDOM1;
 
                     returnDOM1 = <View >
-                      <Text style={{fontSize:11}}>✅</Text>
+                      <Text style={{fontSize:14}}>v</Text>
                       <Text style={{fontSize:11, color: 'blue', alignContent:'center', textAlign: 'center'}} onPress={() => {OpenInvestigationLink(this.state.nowDdate, link1, 7)}}>
                         설문조사
                       </Text>
@@ -119,7 +119,7 @@ export default class Check extends Component {
                     let returnDOM2;
 
                     returnDOM2 = <View >
-                      <Text style={{fontSize:11}}>✅</Text>
+                      <Text style={{fontSize:14}}>v</Text>
                       <Text style={{fontSize:11, color: 'blue', alignContent:'center', textAlign: 'center'}} onPress={() => {OpenInvestigationLink(this.state.nowDdate, link2, 14)}}>
                         설문조사
                       </Text>
@@ -385,7 +385,7 @@ const styles = StyleSheet.create({
   wrapper: { flexDirection: 'row' },
   title: { flex: 1, backgroundColor: '#f6f8fa' },
   row: {  height: 50  },
-  text: { textAlign: 'center' },
+  text: { textAlign: 'center', fontSize: 15},
   
   
   buttonContainer: {
