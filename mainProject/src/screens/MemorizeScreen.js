@@ -366,7 +366,7 @@ export default class Memorize extends Component {
                         </View>
                         
                     </View>
-                    <Button title='set pop time' onPress={() => {testSetPoptime()}}/>
+                    {/* <Button title='set pop time' onPress={() => {testSetPoptime()}}/> */}
                 </View>
             );
         }
@@ -392,11 +392,8 @@ export default class Memorize extends Component {
                             }}>{count}/5</Text>
                         </View>
                     </View>
-                        
-                    
-                    <this.ShowWordsAndMeaning />        
-                    
-                    
+                                         
+                    <this.ShowWordsAndMeaning />                           
     
                     <View style={styles.end}>
                         

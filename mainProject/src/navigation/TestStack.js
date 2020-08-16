@@ -16,17 +16,17 @@ export default function TestStack() {
     let nowdDate = await getCurrentDate();
     return nowdDate;
   })()
-  .then( (nowdDate) => {
+  .then( async (nowdDate) => {
       let nowTestState = null;
       try{
-        (async () =>{
+        
           nowTestState = await AsyncStorage.getItem('day' + nowdDate.toString());
-        });
+        
           
-          // console.log("check day1 as", state);
+          console.log("check day", nowdDate.toString(), nowTestState);
       }
       catch(e){
-          // console.log("fail to check day1 as", state);
+          console.log("fail to check day and testState", e);
       }
       return nowTestState;
   })

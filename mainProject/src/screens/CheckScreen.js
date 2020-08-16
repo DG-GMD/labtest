@@ -388,19 +388,13 @@ export default class Check extends Component {
                           </TableWrapper>
                       </Table>
                     </View>
-                    <TouchableOpacity style={{width:80, backgroundColor:'beige'}} onPress={() => {initAsyncStorage()}}>
-              <Text>
-              delete AsyncStorage    
-              </Text>
-            </TouchableOpacity>  
+                    {/* <TouchableOpacity style={{width:80, backgroundColor:'beige'}} onPress={() => {initAsyncStorage()}}>
+                      <Text>
+                      delete AsyncStorage    
+                      </Text>
+                    </TouchableOpacity>   */}
                   </View>
-                  
               </View>
-            
-             
-                
-                      
-                
           </View>
         </View>
       )
@@ -421,14 +415,16 @@ async function initAsyncStorage(){
     await AsyncStorage.removeItem('popTime');
     await AsyncStorage.removeItem('testResultTime');
     await AsyncStorage.removeItem('testResult');
-    console.log('remove popItem');
+    await AsyncStorage.removeItem('user');
+    await AsyncStorage.removeItem('testNumber');
+    await AsyncStorage.removeItem('birth');
+    await AsyncStorage.removeItem('firstLoginTime');
+    // console.log('remove popItem');
   }
   catch(e){
-    console.log('fail to remove popItem');
+    // console.log('fail to remove popItem');
   }
 }
-
-
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: 'white'},

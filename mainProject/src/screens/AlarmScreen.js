@@ -51,6 +51,8 @@ function AlarmMain({navigation, route}) {
         // console.log('---------------in useeffect');
     });
 
+    getData();
+
     const [pickedHourValue, setPickedHourValue] = useState(0);
     const [pickedMinValue, setPickedMinValue] = useState(0);
     const [flag, setFlag] = useState(false);
@@ -251,6 +253,7 @@ function AlarmSet({navigation}) {
         // console.log('---------------in useeffect');
     });
 
+    getData();
     const [date, setDate] = useState(new Date());
     const [show, setShow] = useState(false);
 

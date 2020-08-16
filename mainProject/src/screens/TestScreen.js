@@ -183,8 +183,8 @@ export default class Test extends Component{
             this.setState({
                 checked: _checked,
                 count: this.state.count+1,
-                word: this.state.wordList[this.state.count+1].word
-    
+                word: this.state.wordList[this.state.count+1].word,
+                checked: -1
             });
         }
         // console.log(_checkedList);
@@ -204,8 +204,8 @@ export default class Test extends Component{
             this.setState({
                 checked: _checked,
                 count: this.state.count-1,
-                word: this.state.wordList[this.state.count-1].word
-    
+                word: this.state.wordList[this.state.count-1].word,
+                checked: -1
             });
         }
         // console.log(_checkedList);
@@ -307,7 +307,6 @@ export default class Test extends Component{
         //단어 시작 버튼 페이지
         if(!this.state.start){
             return(
-                
                 <View style={styles.warningContainer}>
                     <View style={styles.warningWordsContainer}>
                         <Text style={{
@@ -472,7 +471,7 @@ export default class Test extends Component{
                             다시 학습하기
                         </Text>
                     </TouchableOpacity>
-                    <Button title="init testIndex" onPress={() => {this.initTestResult() }}/>
+                    {/* <Button title="init testIndex" onPress={() => {this.initTestResult() }}/> */}
                 </View>
                 </View>
             </View>
@@ -653,6 +652,8 @@ function writeTestResultToLocal(result){
             let now = new Date();
             await AsyncStorage.setItem('testResultTime', now.getTime().toString());
             // console.log("save test result", result);
+
+            writeTestState('after test');
         }
         catch(e){
             // console.log("fail to save result", e);
@@ -677,12 +678,12 @@ function writeTestState(state){
         (async () => {
             try{
                 await AsyncStorage.setItem('day' + nowdDate.toString(), state);
-                // console.log("check day1 as", state);
+                console.log("TestScreen : check day", nowdDate.toString());
             }
             catch(e){
-                // console.log("fail to check day1 as", state);
+                console.log("TestScreen : fail to check day test", e);
             }
-        });
+        })();
     });
 }
 

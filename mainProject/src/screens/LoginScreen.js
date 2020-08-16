@@ -38,9 +38,12 @@ export default function LoginScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={{
-        marginTop: 20,
+        marginTop: 50,
+        marginBottom: 20,
+        paddingBotom: 50,
         width: '80%',
-        flex: 2,
+        height: 380,
+        flex: 3,
         backgroundColor: 'white',
         borderRadius: 40,
         justifyContent: 'center',
@@ -69,7 +72,7 @@ export default function LoginScreen({ navigation }) {
           onChangeText={userTestNumber => setTestNumber(userTestNumber)}
         />
       </View>
-      <View style={{
+      <View style={{   
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
@@ -100,7 +103,7 @@ export default function LoginScreen({ navigation }) {
             }
           });
         }} />
-        <FormButton buttonTitle='Test Login' onPress={() => login('park', '970000', '1000')} />
+        {/* <FormButton buttonTitle='Test Login' onPress={() => login('park', '970000', '1000')} /> */}
         <Text style={styles.text}>연구번호를 분실했거나 오류가 발생할 경우, 관리자
 (green940@g.skku.edu)에게 문의해주십시오.</Text>
       </View>
@@ -111,6 +114,7 @@ export default function LoginScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
+    position: 'absolute',
     backgroundColor: '#EFEFEF',
     flex: 1,
     justifyContent: 'center',
