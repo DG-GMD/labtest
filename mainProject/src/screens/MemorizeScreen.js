@@ -13,22 +13,6 @@ console.disableYellowBox = true;
 
 const Stack = createStackNavigator();
 
-let dbList;
-
-function getDB(){
-    return async () => await database()
-        .ref('/words/day2')
-        .once('value')
-        .then(snapshot => {
-            dbList = getDB();
-            return snapshot.val();
-        });
-}
-
-
-console.log('===========');
-console.log(dbList);
-
 export default class Memorize extends Component {
     constructor(props){
         super(props);
@@ -52,31 +36,33 @@ export default class Memorize extends Component {
             isPop: false
         };
 
-        getDB();
 
         this._IsTestStart();
 
         //현재 D+Date를 구해서 해당 날짜의 단어 가져오기
-        (async () => {
-            try{
+        
 
-            }
-            catch(e){
-
-            }
-        })
-        database()
-        .ref('/words/day2')
-        .once('value')
-        .then(snapshot => {
-            // console.log('User data: ', snapshot.val());
-            this.setState({
-                wordList: snapshot.val(),
-            });
-            this.setState({
-                word: this.state.wordList[this.state.count].word
+        (async () =>{
+            let nowdDate = await getCurrentDate();
+            console.log(nowdDate);
+            return nowdDate;
+        })()
+        .then((nowdDate) => {
+            database()
+            .ref('/words/day' + nowdDate.toString())
+            .once('value')
+            .then(snapshot => {
+                console.log('Memorize data: ', snapshot.val());
+                this.setState({
+                    wordList: snapshot.val(),
+                });
+                this.setState({
+                    word: this.state.wordList[this.state.count].word
+                });
             });
         });
+
+        
         
         this.props.navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Test Loading...</Text> });
         //writeTestState('before test');

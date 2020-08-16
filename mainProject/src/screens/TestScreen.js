@@ -365,11 +365,11 @@ export default class Test extends Component{
         return(
             <View style={{flex: 1}}>
                 <View style={styles.testTitle}>
-                    <Text style={{fontSize: 17}}>
+                    <Text style={{fontSize: 15}}>
                         단어 테스트  {this.state.count} / 5
                     </Text>
 
-                    <Text style={{fontSize : 45}}>
+                    <Text style={{fontSize : 40}}>
                         {this.state.word}
 
                     </Text>
@@ -948,7 +948,8 @@ const styles = StyleSheet.create({
         elevation: 9,
     },
     testProblem:{
-        flex: 4, padding: 15,
+        flex: 6, padding: 15,
+        justifyContent: 'center'
 
     },
     testButton:{
