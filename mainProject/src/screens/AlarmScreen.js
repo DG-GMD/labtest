@@ -419,7 +419,7 @@ function AlarmSet({navigation}) {
             </View>
             )}
             
-            {true && (
+            {show && (
                 <View
                     style={{
                         width: '100%',
