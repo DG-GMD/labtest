@@ -1,12 +1,12 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { StyleSheet, Text, AsyncStorage } from "react-native";
+import { StyleSheet, Text, AsyncStorage, Platform } from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import AuthStack from './AuthStack';
 import HomeStack from './HomeStack';
 import { AuthContext } from './AuthProvider';
 import Loading from '../components/Loading';
-// import { alarmModule } from '../utils/jvmodules'
+import { alarmModule } from '../utils/jvmodules'
 
 import { createStackNavigator } from '@react-navigation/stack';
 import PopScreen from '../screens/PopScreen';
@@ -23,21 +23,23 @@ export default function Routes() {
   let irn = "알람 설정";
   if(skip == 2)
     irn = "단어 학습";
-  
 
-  // alarmModule.checkIsAlarm(
-  //   (msg) => {
-  //     console.log(msg);
-  //   },
-  //   (isAlarm) => {
-  //     if(isAlarm){
-  //       setPop(true);
-  //     }
-  //     else{
-  //       setPop(false);
-  //     }
-  //   }
-  // );
+  if(Platform.OS === 'android'){
+    alarmModule.checkIsAlarm(
+      (msg) => {
+        console.log(msg);
+      },
+      (isAlarm) => {
+        if(isAlarm){
+          setPop(true);
+        }
+        else{
+          setPop(false);
+        }
+      }
+    );
+  }
+
   const { login } = useContext(AuthContext);
 
   // Handle user state changes

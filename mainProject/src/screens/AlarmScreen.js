@@ -4,8 +4,8 @@ import React, {useContext, useEffect, useState} from 'react';
 import { NavigationContainer, CommonActions } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { AuthContext } from '../navigation/AuthProvider';
-// import { alarmModule } from '../utils/jvmodules';
-// import DateTimePicker from '@react-native-community/datetimepicker';
+import { alarmModule } from '../utils/jvmodules';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import database from '@react-native-firebase/database';
 
 import LogoutButton from '../components/Logout';
@@ -250,7 +250,7 @@ function AlarmSet({navigation}) {
 
     getData();
     const [date, setDate] = useState(new Date());
-    const [show, setShow] = useState(false);
+    const [show, setShow] = useState(Platform.OS === 'ios');
 
     const [pickedHourValue, setPickedHourValue] = useState(0);
     const [pickedMinValue, setPickedMinValue] = useState(0);
@@ -301,7 +301,8 @@ function AlarmSet({navigation}) {
                 dt.setHours(pickedHourValue);
                 dt.setMinutes(pickedMinValue);
 
-                // alarmModule.diaryNotification(dt.getTime().toString());
+                if(Platform.OS == 'android')
+                    alarmModule.diaryNotification(dt.getTime().toString());
 
                 let alarmDataJson = snapshot.val();
                 let alarmData = {};
@@ -334,14 +335,14 @@ function AlarmSet({navigation}) {
             });
     };
 
-    // const onChange = (event, selectedDate) => {
-    //     const currentDate = selectedDate || date;
+    const onChange = (event, selectedDate) => {
+        const currentDate = selectedDate || date;
         
-    //     setShow(Platform.OS === 'ios');
-    //     setPickedHourValue(currentDate.getHours());
-    //     setPickedMinValue(currentDate.getMinutes());
-    //     setDate(currentDate);
-    // };
+        setShow(Platform.OS === 'ios');
+        setPickedHourValue(currentDate.getHours());
+        setPickedMinValue(currentDate.getMinutes());
+        setDate(currentDate);
+    };
 
     const timeString = () => {
         var currentHour = pickedHourValue;
@@ -373,69 +374,71 @@ function AlarmSet({navigation}) {
                 backgroundColor: 'rgba(142,228,175,0.3)',
             }}
         >
-            <View style={{
-                flex: 1,
-                width: '100%',
-                backgroundColor: '#8EE4AF',
-                justifyContent: 'center',
-                alignItems: 'center'
-            }}>
-                <Text style={{
-                    padding: 15,
-                    fontSize: 16
-                }}>
-                    하단의 시간을 터치하여 설정을 시작해주세요.
-                </Text>
-            </View>
-            <View
-                style={{
+            {Platform.OS === 'android' && (
+            <View>
+                <View style={{
+                    flex: 1,
                     width: '100%',
-                    flex: 3,
-                    flexDirection: 'row',
-                    backgroundColor: 'rgba(142,228,175,0.1)',
+                    backgroundColor: '#8EE4AF',
                     justifyContent: 'center',
                     alignItems: 'center'
-                }}
-            >
-                {/* <View style={styles.PickerContainer}>
-                    <ScrollPicker
-                        currentValue={pickedHourValue}
-                        list={HOUR_DATA}
-                        onItemPress={setPickedHourValue}
+                }}>
+                    <Text style={{
+                        padding: 15,
+                        fontSize: 16
+                    }}>
+                        하단의 시간을 터치하여 설정을 시작해주세요.
+                    </Text>
+                </View>
+                <View
+                    style={{
+                        width: '100%',
+                        flex: 3,
+                        flexDirection: 'row',
+                        backgroundColor: 'rgba(142,228,175,0.1)',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}
+                >
+                    
+                    <TouchableOpacity
+                        style={{
+                            alignSelf: 'center',
+                        }}
+                        onPress={()=>setShow(true)}
+                    >
+                        <Text
+                            style = {{
+                                fontSize: 60,
+                            }}
+                        >
+                            {timeString()}
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+            )}
+            
+            {true && (
+                <View
+                    style={{
+                        width: '100%',
+                        flex:4,
+                        backgroundColor: 'rgba(142,228,175,0.1)',
+                        justifyContent: 'center',
+                    }}
+                >
+                    <DateTimePicker
+                    testID="dateTimePicker"
+                    value={date}
+                    mode="time"
+                    //is24Hour={false}
+                    display="spinner"
+                    onChange={onChange}
                     />
                 </View>
-                <Text 
-                    style = {{
-                        alignSelf: 'center',
-                        fontSize: 40,
-                    }}
-                >
-                    :
-                </Text>
-                <View style={styles.PickerContainer}>
-                    <ScrollPicker
-                        currentValue={pickedMinValue}
-                        list={MIN_DATA}
-                        onItemPress={setPickedMinValue}
-                    />
-                </View> */}
-                
-                
-                <TouchableOpacity
-                    style={{
-                        alignSelf: 'center',
-                    }}
-                    onPress={()=>setShow(true)}
-                >
-                    <Text
-                        style = {{
-                            fontSize: 60,
-                        }}
-                    >
-                        {timeString()}
-                    </Text>
-                </TouchableOpacity>
-            </View>
+            )}
+            
             <View
                 style={{
                     flex: 2,
@@ -462,16 +465,6 @@ function AlarmSet({navigation}) {
                     <Text style={{fontSize:20}}>저장</Text>
                 </TouchableOpacity>
             </View>
-            {/* {show && (
-                <DateTimePicker
-                testID="dateTimePicker"
-                value={date}
-                mode="time"
-                is24Hour={false}
-                display="spinner"
-                onChange={onChange}
-                />
-            )} */}
         </View>
     );
 }
