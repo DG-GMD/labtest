@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
 import { View, Text, Image, ScrollView, TextInput, Button, BackHandler, StyleSheet, Platform, TouchableOpacity, AsyncStorage } from 'react-native';
-import { alarmModule } from '../utils/jvmodules'
+// import { alarmModule } from '../utils/jvmodules';
 import { AuthContext } from '../navigation/AuthProvider';
 
 function startDict(admit) {
     console.log("admit", admit);
-    alarmModule.startDict(admit);
+    // alarmModule.startDict(admit);
 }
 async function savePopTime(){
     //popScreen이 표시된 시간을 로컬 저장소에 저장

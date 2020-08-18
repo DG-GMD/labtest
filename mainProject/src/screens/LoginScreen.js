@@ -83,6 +83,7 @@ export default function LoginScreen({ navigation }) {
           .ref('/users/' + testNumber)
           .once('value')
           .then(snapshot => {
+            console.log("login button pressed ", snapshot.val());
             let userData = snapshot.val();
             let res = false;
     

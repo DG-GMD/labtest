@@ -4,16 +4,11 @@ import React, {useContext, useEffect, useState} from 'react';
 import { NavigationContainer, CommonActions } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { AuthContext } from '../navigation/AuthProvider';
-import { alarmModule } from '../utils/jvmodules';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import {ScrollPicker} from 'react-native-value-picker';
+// import { alarmModule } from '../utils/jvmodules';
+// import DateTimePicker from '@react-native-community/datetimepicker';
 import database from '@react-native-firebase/database';
 
-import {HOUR_DATA, MIN_DATA} from '../utils/timeData';
 import LogoutButton from '../components/Logout';
-
-import PopScreen from './PopScreen';
-import { Row } from 'react-native-table-component';
 
 // LogBox.ignoreLogs(['Warning: ...']);
 console.disableYellowBox = true;
@@ -306,7 +301,7 @@ function AlarmSet({navigation}) {
                 dt.setHours(pickedHourValue);
                 dt.setMinutes(pickedMinValue);
 
-                alarmModule.diaryNotification(dt.getTime().toString());
+                // alarmModule.diaryNotification(dt.getTime().toString());
 
                 let alarmDataJson = snapshot.val();
                 let alarmData = {};
@@ -339,14 +334,14 @@ function AlarmSet({navigation}) {
             });
     };
 
-    const onChange = (event, selectedDate) => {
-        const currentDate = selectedDate || date;
+    // const onChange = (event, selectedDate) => {
+    //     const currentDate = selectedDate || date;
         
-        setShow(Platform.OS === 'ios');
-        setPickedHourValue(currentDate.getHours());
-        setPickedMinValue(currentDate.getMinutes());
-        setDate(currentDate);
-    };
+    //     setShow(Platform.OS === 'ios');
+    //     setPickedHourValue(currentDate.getHours());
+    //     setPickedMinValue(currentDate.getMinutes());
+    //     setDate(currentDate);
+    // };
 
     const timeString = () => {
         var currentHour = pickedHourValue;
@@ -467,7 +462,7 @@ function AlarmSet({navigation}) {
                     <Text style={{fontSize:20}}>저장</Text>
                 </TouchableOpacity>
             </View>
-            {show && (
+            {/* {show && (
                 <DateTimePicker
                 testID="dateTimePicker"
                 value={date}
@@ -476,7 +471,7 @@ function AlarmSet({navigation}) {
                 display="spinner"
                 onChange={onChange}
                 />
-            )}
+            )} */}
         </View>
     );
 }
