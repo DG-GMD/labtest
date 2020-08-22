@@ -121,11 +121,16 @@ function AlarmMain({navigation, route}) {
                     justifyContent: 'center',
                 }}>
                     <Text style={{
-                        fontSize: 25,
+                        fontSize: 20,
                         margin: 20,
-                        textAlign: 'center'
+                        marginTop: 70,
+                        marginLeft: 40,
+                        padding: 30,
+                        
+                        textAlign: 'left',
+                        // backgroundColor: 'red'
                     }}>
-                        단어 학습시간 알람
+                        매일 단어 학습을 진행할 시간에 알람을 설정해주세요. {"\n\n"}알람은 하루 한 번만 울립니다.
                     </Text>
                 </View>
 

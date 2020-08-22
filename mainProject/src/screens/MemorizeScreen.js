@@ -217,9 +217,8 @@ export default class Memorize extends Component {
                         <Text style={styles.buttonText}>다시 학습</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.buttonContainer} onPress={ () => { 
-                        this.props.navigation.navigate('Test');
                         writeTestStateTesting(); 
-                        
+                        this.props.navigation.navigate('TestScreen');
                     }} >
                         <Text style={styles.buttonText}>단어 테스트 시작</Text>
                     </TouchableOpacity>
@@ -352,7 +351,7 @@ export default class Memorize extends Component {
                         </View>
                         
                     </View>
-                    {/* <Button title='set pop time' onPress={() => {testSetPoptime()}}/> */}
+                    <Button title='set pop time' onPress={() => {testSetPoptime()}}/>
                 </View>
             );
         }
@@ -424,12 +423,12 @@ async function getPopScreenTime(){
     let item = -1;
     try{
         item = await AsyncStorage.getItem('popTime');
-        // console.log('get popItem');
+        console.log('get popItem', item);
     }
     catch(e){
-        // console.log('fail to get popTime at MemorizeScreen', e);
+        console.log('fail to get popTime at MemorizeScreen', e);
     }
-    // console.log('popTime : ', item);
+    console.log('popTime : ', item);
     return item;
 }
 

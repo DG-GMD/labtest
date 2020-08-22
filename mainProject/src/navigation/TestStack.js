@@ -8,6 +8,7 @@ import { AsyncStorage } from 'react-native';
 const Stack = createStackNavigator();
 
 
+
 export default function TestStack() {
   const [testState, setState] = useState('');
   
@@ -42,31 +43,34 @@ export default function TestStack() {
   //시험 진행 상태에 따라 라우팅한다
   if(testState == 'testing' || testState == "after test"){
     
-    // console.log(testState, "=============alreay done testing!!!!");
+    console.log(testState, "=============alreay done testing!!!!");
     return(
       <Stack.Navigator
-        initialRouteName="Test"
+        initialRouteName="TestScreen"
       >
         <Stack.Screen
-          name="Test"
+          name="TestScreen"
           component={Test}
         />
-        
+        <Stack.Screen
+          name="MemorizeScreen"
+          component={Memorize}
+        />
       </Stack.Navigator>
     );
   }
   else{
-    // console.log("==================not yet!!");
+    console.log("==================not yet!!");
     return (
       <Stack.Navigator
-        initialRouteName="Memorize"
+        initialRouteName='MemorizeScreen'
       >
         <Stack.Screen
-          name='Memorize'
+          name='MemorizeScreen'
           component={Memorize}
         />
         <Stack.Screen
-          name='Test'
+          name='TestScreen'
           component={Test}
         />
       </Stack.Navigator>
