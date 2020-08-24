@@ -4,7 +4,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import  Alarm  from '../screens/AlarmScreen';
+import  AlarmMain  from '../screens/AlarmMainScreen';
+import  AlarmSet  from '../screens/AlarmSetScreen';
 import  Check  from '../screens/CheckScreen';
 import TestStack from './TestStack';
 import { StackActions } from '@react-navigation/native';
@@ -14,8 +15,6 @@ import LogoutButton from '../components/Logout';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
-
-
 
 export default class HomeStack extends Component {
   constructor(props){
@@ -52,7 +51,7 @@ export default class HomeStack extends Component {
         }}
         initialRouteName={this.props.initialRouteName}
       >
-        <Tab.Screen name='알람 설정' component={Alarm} 
+        <Tab.Screen name='알람 설정' component={AlarmStack} 
          />
         <Tab.Screen name='단어 학습' component={TestStack} 
         />
@@ -128,6 +127,15 @@ async function CheckDate(){
   catch(e){
     console.log('fail to get testresulttime ', e);
   }
+}
+
+function AlarmStack({navigation}){
+  return (  
+    <Stack.Navigator>
+        <Stack.Screen name="AlarmMain" component={AlarmMain} />
+        <Stack.Screen name="AlarmSet" component={AlarmSet} />
+    </Stack.Navigator>
+  );
 }
 
 function CheckStack({navigation}){
