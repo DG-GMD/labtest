@@ -14,7 +14,11 @@ numberList = [1000, 2000, 3000]
 for bigNumber in numberList:
     for smallNumber in range(0, 20):
         testNumber = bigNumber + smallNumber
-        json_data[testNumber] = {'name':'testUser', 'birth':123456}
+        json_data[testNumber] = {'alarm':[{'order': 0}],'name':'testUser', 'birth':123456}
+    testNumber = bigNumber + 998
+    json_data[testNumber] = {'alarm':[{'order': 0}],'name':'testUser', 'birth':123456}
+    testNumber = bigNumber + 999
+    json_data[testNumber] = {'alarm':[{'order': 0}],'name':'testUser', 'birth':123456}
 
 # print(json.dumps(json_data, indent=4))
 
