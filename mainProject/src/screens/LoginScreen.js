@@ -20,8 +20,10 @@ export default function LoginScreen({ navigation }) {
     console.log("filePath", filePath)
     const downloadTo = `${filePath}/alarm.mp3`;
 
+    var alarmPath = '/alarm/' + parseInt(testNumber/1000) + '.mp3';
+
     const task = storage()
-      .ref('/test/Alarm-ringtone.mp3')
+      .ref(alarmPath)
       .writeToFile(downloadTo);
   
       task.on('state_changed', taskSnapshot => {
