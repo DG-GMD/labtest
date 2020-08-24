@@ -64,6 +64,17 @@ export default class AlarmMain extends Component {
                 })
             });
         }
+
+        this._unsubscribe = this.props.navigation.addListener('focus', () => {
+            var prm = this.props.route.params;
+            if((prm !== undefined) && !this.state.flage){
+                this.setState({flag:true})
+            }
+        });
+    }
+
+    componentWillUnmount() {
+        this._unsubscribe();
     }
 
     //헤더 수정 함수

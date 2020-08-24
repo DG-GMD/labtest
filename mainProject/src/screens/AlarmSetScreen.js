@@ -1,11 +1,14 @@
 import React, {Component} from 'react';
-import { LogBox, AsyncStorage, View, Text, Image, ScrollView, TextInput, Button, Platform, StyleSheet, TouchableOpacity } from 'react-native';
+import { LogBox, AsyncStorage, View, Text, Image, ScrollView, TextInput, Button, Platform, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 
 import { alarmModule } from '../utils/jvmodules';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import database from '@react-native-firebase/database';
 
 import LogoutButton from '../components/Logout';
+
+import NotifService from '../utils/NotifService';
+import RNFS from 'react-native-fs';
 
 // LogBox.ignoreLogs(['Warning: ...']);
 console.disableYellowBox = true;
@@ -28,7 +31,12 @@ export default class AlarmSet extends Component {
             pickedMinValue: 0,
             flag: false,
             testNumber: null,
-        }
+        };
+
+        this.notif = new NotifService(
+            this.onRegister.bind(this),
+            this.onNotif.bind(this),
+        );
     }
 
     componentDidMount(){
@@ -119,8 +127,19 @@ export default class AlarmSet extends Component {
                 dt.setHours(this.state.pickedHourValue);
                 dt.setMinutes(this.state.pickedMinValue);
 
-                if(Platform.OS == 'android')
+                if(Platform.OS === 'android')
                     alarmModule.diaryNotification(dt.getTime().toString());
+                else if(Platform.OS === 'ios'){
+                    let filePath = RNFS.DocumentDirectoryPath;
+                    console.log("filePath", filePath)
+                    let alarmPath = `${filePath}/alarm.mp3`;
+
+                    if(dt.getTime() < new Date().getTime())
+                        dt.setDate(dt.getDate() + 1);
+                    this.notif.cancelAll();
+                    this.notif.localNotif(alarmPath);
+                    //this.notif.scheduleNotif(dt, alarmPath);
+                }
 
                 let alarmDataJson = snapshot.val();
                 let alarmData = {};
@@ -290,6 +309,14 @@ export default class AlarmSet extends Component {
                 </View>
             </View>
         );
+    }
+
+    onRegister(token) {
+        this.setState({registerToken: token.token, fcmRegistered: true});
+    }
+
+    onNotif(notif) {
+        Alert.alert(notif.title, notif.message);
     }
 }
 
