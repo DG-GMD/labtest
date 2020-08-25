@@ -137,8 +137,8 @@ export default class AlarmSet extends Component {
                     if(dt.getTime() < new Date().getTime())
                         dt.setDate(dt.getDate() + 1);
                     this.notif.cancelAll();
-                    this.notif.localNotif(alarmPath);
-                    //this.notif.scheduleNotif(dt, alarmPath);
+                    //this.notif.localNotif(alarmPath);
+                    this.notif.scheduleNotif(dt, alarmPath);
                 }
 
                 let alarmDataJson = snapshot.val();
@@ -316,7 +316,8 @@ export default class AlarmSet extends Component {
     }
 
     onNotif(notif) {
-        Alert.alert(notif.title, notif.message);
+        //console.log('onNotif ', notif);
+        
     }
 }
 

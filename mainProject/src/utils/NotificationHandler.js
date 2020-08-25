@@ -1,4 +1,7 @@
+import {AsyncStorage} from 'react-native';
+
 import PushNotification from 'react-native-push-notification';
+import RNRestart from 'react-native-restart'; 
 
 class NotificationHandler {
   onNotification(notification) {
@@ -7,6 +10,12 @@ class NotificationHandler {
     if (typeof this._onNotification === 'function') {
       this._onNotification(notification);
     }
+
+    (async () => {
+      await AsyncStorage.setItem('isAlarm', "true");
+    })().then(()=>{
+      RNRestart.Restart();
+    });
   }
 
   onRegister(token) {

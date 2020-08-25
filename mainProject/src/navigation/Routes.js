@@ -39,6 +39,20 @@ export default function Routes() {
       }
     );
   }
+  else if(Platform.OS === 'ios'){
+    (async () => {
+      const isAlarm = await AsyncStorage.getItem('isAlarm');
+
+      return isAlarm;
+    })().then((isAlarm) => {
+      if(isAlarm === 'true'){
+        setPop(true);
+      }
+      else{
+        setPop(false);
+      }
+    })
+  }
 
   const { login } = useContext(AuthContext);
 

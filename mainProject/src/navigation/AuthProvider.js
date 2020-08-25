@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }) => {
             const onValueChange = database()
             .ref(`/users/${testNumber}`)
             .once('value', snapshot => {
-              console.log('User data: ', snapshot.val());
+              //console.log('User data: ', snapshot.val());
               let userDB = snapshot.val();
 
               let getName = userDB.name;

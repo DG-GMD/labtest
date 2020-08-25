@@ -1,13 +1,9 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { View, Text, Image, ScrollView, TextInput, Button, BackHandler, StyleSheet, Platform, TouchableOpacity, AsyncStorage } from 'react-native';
 import { alarmModule } from '../utils/jvmodules';
 import { AuthContext } from '../navigation/AuthProvider';
+import RNExitApp from 'react-native-exit-app';
 
-function startDict(admit) {
-    console.log("admit", admit);
-    if(Platform.OS === 'android')
-        alarmModule.startDict(admit);
-}
 async function savePopTime(){
     //popScreen이 표시된 시간을 로컬 저장소에 저장
     
@@ -23,6 +19,20 @@ async function savePopTime(){
 
 export default function Pop({navigation}){
     const { setSkip } = useContext(AuthContext);
+    const [refresh, setRefresh] = useState(false);
+
+    const startDict = (admit) => {
+        console.log("admit", admit);
+        if(Platform.OS === 'android')
+            alarmModule.startDict(admit);
+        else if(Platform.OS === 'ios'){
+            (async () => {
+                await AsyncStorage.setItem('isAlarm', "false");
+            })().then(()=>{
+                setRefresh(true);
+            });
+        }
+    }
     
     return (
         <View
@@ -58,6 +68,7 @@ export default function Pop({navigation}){
                     onPress = {() => {
                         savePopTime();
                         startDict(false);
+                        RNExitApp.exitApp();
                         BackHandler.exitApp();
                     }} 
                 >
