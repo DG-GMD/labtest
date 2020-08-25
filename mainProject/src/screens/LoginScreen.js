@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Platform } from 'react-native';
 import FormButton from '../components/FormButton';
 import FormInput from '../components/FormInput';
 import { AuthContext } from '../navigation/AuthProvider';
@@ -18,7 +18,7 @@ export default function LoginScreen({ navigation }) {
   const downloadAlarmFile = () => {
     let filePath = RNFS.DocumentDirectoryPath;
     console.log("filePath", filePath)
-    const downloadTo = `${filePath}/alarm.mp3`;
+    const downloadTo =  Platform.OS==='android' ?  `${filePath}/alarm.mp3` : 'alarm.mp3';
 
     var alarmPath = '/alarm/' + parseInt(testNumber/1000) + '.mp3';
 

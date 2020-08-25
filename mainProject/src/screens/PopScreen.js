@@ -4,6 +4,8 @@ import { alarmModule } from '../utils/jvmodules';
 import { AuthContext } from '../navigation/AuthProvider';
 import RNExitApp from 'react-native-exit-app';
 
+import { Player } from '@react-native-community/audio-toolkit';
+
 async function savePopTime(){
     //popScreen이 표시된 시간을 로컬 저장소에 저장
     
@@ -20,12 +22,27 @@ async function savePopTime(){
 export default function Pop({navigation}){
     const { setSkip } = useContext(AuthContext);
     const [refresh, setRefresh] = useState(false);
+    const [isPlay, setIsPlay] = useState(false);
+    const [ audioPlayer ] = useState(new Player('alarm.mp3'));
+
+    navigation.setOptions({ headerTitle: props => {return <Text>Lab Test</Text>}});
+
+    if(Platform.OS === 'ios'){
+        if(!isPlay){
+            audioPlayer.play();
+            setIsPlay(true);
+        }
+    }
 
     const startDict = (admit) => {
         console.log("admit", admit);
         if(Platform.OS === 'android')
             alarmModule.startDict(admit);
         else if(Platform.OS === 'ios'){
+            if(isPlay){
+                audioPlayer.destroy();
+            }
+            
             (async () => {
                 await AsyncStorage.setItem('isAlarm', "false");
             })().then(()=>{
