@@ -311,11 +311,11 @@ export default class Memorize extends Component {
                         backgroundColor: '#E67D60',
                         borderRadius: 30,
                         shadowColor: "#000000",
-                        shadowOpacity: 0.9,
+                        shadowOpacity: 0.4,
                         shadowRadius: 2,
                         shadowOffset: {
-                        height: 10,
-                        width: 10
+                        height: 5,
+                        width: 5
                         }
                     }}>
                         <View style={{

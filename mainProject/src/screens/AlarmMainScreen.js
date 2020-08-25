@@ -142,18 +142,19 @@ export default class AlarmMain extends Component {
                         flex: 1,
                         marginTop: 20,
                         justifyContent: 'center',
+                        // backgroundColor: 'red'
                     }}>
                         <Text style={{
-                            fontSize: 20,
+                            fontSize: 18,
                             margin: 20,
-                            marginTop: 70,
-                            marginLeft: 40,
-                            padding: 30,
+                            // marginTop: 70,
+                            // marginLeft: 40,
+                            // padding: 20,
                             
                             textAlign: 'left',
                             // backgroundColor: 'red'
                         }}>
-                            매일 단어 학습을 진행할 시간에 알람을 설정해주세요. {"\n\n"}알람은 하루 한 번만 울립니다.
+                            매일 단어 학습을 진행할 시간에 알람을 설정해주세요. 알람은 하루 한 번만 울립니다.
                         </Text>
                     </View>
 
@@ -163,11 +164,11 @@ export default class AlarmMain extends Component {
                         margin: 10,
                         borderRadius: 30,
                         shadowColor: "#000000",
-                        shadowOpacity: 0.9,
+                        shadowOpacity: 0.5,
                         shadowRadius: 2,
                         shadowOffset: {
-                        height: 10,
-                        width: 10
+                        height: 5,
+                        width: 5
                         },
                         marginTop: 70,
                         marginBottom: 50

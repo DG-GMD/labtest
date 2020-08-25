@@ -354,11 +354,11 @@ export default class Check extends Component {
                     borderBottomLeftRadius: 15,
                     borderBottomRightRadius: 15,
                     shadowColor: "#000000",
-                    shadowOpacity: 0.9,
+                    shadowOpacity: 0.4,
                     shadowRadius: 2,
                     shadowOffset: {
-                    height: 10,
-                    width: 10
+                    height: 5,
+                    width: 5
                     }
                   }}>
                     <Text style={{

@@ -40,7 +40,7 @@ export default class AlarmSet extends Component {
     }
 
     componentDidMount(){
-        this.getData();
+        // this.getData();
 
         if(!this.state.flag){
             (async () => {

@@ -14,31 +14,29 @@ export default function LogoutButton({restDate, userName}) {
     return (
         <View style={{
             flex: 1,
+            
+            flexWrap: 'wrap',
             flexDirection: 'row',
+            justifyContent: 'flex-end',
+            alignContent: 'center',
+            alignItems: 'center',
+            // backgroundColor: 'yellow'
         }}>
-            <View style={{
-                flex: 3,
-                justifyContent: 'center',
-                
-            }}>
+            
                 <Text style={{
-                    marginLeft: 10,
+                    // marginLeft: 10,
                     fontSize: 17
                 }}>
-                    D+{restDate} 안녕하세요 {userName}님
+                    D+{restDate} 안녕하세요 {userName}님 {'           '}
                 </Text>
-            </View>
             
-            <View style={{
-                flex: 1,
-                flexDirection: 'row',
-                justifyContent: 'center',
-            }}>
+            
+            
                 <TouchableOpacity 
                     style={styles.buttonContainer} onPress={ () => {logoutAndExit(); logout();} }>
-                    <Text>Log out</Text>
+                    <Text style={{}}>Logout</Text>
                 </TouchableOpacity>
-            </View>
+            
         </View>
     );
 }
@@ -47,13 +45,13 @@ export default function LogoutButton({restDate, userName}) {
   
 const styles = StyleSheet.create({
     buttonContainer: {
-        width: 100,
+        width: 90,
         height: 40,
         backgroundColor: '#F4DECB',
         padding: 10,
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 40
+        borderRadius: 30
       },
 });
 
