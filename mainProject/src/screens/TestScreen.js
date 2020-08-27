@@ -407,11 +407,11 @@ export default class Test extends Component{
                     flex: 1,
                     backgroundColor: '#8EE4AF',
                     shadowColor: "#000000",
-                    shadowOpacity: 0.9,
-                    shadowRadius: 2,
+                    shadowOpacity: 0.7,
+                    shadowRadius: 10,
                     shadowOffset: {
-                    height: 10,
-                    width: 10
+                    height: 3,
+                    width: 5
                     },
                     borderBottomLeftRadius: 30,
                     borderBottomRightRadius: 30,
@@ -422,14 +422,14 @@ export default class Test extends Component{
                         margin: 20
                     }}>
                         <Text style={{
-                            fontSize: 20,
+                            fontSize: 22,
                             textAlign: 'center',
                             margin:8
                         }}>
                             단어 테스트 결과
                         </Text>
                         <Text style={{
-                            fontSize: 17,
+                            fontSize: 16,
                             textAlign: 'center'
                         }}>
                             {year}년 {month+1}월 {date}일
@@ -438,10 +438,10 @@ export default class Test extends Component{
                 </View>
                 
                 <View style={{
-                    flex: 5,
+                    flex: 6,
                     paddingLeft: 18,
                     paddingRight: 18,
-                    backgroundColor: '#EFEFEF',
+                    // backgroundColor: '#EFEFEF',
                     
                 
                 }}>
@@ -882,7 +882,7 @@ const styles = StyleSheet.create({
     bottom:{
         flex: 1,
     },
-    head: {  height: 40,  backgroundColor: 'darkseagreen'  },
+    head: {  height: 40,  backgroundColor: '#EBEFBF'  },
     wrapper: { flexDirection: 'row' },
     title: { flex: 1, backgroundColor: 'darkseagreen' },
     row: {  height: 55  },

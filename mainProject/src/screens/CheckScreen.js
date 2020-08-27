@@ -159,11 +159,11 @@ export default class Check extends Component {
                 if(date != 7 && date != 14){
                   // 0<=i<=6
                   if( ((date-1) / 7) < 1){
-                    _tableData1[0][date-1] = 'v';  
+                    _tableData1[0][date-1] = '✅';  
                   }
                   // 7<=i<=13
                   else{
-                    _tableData2[0][date-8] = 'v';  
+                    _tableData2[0][date-8] = '✅';  
                   }
                 }
                 //시험 정보가 있는 날인데 그 날이 7, 14일째라면
@@ -180,7 +180,7 @@ export default class Check extends Component {
                     returnDOM1 = <View >
                       {/* <Text style={{fontSize:14}}>v</Text> */}
                       <Text style={{fontSize:11, color: 'blue', alignContent:'center', textAlign: 'center'}} onPress={() => {OpenInvestigationLink(this.state.nowDdate, link1, 7)}}>
-                        설문조사{"\n"}v
+                        설문조사{"\n"}✅
                       </Text>
                     </View>;
 
@@ -195,7 +195,7 @@ export default class Check extends Component {
                     returnDOM2 = <View >
                       {/* <Text style={{fontSize:14}}>v</Text> */}
                       <Text style={{fontSize:11, color: 'blue', alignContent:'center', textAlign: 'center'}} onPress={() => {OpenInvestigationLink(this.state.nowDdate, link2, 14)}}>
-                        설문조사{"\n"}v
+                        설문조사{"\n"}✅
                       </Text>
                     </View>;
 
