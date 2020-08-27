@@ -1,8 +1,10 @@
 import React, { useContext, useState, useEffect }from 'react';
-import { View, StyleSheet, TouchableOpacity, Text, AsyncStorage } from 'react-native';          
+import { Dimensions, View, StyleSheet, TouchableOpacity, Text, AsyncStorage } from 'react-native';          
                 
 import { AuthContext } from '../navigation/AuthProvider';
              
+var {height, width} = Dimensions.get('window');
+
 //로그아웃 버튼, 상단 헤더 DOM 생성 후 출력
 export default function LogoutButton({restDate, userName}) {
     const { logout } = useContext(AuthContext);
@@ -14,7 +16,7 @@ export default function LogoutButton({restDate, userName}) {
     return (
         <View style={{
             flex: 1,
-            
+            // position: 'relative',
             flexWrap: 'wrap',
             flexDirection: 'row',
             justifyContent: 'flex-end',
@@ -22,21 +24,16 @@ export default function LogoutButton({restDate, userName}) {
             alignItems: 'center',
             // backgroundColor: 'yellow'
         }}>
-            
-                <Text style={{
-                    // marginLeft: 10,
-                    fontSize: 17
-                }}>
-                    D+{restDate} 안녕하세요 {userName}님 {'           '}
-                </Text>
-            
-            
-            
-                <TouchableOpacity 
-                    style={styles.buttonContainer} onPress={ () => {logoutAndExit(); logout();} }>
-                    <Text style={{}}>Logout</Text>
-                </TouchableOpacity>
-            
+            <Text style={{
+                marginRight: 15,
+                fontSize: 17
+            }}>
+                D+{restDate} 안녕하세요 {userName}님 
+            </Text>
+            <TouchableOpacity 
+                style={styles.buttonContainer} onPress={ () => {logoutAndExit(); logout();} }>
+                <Text style={{fontSize: 14}}>Logout</Text>
+            </TouchableOpacity> 
         </View>
     );
 }
@@ -45,8 +42,8 @@ export default function LogoutButton({restDate, userName}) {
   
 const styles = StyleSheet.create({
     buttonContainer: {
-        width: 90,
-        height: 40,
+        width: 80,
+        // position: 'absolute',
         backgroundColor: '#F4DECB',
         padding: 10,
         alignItems: 'center',
