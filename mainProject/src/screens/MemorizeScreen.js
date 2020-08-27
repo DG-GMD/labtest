@@ -2,10 +2,10 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import {FormButton} from '../components/FormButton';
 import React, { Component, useState, useEffect } from 'react';
-import { LogBox, AsyncStorage, Button, TouchableHighlight, View, Text, Image, ScrollView, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { LogBox, Button, TouchableHighlight, View, Text, Image, ScrollView, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import database from '@react-native-firebase/database';
 
-
+import AsyncStorage from '@react-native-community/async-storage'
 import LogoutButton from '../components/Logout';
 
 // LogBox.ignoreLogs(['Warning: ...']);
@@ -45,6 +45,7 @@ export default class Memorize extends Component {
         (async () =>{
             let nowdDate = await getCurrentDate();
             console.log(nowdDate);
+            console.log("Memorize Constructor:", await AsyncStorage.getItem('popTime'));
             return nowdDate;
         })()
         .then((nowdDate) => {
@@ -62,6 +63,7 @@ export default class Memorize extends Component {
             });
         });
 
+        
         
         
         this.props.navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Test Loading...</Text> });
@@ -428,12 +430,12 @@ async function getPopScreenTime(){
     let item = -1;
     try{
         item = await AsyncStorage.getItem('popTime');
-        console.log('get popItem', item);
+        console.log('MemorizeScreen: get popItem', item);
     }
     catch(e){
         console.log('fail to get popTime at MemorizeScreen', e);
     }
-    console.log('popTime : ', item);
+    console.log('MemorizeScreen: popTime : ', item);
     return item;
 }
 

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import { AsyncStorage, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import database from '@react-native-firebase/database';
 
 import LogoutButton from '../components/Logout';

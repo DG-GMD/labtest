@@ -1,7 +1,8 @@
 import React, { createContext, useState } from 'react';
 import database from '@react-native-firebase/database';
 import { useNavigation } from '@react-navigation/native';
-import { StyleSheet, Text, AsyncStorage} from "react-native";
+import { StyleSheet, Text} from "react-native";
+import AsyncStorage from '@react-native-community/async-storage';
 
 /**
  * This provider is created

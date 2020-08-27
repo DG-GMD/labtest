@@ -51,10 +51,16 @@ export default function TestStack() {
         <Stack.Screen
           name="TestScreen"
           component={Test}
+          options={{
+            // headerLeft: null
+          }}
         />
         <Stack.Screen
           name="MemorizeScreen"
           component={Memorize}
+          options={{
+            headerLeft: null
+          }}
         />
       </Stack.Navigator>
     );
@@ -68,10 +74,16 @@ export default function TestStack() {
         <Stack.Screen
           name='MemorizeScreen'
           component={Memorize}
+          options={{
+            headerLeft: null
+          }}
         />
         <Stack.Screen
           name='TestScreen'
           component={Test}
+          options={{
+            headerLeft: null
+          }}
         />
       </Stack.Navigator>
     );

@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import { LogBox, AsyncStorage, View, Text, Image, ScrollView, TextInput, Button, Platform, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { LogBox, View, Text, Image, ScrollView, TextInput, Button, Platform, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage'
 
 import { alarmModule } from '../utils/jvmodules';
 import DateTimePicker from '@react-native-community/datetimepicker';

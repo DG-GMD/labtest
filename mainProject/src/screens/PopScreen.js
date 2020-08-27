@@ -1,8 +1,10 @@
 import React, { useContext, useState } from 'react';
-import { View, Text, Image, ScrollView, TextInput, Button, BackHandler, StyleSheet, Platform, TouchableOpacity, AsyncStorage } from 'react-native';
+import { View, Text, Image, ScrollView, TextInput, Button, BackHandler, StyleSheet, Platform, TouchableOpacity} from 'react-native';
 import { alarmModule } from '../utils/jvmodules';
 import { AuthContext } from '../navigation/AuthProvider';
 import RNExitApp from 'react-native-exit-app';
+
+import AsyncStorage from '@react-native-community/async-storage'
 
 import { Player } from '@react-native-community/audio-toolkit';
 

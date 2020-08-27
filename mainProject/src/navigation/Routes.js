@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { StyleSheet, Text, AsyncStorage, Platform } from "react-native";
+import { StyleSheet, Text,  Platform } from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import AuthStack from './AuthStack';
@@ -7,6 +7,7 @@ import HomeStack from './HomeStack';
 import { AuthContext } from './AuthProvider';
 import Loading from '../components/Loading';
 import { alarmModule } from '../utils/jvmodules'
+import AsyncStorage from '@react-native-community/async-storage'
 
 import { createStackNavigator } from '@react-navigation/stack';
 import PopScreen from '../screens/PopScreen';

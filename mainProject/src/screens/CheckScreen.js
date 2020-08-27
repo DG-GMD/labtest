@@ -2,13 +2,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import React, { Component } from 'react';
-import { LogBox, AsyncStorage, Button, StyleSheet, View, Text, Image, ScrollView, TextInput
+import { LogBox, Button, StyleSheet, View, Text, Image, ScrollView, TextInput
     , TouchableOpacity, Alert, ImageBackground, Linking} from 'react-native';
     import database from '@react-native-firebase/database';
 
 import { Table, TableWrapper, Row, Rows, Cell, Col } from 'react-native-table-component';
 
-
+import AsyncStorage from '@react-native-community/async-storage'
 
 
 import LogoutButton from '../components/Logout';

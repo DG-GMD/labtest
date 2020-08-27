@@ -2,7 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import React, { Component, useState, useEffect } from 'react';
-import { Dimensions, Yellow, AsyncStorage, Button, TouchableOpacity, TouchableHighlight, View, Image, ScrollView, TextInput, StyleSheet, LogBox } from 'react-native';
+import { Platform, Dimensions, Yellow, Button, TouchableOpacity, TouchableHighlight, View, Image, ScrollView, TextInput, StyleSheet, LogBox } from 'react-native';
 import {RadioButton, Text} from 'react-native-paper';
 import database from '@react-native-firebase/database';
 
@@ -12,6 +12,7 @@ import Toast from 'react-native-simple-toast';
 
 import { windowHeight, windowWidth } from '../utils/Dimensions';
 
+import AsyncStorage from '@react-native-community/async-storage'
 import LogoutButton from '../components/Logout';
 
 // LogBox.ignoreLogs(['Warning: ...']);
@@ -801,10 +802,16 @@ async function writeTestResultToDB(item, _lastIndex) {
 }
 
 function MeaningRadioButton(props){
+    let RadioButtonDOM;
+    if(Platform.OS == 'ios'){
+        RadioButtonDOM = <RadioButton.ios value={props.number} />;
+    }
     return (
         <View>
             <Text style={styles.problemMeaning}>{props.number}. {props.meaning}</Text>
-            <RadioButton value={props.number} />
+            
+            <RadioButton.IOS value={props.number} />
+    
         </View>
     );
 }
