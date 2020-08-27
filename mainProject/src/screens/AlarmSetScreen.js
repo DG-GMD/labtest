@@ -138,7 +138,7 @@ export default class AlarmSet extends Component {
                         dt.setDate(dt.getDate() + 1);
                     this.notif.cancelAll();
                     //this.notif.localNotif(alarmPath);
-                    this.notif.scheduleNotif(dt, alarmPath);
+                    this.notif.scheduleNotif(dt, 'alarm.mp3');
                 }
 
                 let alarmDataJson = snapshot.val();
