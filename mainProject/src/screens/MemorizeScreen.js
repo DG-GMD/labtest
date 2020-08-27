@@ -68,8 +68,12 @@ export default class Memorize extends Component {
         //writeTestState('before test');
     }
     componentDidMount(){
+        //header 수정
         this.getData();
+
+        //popScreen이 떳는지 체크
         this._IsTestStart();
+
         // console.log('---------------in didmout');
       }
     
@@ -370,7 +374,8 @@ export default class Memorize extends Component {
                             alignItems: 'center'
                         }}>
                             <Text style={{
-                                fontSize: 20
+                                fontSize: 20,
+                                marginBottom: 10
                             }}>오늘의 단어</Text>
                             <Text style={{
                                 fontSize: 15
@@ -410,7 +415,7 @@ async function testSetPoptime(){
     let now = new Date();
     try{
         await AsyncStorage.setItem('popTime', now.getTime().toString());
-        console.log('save poptime to test');
+        console.log('save poptime to test', await AsyncStorage.getItem('popTime'));
     }
     catch(e){
         console.log('fail to save poptime ', e);
@@ -465,16 +470,16 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: 'rgba(255,255,255,0.6)'
     },
+    //단어, 뜻이 표기되는 짙은 박스
     middle:{
         flex: 2,
-        
         justifyContent: 'center',
         shadowColor: "#000000",
-        shadowOpacity: 0.9,
+        shadowOpacity: 0.7,
         shadowRadius: 2,
         shadowOffset: {
-        height: 10,
-        width: 10
+        height: 7,
+        width: 0
         },
         backgroundColor: '#8EE4AF',
     },
