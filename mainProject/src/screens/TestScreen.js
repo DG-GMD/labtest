@@ -2,7 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import React, { Component, useState, useEffect } from 'react';
-import { Yellow, AsyncStorage, Button, TouchableOpacity, TouchableHighlight, View, Image, ScrollView, TextInput, StyleSheet, LogBox } from 'react-native';
+import { Dimensions, Yellow, AsyncStorage, Button, TouchableOpacity, TouchableHighlight, View, Image, ScrollView, TextInput, StyleSheet, LogBox } from 'react-native';
 import {RadioButton, Text} from 'react-native-paper';
 import database from '@react-native-firebase/database';
 
@@ -22,6 +22,8 @@ let dbList;
 let tempProblemList = [];
 let tempAnswerList = [];
 let tempProblemItemList = [];
+
+var {height, width} = Dimensions.get('window');
 
 export default class Test extends Component{
     constructor(props){
@@ -475,19 +477,27 @@ export default class Test extends Component{
                     <View style={{
                         justifyContent: 'center',
                         alignItems: 'center',
-                        flex: 2,
+                        flex: 1,
                         // backgroundColor: 'blue'
                     }}>
                         <Text style={{fontSize:17}}>
                         오늘의 단어 학습을 모두 완료하셨습니다. {'\n'}수고하셨습니다
                         </Text>
-                        <TouchableOpacity style={styles.reMembuttonContainer} onPress={() => {this.initTest()}}>
-                            <Text>
-                                다시 학습하기
-                            </Text>
-                        </TouchableOpacity>
+                        
                     {/* <Button title="init testIndex" onPress={() => {this.initTestResult() }}/> */}
                 </View>
+                    <View style={{
+                        justifyContent: 'center',
+                        alignItems: 'flex-end',
+                        flex: 1,
+                        // backgroundColor: 'blue'
+                    }}>
+                        <TouchableOpacity style={styles.reMembuttonContainer} onPress={() => {this.initTest()}}>
+                            <Text>
+                                한번 더 ↩
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
         );
@@ -986,11 +996,11 @@ const styles = StyleSheet.create({
         elevation: 24,
     },
     reMembuttonContainer: {
-        width: 150,
+        width: 90,
         height: 40,
         backgroundColor: '#8EE4AF',
         padding: 10,
-        margin: 10,
+        margin: height*0.01,
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 40,
