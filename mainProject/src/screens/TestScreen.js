@@ -315,27 +315,29 @@ export default class Test extends Component{
                         <Text style={{
                             fontSize: 35,
                             color: 'midnightblue',
-                            fontWeight: 'bold'
+                            fontWeight: 'bold',
+                            marginTop: 30,
                         }}>
                             오늘의 단어 테스트{"\n"}
                         </Text>
                         <Text style={{
                             color: '#605050',
-                            fontSize: 23
+                            fontSize: 23,
+                            marginTop: 30,
                         }}>
                             {"\n"}
                             하단의 ‘테스트 시작’ 버튼을 누르시면 단어테스트를 시작합니다.{"\n"}
                             객관식의 총 5 문항입니다.{"\n"} 
                         </Text>
 
-                        <TouchableOpacity
+                        {/* <TouchableOpacity
                                     style={{width: 200, height: 50, }}  
                                     onPress={() => {returnToMemorize();}  }
                                 >
                                     <Text style={{color: 'white'}}>
                                         단어 암기로 돌아가도록 초기화
                                     </Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </View>
                     
                     <View elevator={10} style={{flex:1, backgroundColor:'#8EE4AF'}}>
@@ -481,7 +483,7 @@ export default class Test extends Component{
                         flex: 1,
                         // backgroundColor: 'blue'
                     }}>
-                        <Text style={{fontSize:17}}>
+                        <Text style={{fontSize:17, textAlign:'center'}}>
                         오늘의 단어 학습을 모두 완료하셨습니다. {'\n'}수고하셨습니다
                         </Text>
                         
@@ -489,13 +491,13 @@ export default class Test extends Component{
                 </View>
                     <View style={{
                         justifyContent: 'center',
-                        alignItems: 'flex-end',
+                        alignItems: 'center',
                         flex: 1,
                         // backgroundColor: 'blue'
                     }}>
                         <TouchableOpacity style={styles.reMembuttonContainer} onPress={() => {this.initTest()}}>
-                            <Text>
-                                한번 더 ↩
+                            <Text style={{fontSize: 15 , color: 'mediumseagreen', marginBottom: 10}}>
+                                다시 학습하기
                             </Text>
                         </TouchableOpacity>
                     </View>
@@ -1003,22 +1005,12 @@ const styles = StyleSheet.create({
         elevation: 24,
     },
     reMembuttonContainer: {
-        width: 90,
         height: 40,
-        backgroundColor: '#8EE4AF',
+        backgroundColor: 'transparent',
         padding: 10,
         margin: height*0.01,
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 40,
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 2,
-            height: 2,
-        },
-        shadowOpacity: 0.39,
-        shadowRadius: 8.30,
-
         elevation: 5,
     },
 });
