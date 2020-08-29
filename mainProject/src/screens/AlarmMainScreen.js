@@ -170,8 +170,8 @@ export default class AlarmMain extends Component {
                         height: 5,
                         width: 5
                         },
-                        marginTop: 70,
-                        marginBottom: 50
+                        marginTop: 20,
+                        marginBottom: 70
                     }}>
                         <View style={{
                             flex: 1,

@@ -133,7 +133,7 @@ function AlarmStack({navigation}){
   return (  
     <Stack.Navigator>
         <Stack.Screen name="AlarmMain" component={AlarmMain} />
-        <Stack.Screen name="AlarmSet" component={AlarmSet} />
+        <Stack.Screen name="AlarmSet" component={AlarmSet} options={{ title: '알람설정'}}/>
     </Stack.Navigator>
   );
 }

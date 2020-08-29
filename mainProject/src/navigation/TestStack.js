@@ -3,7 +3,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import  Memorize  from '../screens/MemorizeScreen';
 import  Test  from '../screens/TestScreen';
-import { AsyncStorage } from 'react-native';
+//import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage'
 
 const Stack = createStackNavigator();
 

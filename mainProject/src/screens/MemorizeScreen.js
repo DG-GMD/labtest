@@ -226,7 +226,7 @@ export default class Memorize extends Component {
                         writeTestStateTesting(); 
                         this.props.navigation.navigate('TestScreen');
                     }} >
-                        <Text style={styles.buttonText}>단어 테스트 시작</Text>
+                        <Text style={styles.buttonText}>테스트 시작</Text>
                     </TouchableOpacity>
                 </View>
             );
@@ -242,8 +242,27 @@ export default class Memorize extends Component {
         const flag =  this.state.isWord;
         //5번째 단어
         if(this.state.count == 5 && !flag){
-            bottomText = '“단어학습이 완료되었습니다. 다시 한 번 학습하기 또는 단어테스트 보기 중 선택해주세요.';
-            
+            return(
+                <View>
+                    <Text style={{
+                        fontSize: 23,
+                        textAlign: 'center',
+                        color: 'dimgray',
+                        marginTop: 20
+                    }}>
+                        단어학습을 완료하였습니다.
+                    </Text>
+                    <Text style={{
+                        fontSize: 15,
+                        textAlign: 'center',
+                        color: 'dimgray',
+                        marginTop: 20
+                    }}>
+                        단어를 다시 확인하려면 '다시 학습'을, {'\n'}테스트를 진행하려면 '테스트 시작'을 눌러주세요.
+                    </Text>
+                </View>
+            );
+            //bottomText = '“단어학습이 완료되었습니다. 다시 한 번 학습하기 또는 단어테스트 보기 중 선택해주세요.';
         }
         //1~4번째 영단어
         else if(flag){
@@ -312,8 +331,8 @@ export default class Memorize extends Component {
                         justifyContent: 'center',
                         alignItems: 'center',
                         margin: 40,
-                        marginTop: 100,
-                        marginBottom: 100,
+                        marginTop: 140,
+                        marginBottom: 140,
                         backgroundColor: '#E67D60',
                         borderRadius: 30,
                         shadowColor: "#000000",
@@ -352,12 +371,13 @@ export default class Memorize extends Component {
                                 fontSize: 22,
                                 
                             }}>
-                                알람이 울리지 않아 단어 시험을 시작할 수 없습니다.
+                                알람이 울리지 않아 {'\n'}
+                                단어 시험을 시작할 수 없습니다.
                             </Text>
                         </View>
                         
                     </View>
-                    <Button title='set pop time' onPress={() => {testSetPoptime()}}/>
+                    {/* <Button title='set pop time' onPress={() => {testSetPoptime()}}/> */}
                 </View>
             );
         }
@@ -427,7 +447,7 @@ async function testSetPoptime(){
 
 //popscreen이 떴는지 확인
 async function getPopScreenTime(){
-    let item = -1;
+    let item = 20;
     try{
         item = await AsyncStorage.getItem('popTime');
         console.log('MemorizeScreen: get popItem', item);
@@ -495,22 +515,22 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         marginTop: 10,
-        width: 130,
-        height: 60,
+        width: 100,
+        height: 50,
         backgroundColor: 'lightgreen',
         padding: 10,
-        margin: 10,
+        margin: 20,
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 8
     },
     returnbuttonContainer: {
         marginTop: 10,
-        width: 130,
-        height: 60,
+        width: 100,
+        height: 50,
         backgroundColor: '#F4DECB',
         padding: 10,
-        margin: 10,
+        margin: 20,
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 8

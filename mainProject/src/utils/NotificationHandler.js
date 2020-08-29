@@ -1,5 +1,4 @@
-import {AsyncStorage} from 'react-native';
-
+import AsyncStorage from '@react-native-community/async-storage'
 import PushNotification from 'react-native-push-notification';
 import RNRestart from 'react-native-restart'; 
 

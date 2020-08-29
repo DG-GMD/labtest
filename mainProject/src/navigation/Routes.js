@@ -99,6 +99,7 @@ export default function Routes() {
           <Stack.Screen
             name='Pop'
             component={PopScreen}
+            options={{ title: 'Lab Test'}}
           />
         </Stack.Navigator>
       </NavigationContainer>

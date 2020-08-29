@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect }from 'react';
-import { Dimensions, View, StyleSheet, TouchableOpacity, Text, AsyncStorage } from 'react-native';          
+import { Dimensions, View, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage'       
                 
 import { AuthContext } from '../navigation/AuthProvider';
              
@@ -19,8 +20,8 @@ export default function LogoutButton({restDate, userName}) {
             // position: 'relative',
             flexWrap: 'wrap',
             flexDirection: 'row',
-            justifyContent: 'flex-end',
-            alignContent: 'center',
+            justifyContent: 'space-between',
+            //alignContent: 'center',
             alignItems: 'center',
             // backgroundColor: 'yellow'
         }}>
@@ -47,7 +48,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#F4DECB',
         padding: 10,
         alignItems: 'center',
-        justifyContent: 'center',
         borderRadius: 30
       },
 });

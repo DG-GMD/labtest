@@ -13,6 +13,7 @@ async function savePopTime(){
     
     let now = new Date();
     try{
+        console.log('savePoptime ', now.getTime().toString());
         await AsyncStorage.setItem('popTime', now.getTime().toString());
     }
     catch(e){
@@ -26,8 +27,6 @@ export default function Pop({navigation}){
     const [refresh, setRefresh] = useState(false);
     const [isPlay, setIsPlay] = useState(false);
     const [ audioPlayer ] = useState(new Player('alarm.mp3'));
-
-    navigation.setOptions({ headerTitle: props => {return <Text>Lab Test</Text>}});
 
     if(Platform.OS === 'ios'){
         if(!isPlay){
@@ -60,9 +59,13 @@ export default function Pop({navigation}){
                 alignItems: 'center',
             }}
         >
-            <View style={{margin: 20, flex:1, flexDirection: 'row'}}>
-                <Text style={{fontSize: 25, alignSelf:'center'}}>
-                    단어테스트를 보시겠습니까?
+            <View style={{
+                width: '100%',
+                flex:1, 
+                flexDirection: 'row',
+            }}>
+                <Text style={{fontSize: 25, alignSelf:'center', textAlign: 'center'}}>
+                    오늘의 단어 학습을 시작하시겠습니까?
                 </Text>
             </View>
             <View style={{
@@ -77,7 +80,7 @@ export default function Pop({navigation}){
                         setSkip(2);
                     }} 
                 >
-                    <Text>
+                    <Text style={{fontSize: 18}}>
                         예
                     </Text>
                 </TouchableOpacity>
@@ -91,7 +94,7 @@ export default function Pop({navigation}){
                         BackHandler.exitApp();
                     }} 
                 >
-                    <Text>
+                    <Text style={{fontSize: 18}}>
                         아니요
                     </Text>
                 </TouchableOpacity>
@@ -103,19 +106,13 @@ export default function Pop({navigation}){
 const styles = StyleSheet.create({
     buttonContainer: {
         marginTop: 10,
-        width: 80,
-        height: 40,
+        width: 90,
+        height: 50,
         backgroundColor: 'lightgreen',
         padding: 10,
         margin: 20,
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 8,
-    },
-    PickerContainer: {
-        width: 100,
-        height: 170,
-        marginHorizontal: 20,
-        alignItems: 'center',
     },
 });
