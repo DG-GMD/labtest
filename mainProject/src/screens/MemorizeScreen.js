@@ -8,6 +8,8 @@ import database from '@react-native-firebase/database';
 import AsyncStorage from '@react-native-community/async-storage'
 import LogoutButton from '../components/Logout';
 
+import RNFS from 'react-native-fs';
+
 // LogBox.ignoreLogs(['Warning: ...']);
 console.disableYellowBox = true;
 
@@ -45,7 +47,7 @@ export default class Memorize extends Component {
         (async () =>{
             let nowdDate = await getCurrentDate();
             console.log(nowdDate);
-            console.log("Memorize Constructor:", await AsyncStorage.getItem('popTime'));
+            //console.log("Memorize Constructor:", await AsyncStorage.getItem('popTime'));
             return nowdDate;
         })()
         .then((nowdDate) => {
@@ -81,44 +83,77 @@ export default class Memorize extends Component {
     
     _IsTestStart(){
         (async () => {
-            //PopScreen이 표시된 시간 확인 확인
-            let popScreenTime = await getPopScreenTime();
-            console.log('popScreenTime: ', popScreenTime);
+            await RNFS.readDir(RNFS.DocumentDirectoryPath) // On Android, use "RNFS.DocumentDirectoryPath" (MainBundlePath is not defined)
+            .then((result) => {
+                //console.log('GOT RESULT', result);
 
-            //popItem이 AsyncStorage에 없을 때
-            if(popScreenTime == -1){
-                this.setState({
-                    isPop: false
+                var i = 0, index = 0;
+                result.forEach((element) => {
+                    if(element.name.toString() === 'popTime.txt'){
+                        //console.log('element', element);
+                        index = i;
+                    }
+                    i++;
                 });
-                return;
-            }
-            //firstLoginTime 가져오기
-            let firstLoginTime = await AsyncStorage.getItem('firstLoginTime');
-            
-            //현재 D+Date 구하기
-            let now = new Date();
-            let dDate = new Date(now.getTime() - firstLoginTime);
-            
-            //PopScreen이 마지막으로 표시된 D+Date
-            let popDate = new Date(popScreenTime - firstLoginTime);
 
-            console.log('현재 날짜 ', dDate.getDate(), 'pop 날짜 ', popDate.getDate());
-            //PopScreen이 뜬 날짜와 현재 날짜가 동일하다면
-            if(dDate.getDate() == popDate.getDate()){
-                //반드시 PopScreen이 오늘 떴던 것이므로 시험 시작 가능
-                this.setState({
-                    isPop: true
-                });
-            }
-            //PopScreen이 뜬 날짜와 현재 날짜가 다르다면
-            else{
-                
-                //PopScreen이 오늘 아직 뜨지 않았다.
-                //= 아직 시험을 시작하면 안된다
-                this.setState({
-                    isPop: false
-                });
-            }
+                return Promise.all([RNFS.stat(result[index].path), result[index].path]);
+            })
+            .then((statResult) => {
+                //console.log('statResult', statResult);
+                if (statResult[0].isFile()) {
+                    // if we have a file, read it
+                    return RNFS.readFile(statResult[1], 'utf8');
+                }
+
+                return 'no file';
+            })
+            .then((contents) => {
+                // log the file contents
+                console.log('popTime', contents);
+
+                //PopScreen이 표시된 시간 확인 확인
+                let popScreenTime = contents;
+                console.log('popScreenTime: ', popScreenTime);
+
+                //popItem이 AsyncStorage에 없을 때
+                if(popScreenTime == -1){
+                    this.setState({
+                        isPop: false
+                    });
+                    return;
+                }
+                //firstLoginTime 가져오기
+                AsyncStorage.getItem('firstLoginTime')
+                    .then((firstLoginTime)=>{
+                        //현재 D+Date 구하기
+                        let now = new Date();
+                        let dDate = new Date(now.getTime() - firstLoginTime);
+                        
+                        //PopScreen이 마지막으로 표시된 D+Date
+                        let popDate = new Date(popScreenTime - firstLoginTime);
+
+                        console.log('현재 날짜 ', dDate.getDate(), 'pop 날짜 ', popDate.getDate());
+                        //PopScreen이 뜬 날짜와 현재 날짜가 동일하다면
+                        if(dDate.getDate() == popDate.getDate()){
+                            //반드시 PopScreen이 오늘 떴던 것이므로 시험 시작 가능
+                            this.setState({
+                                isPop: true
+                            });
+                        }
+                        //PopScreen이 뜬 날짜와 현재 날짜가 다르다면
+                        else{
+                            
+                            //PopScreen이 오늘 아직 뜨지 않았다.
+                            //= 아직 시험을 시작하면 안된다
+                            this.setState({
+                                isPop: false
+                            });
+                        }
+                    })
+            })
+            .catch((err) => {
+                console.log(err.message, err.code);
+            });
         })();
     }
 
@@ -431,33 +466,19 @@ export default class Memorize extends Component {
     }
 }
 
-async function testSetPoptime(){
-    //popScreen이 표시된 시간을 로컬 저장소에 저장
+// async function testSetPoptime(){
+//     //popScreen이 표시된 시간을 로컬 저장소에 저장
     
-    let now = new Date();
-    try{
-        await AsyncStorage.setItem('popTime', now.getTime().toString());
-        console.log('save poptime to test', await AsyncStorage.getItem('popTime'));
-    }
-    catch(e){
-        console.log('fail to save poptime ', e);
-    }
+//     let now = new Date();
+//     try{
+//         await AsyncStorage.setItem('popTime', now.getTime().toString());
+//         console.log('save poptime to test', await AsyncStorage.getItem('popTime'));
+//     }
+//     catch(e){
+//         console.log('fail to save poptime ', e);
+//     }
     
-}
-
-//popscreen이 떴는지 확인
-async function getPopScreenTime(){
-    let item = 20;
-    try{
-        item = await AsyncStorage.getItem('popTime');
-        console.log('MemorizeScreen: get popItem', item);
-    }
-    catch(e){
-        console.log('fail to get popTime at MemorizeScreen', e);
-    }
-    console.log('MemorizeScreen: popTime : ', item);
-    return item;
-}
+// }
 
 async function getCurrentDate(){
     let now = new Date();

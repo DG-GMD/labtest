@@ -2,55 +2,34 @@ import React, { useContext, useState } from 'react';
 import { View, Text, Image, ScrollView, TextInput, Button, BackHandler, StyleSheet, Platform, TouchableOpacity} from 'react-native';
 import { alarmModule } from '../utils/jvmodules';
 import { AuthContext } from '../navigation/AuthProvider';
-import RNExitApp from 'react-native-exit-app';
 
-import AsyncStorage from '@react-native-community/async-storage'
+//import AsyncStorage from '@react-native-community/async-storage'
 
 import { Player } from '@react-native-community/audio-toolkit';
 
-async function savePopTime(){
-    //popScreen이 표시된 시간을 로컬 저장소에 저장
+import RNFS from 'react-native-fs';
+
+// async function savePopTime(){
+//     //popScreen이 표시된 시간을 로컬 저장소에 저장
     
-    let now = new Date();
-    try{
-        console.log('savePoptime ', now.getTime().toString());
-        await AsyncStorage.setItem('popTime', now.getTime().toString());
-    }
-    catch(e){
-        console.log('fail to save poptime ', e);
-    }
+//     let now = new Date();
+//     try{
+//         console.log('savePoptime ', now.getTime().toString());
+//         await AsyncStorage.setItem('popTime', now.getTime().toString());
+//     }
+//     catch(e){
+//         console.log('fail to save poptime ', e);
+//     }
     
+// }
+
+const startDict = (admit) => {
+    console.log("admit", admit);
+    alarmModule.startDict(admit);
 }
 
 export default function Pop({navigation}){
     const { setSkip } = useContext(AuthContext);
-    const [refresh, setRefresh] = useState(false);
-    const [isPlay, setIsPlay] = useState(false);
-    const [ audioPlayer ] = useState(new Player('alarm.mp3'));
-
-    if(Platform.OS === 'ios'){
-        if(!isPlay){
-            audioPlayer.play();
-            setIsPlay(true);
-        }
-    }
-
-    const startDict = (admit) => {
-        console.log("admit", admit);
-        if(Platform.OS === 'android')
-            alarmModule.startDict(admit);
-        else if(Platform.OS === 'ios'){
-            if(isPlay){
-                audioPlayer.destroy();
-            }
-            
-            (async () => {
-                await AsyncStorage.setItem('isAlarm', "false");
-            })().then(()=>{
-                setRefresh(true);
-            });
-        }
-    }
     
     return (
         <View
@@ -75,10 +54,19 @@ export default function Pop({navigation}){
                 <TouchableOpacity
                     style={styles.buttonContainer}
                     onPress = {() => {
-                        savePopTime();
-                        startDict(true);
-                        setSkip(2);
-                    }} 
+                        var path = RNFS.DocumentDirectoryPath + '/popTime.txt';
+
+                        // write the file
+                        RNFS.writeFile(path, new Date().getTime().toString(), 'utf8')
+                        .then((success) => {
+                            console.log('Pop Time WRITTEN!');
+                            startDict(true);
+                            setSkip(2);
+                        })
+                        .catch((err) => {
+                            console.log(err.message);
+                        });
+                    }}
                 >
                     <Text style={{fontSize: 18}}>
                         예
@@ -88,10 +76,18 @@ export default function Pop({navigation}){
                 <TouchableOpacity
                     style={styles.buttonContainer}
                     onPress = {() => {
-                        savePopTime();
-                        startDict(false);
-                        RNExitApp.exitApp();
-                        BackHandler.exitApp();
+                        var path = RNFS.DocumentDirectoryPath + '/popTime.txt';
+
+                        // write the file
+                        RNFS.writeFile(path, now.getTime().toString(), 'utf8')
+                        .then((success) => {
+                            console.log('Pop Time WRITTEN!');
+                            startDict(false);
+                            BackHandler.exitApp();
+                        })
+                        .catch((err) => {
+                            console.log(err.message);
+                        });
                     }} 
                 >
                     <Text style={{fontSize: 18}}>

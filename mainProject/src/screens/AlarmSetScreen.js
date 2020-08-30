@@ -8,9 +8,6 @@ import database from '@react-native-firebase/database';
 
 import LogoutButton from '../components/Logout';
 
-import NotifService from '../utils/NotifService';
-import RNFS from 'react-native-fs';
-
 // LogBox.ignoreLogs(['Warning: ...']);
 console.disableYellowBox = true;
 
@@ -33,11 +30,6 @@ export default class AlarmSet extends Component {
             flag: false,
             testNumber: null,
         };
-
-        this.notif = new NotifService(
-            this.onRegister.bind(this),
-            this.onNotif.bind(this),
-        );
     }
 
     componentDidMount(){
@@ -128,19 +120,7 @@ export default class AlarmSet extends Component {
                 dt.setHours(this.state.pickedHourValue);
                 dt.setMinutes(this.state.pickedMinValue);
 
-                if(Platform.OS === 'android')
-                    alarmModule.diaryNotification(dt.getTime().toString());
-                else if(Platform.OS === 'ios'){
-                    let filePath = RNFS.DocumentDirectoryPath;
-                    console.log("filePath", filePath)
-                    let alarmPath = `${filePath}/alarm.mp3`;
-
-                    if(dt.getTime() < new Date().getTime())
-                        dt.setDate(dt.getDate() + 1);
-                    this.notif.cancelAll();
-                    //this.notif.localNotif(alarmPath);
-                    this.notif.scheduleNotif(dt, 'alarm.mp3');
-                }
+                alarmModule.diaryNotification(dt.getTime().toString());
 
                 let alarmDataJson = snapshot.val();
                 let alarmData = {};

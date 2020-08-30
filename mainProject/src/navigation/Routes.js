@@ -25,35 +25,19 @@ export default function Routes() {
   if(skip == 2)
     irn = "단어 학습";
 
-  if(Platform.OS === 'android'){
-    alarmModule.checkIsAlarm(
-      (msg) => {
-        console.log(msg);
-      },
-      (isAlarm) => {
-        if(isAlarm){
-          setPop(true);
-        }
-        else{
-          setPop(false);
-        }
-      }
-    );
-  }
-  else if(Platform.OS === 'ios'){
-    (async () => {
-      const isAlarm = await AsyncStorage.getItem('isAlarm');
-
-      return isAlarm;
-    })().then((isAlarm) => {
-      if(isAlarm === 'true'){
+  alarmModule.checkIsAlarm(
+    (msg) => {
+      console.log(msg);
+    },
+    (isAlarm) => {
+      if(isAlarm){
         setPop(true);
       }
       else{
         setPop(false);
       }
-    })
-  }
+    }
+  );
 
   const { login } = useContext(AuthContext);
 
