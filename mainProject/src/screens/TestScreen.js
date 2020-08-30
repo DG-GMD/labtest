@@ -807,13 +807,9 @@ function MeaningRadioButton(props){
     return (
         <View>
             <Text style={styles.problemMeaning}>{props.number}. {props.meaning}</Text>
-<<<<<<< HEAD
-            <RadioButton value={props.number} />
-=======
             
             <RadioButton.IOS value={props.number} />
     
->>>>>>> 7efcf6d25e0f25301460044b33ddc1b20f68b8b4
         </View>
     );
 }
