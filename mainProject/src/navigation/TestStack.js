@@ -62,6 +62,9 @@ export default function TestStack() {
           options={{
             headerLeft: null
           }}
+          initialParams={{
+            countPage: 1
+          }}
         />
       </Stack.Navigator>
     );
@@ -77,6 +80,9 @@ export default function TestStack() {
           component={Memorize}
           options={{
             headerLeft: null
+          }}
+          initialParams={{
+            countPage: 1
           }}
         />
         <Stack.Screen

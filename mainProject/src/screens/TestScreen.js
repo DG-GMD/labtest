@@ -456,7 +456,7 @@ export default class Test extends Component{
                         <Table borderStyle={{borderWidth: 1}}>
                             <Row data={this.state.tableHead} flexArr={[1, 1, 1, 1]} style={styles.head} textStyle={styles.text}/>
                             <TableWrapper style={styles.wrapper}>
-                                <Col data={this.state.tableTitle} style={{height: 55}} heightArr={[55,55,55,55,55]} textStyle={styles.text}/>
+                                <Col data={this.state.tableTitle} style={{height: 50}} heightArr={[50,50,50,50,50]} textStyle={styles.text}/>
                                 <Rows data={this.state.tableData} flexArr={[1, 1, 1]} style={styles.row} textStyle={styles.text}/>
                             </TableWrapper>
                         </Table>
@@ -548,13 +548,14 @@ export default class Test extends Component{
 
         try{
             AsyncStorage.removeItem('testResult');
+            AsyncStorage.setItem('countPage', 1);
         }
         catch(e){
 
         }
         this.changeChecked(-1);
 
-        this.props.navigation.navigate('MemorizeScreen');
+        this.props.navigation.navigate('MemorizeScreen', {countPage: 1});
     }
 
     //local에 저장된 단어시험결과 관련 저장소와 변수들을 초기화
@@ -812,7 +813,7 @@ function MeaningRadioButton(props){
         <View>
             <Text style={styles.problemMeaning}>{props.number}. {props.meaning}</Text>
             
-            <RadioButton.IOS value={props.number} />
+            <RadioButton value={props.number} />
     
         </View>
     );
@@ -887,7 +888,7 @@ const styles = StyleSheet.create({
     head: {  height: 40,  backgroundColor: '#EBEFBF'  },
     wrapper: { flexDirection: 'row' },
     title: { flex: 1, backgroundColor: 'darkseagreen' },
-    row: {  height: 55  },
+    row: {  height: 50  },
     text: { textAlign: 'center', fontSize: 13 },
 
     warningContainer: {

@@ -25,7 +25,8 @@ export default class Memorize extends Component {
         this._BottomText = this._BottomText.bind(this);
         this.getData = this.getData.bind(this);
         this.MemorizeRouter = this.MemorizeRouter.bind(this);
-        
+        this._setPage = this._setPage.bind(this);
+
         this.state = { 
             count : 1 ,
             wordList : '',
@@ -64,10 +65,13 @@ export default class Memorize extends Component {
         });
 
         
-        
+        this._setPage();
         
         this.props.navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Test Loading...</Text> });
-        //writeTestState('before test');
+       
+        // this.props.navigation.getParam('countPage', 1);
+        // console.log(this.props.navigation.state.params);
+        
     }
     componentDidMount(){
         //header 수정
@@ -76,9 +80,22 @@ export default class Memorize extends Component {
         //popScreen이 떳는지 체크
         this._IsTestStart();
 
+        this._setPage();
         // console.log('---------------in didmout');
       }
-    
+    _setPage(){
+        (async () => {
+            try{
+                let countPage = await AsyncStorage.getItem("countPage");
+                this.setState({
+                    count: countPage
+                });
+            }
+            catch{
+                console.log("no countPage in AsyncStorage");
+            }
+        });
+    }
     _IsTestStart(){
         (async () => {
             //PopScreen이 표시된 시간 확인 확인
