@@ -10,7 +10,6 @@ import { Table, TableWrapper, Row, Rows, Cell, Col } from 'react-native-table-co
 
 import AsyncStorage from '@react-native-community/async-storage'
 
-
 import LogoutButton from '../components/Logout';
 
 // LogBox.ignoreLogs(['Warning: ...']);

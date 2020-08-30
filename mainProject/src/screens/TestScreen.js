@@ -802,16 +802,10 @@ async function writeTestResultToDB(item, _lastIndex) {
 }
 
 function MeaningRadioButton(props){
-    let RadioButtonDOM;
-    if(Platform.OS == 'ios'){
-        RadioButtonDOM = <RadioButton.ios value={props.number} />;
-    }
     return (
         <View>
             <Text style={styles.problemMeaning}>{props.number}. {props.meaning}</Text>
-            
-            <RadioButton.IOS value={props.number} />
-    
+            <RadioButton value={props.number} />
         </View>
     );
 }
