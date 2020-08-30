@@ -184,8 +184,7 @@ export default class Check extends Component {
                       </Text>
                     </View>;
 
-                    //_tableData1[0][6] = returnDOM1;
-                    _tableData1[0][6] = '✅';
+                    _tableData1[0][6] = returnDOM1;
                   }
 
                   //14일째라면
@@ -200,8 +199,7 @@ export default class Check extends Component {
                       </Text>
                     </View>;
 
-                    //_tableData2[0][6] = returnDOM2;
-                    _tableData1[0][6] = '✅';
+                    _tableData2[0][6] = returnDOM2;
                   }
                 }
                 //시험 정보가 없는 날(correctCount == -1)
@@ -284,8 +282,8 @@ export default class Check extends Component {
       let _tableData2 = [...this.state.tableData2];
       
       //7, 14일차 설문조사 링크 포함
-      //_tableData1[0][6] = returnDOM1;
-      //_tableData2[0][6] = returnDOM2;
+      _tableData1[0][6] = returnDOM1;
+      _tableData2[0][6] = returnDOM2;
 
       console.log("tabledata ", _tableData1, _tableData2);
 
@@ -323,7 +321,7 @@ export default class Check extends Component {
                         textAlign: 'center',
                         margin: 30
                         }}>
-                        학습 {this.state.nowDdate}일차
+                        실험 {this.state.nowDdate}일차
                     </Text>
                 </View>
                 
@@ -368,7 +366,7 @@ export default class Check extends Component {
                         textAlign: 'center',
                         margin: 10
                         }}>
-                        학습 진행 현황표
+                        {this.state.nowDdate} 일차 현황 진행표
                     </Text>
 
                     <View style={{margin: 10}}>
@@ -395,12 +393,6 @@ export default class Check extends Component {
                       delete AsyncStorage    
                       </Text>
                     </TouchableOpacity>   */}
-
-                    <View>
-                      <Text style={{margin:10, fontSize: 15}}>
-                        * 학습 7일차와 14일차에는 문자로 전송되는 참여링크를 통해 설문조사에 응해주시기 바랍니다.
-                      </Text>
-                    </View>
                   </View>
               </View>
           </View>
