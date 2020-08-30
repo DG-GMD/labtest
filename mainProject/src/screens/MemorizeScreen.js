@@ -27,8 +27,7 @@ export default class Memorize extends Component {
         this._BottomText = this._BottomText.bind(this);
         this.getData = this.getData.bind(this);
         this.MemorizeRouter = this.MemorizeRouter.bind(this);
-        this._setPage = this._setPage.bind(this);
-
+        
         this.state = { 
             count : 1 ,
             wordList : '',
@@ -67,13 +66,10 @@ export default class Memorize extends Component {
         });
 
         
-        this._setPage();
+        
         
         this.props.navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Test Loading...</Text> });
-       
-        // this.props.navigation.getParam('countPage', 1);
-        // console.log(this.props.navigation.state.params);
-        
+        //writeTestState('before test');
     }
     componentDidMount(){
         //header 수정
@@ -82,22 +78,9 @@ export default class Memorize extends Component {
         //popScreen이 떳는지 체크
         this._IsTestStart();
 
-        this._setPage();
         // console.log('---------------in didmout');
       }
-    _setPage(){
-        (async () => {
-            try{
-                let countPage = await AsyncStorage.getItem("countPage");
-                this.setState({
-                    count: countPage
-                });
-            }
-            catch{
-                console.log("no countPage in AsyncStorage");
-            }
-        });
-    }
+    
     _IsTestStart(){
         (async () => {
             await RNFS.readDir(RNFS.DocumentDirectoryPath) // On Android, use "RNFS.DocumentDirectoryPath" (MainBundlePath is not defined)
