@@ -27,7 +27,7 @@ export default function LogoutButton({restDate, userName}) {
         }}>
             <Text style={{
                 marginRight: 15,
-                fontSize: 17
+                fontSize: 15
             }}>
                 D+{restDate} 안녕하세요 {userName}님 
             </Text>

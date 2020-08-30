@@ -19,7 +19,7 @@ export default function Routes() {
   const { skip } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
   const [initializing, setInitializing] = useState(true);
-  const [Pop, setPop] = useState(Platform.OS === 'android');
+  const [Pop, setPop] = useState(false);
 
   let irn = "알람 설정";
   if(skip == 2)

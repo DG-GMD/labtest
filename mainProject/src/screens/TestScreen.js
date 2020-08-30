@@ -554,7 +554,7 @@ export default class Test extends Component{
         }
         this.changeChecked(-1);
 
-        this.props.navigation.navigate('MemorizeScreen');
+        this.props.navigation.navigate('MemorizeScreen',{isReset:true});
     }
 
     //local에 저장된 단어시험결과 관련 저장소와 변수들을 초기화
@@ -808,7 +808,7 @@ function MeaningRadioButton(props){
         <View>
             <Text style={styles.problemMeaning}>{props.number}. {props.meaning}</Text>
             
-            <RadioButton.IOS value={props.number} />
+            <RadioButton value={props.number} />
     
         </View>
     );

@@ -10,10 +10,14 @@ import android.content.Intent;
 import android.media.AudioAttributes;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.widget.Toast;
 
@@ -21,6 +25,7 @@ public class RingtonePlayingService extends Service {
     //private final IBinder mBinder = new LocalBinder();
 
     private Ringtone ringtone;
+    private Timer mTimer;
 
     // private Integer testInteger = 1;
 
@@ -68,6 +73,13 @@ public class RingtonePlayingService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
+        AudioManager mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        mAudioManager.setStreamVolume(
+            AudioManager.STREAM_ALARM, 
+            mAudioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM), 
+            AudioManager.FLAG_SHOW_UI
+        );
+
         RingtoneManager.setActualDefaultRingtoneUri(this,RingtoneManager.TYPE_ALARM, Uri.parse(this.getFilesDir().getAbsolutePath() + "/alarm.mp3"));
         Uri uri = RingtoneManager.getActualDefaultRingtoneUri(this, RingtoneManager.TYPE_ALARM);
         this.ringtone = RingtoneManager.getRingtone(this, uri);
@@ -77,6 +89,14 @@ public class RingtonePlayingService extends Service {
                     .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                     .build());
             ringtone.play();
+            this.mTimer = new Timer();
+            mTimer.scheduleAtFixedRate(new TimerTask() {
+                public void run() {
+                    if (!ringtone.isPlaying()) {
+                        ringtone.play();
+                    }
+                }
+            }, 1000*1, 1000*1);
         }
 
         //String message = "Test integer is " + (++testInteger);
@@ -101,7 +121,8 @@ public class RingtonePlayingService extends Service {
     {
         //String message = "Test integer is " + (++testInteger);
         //Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-        ringtone.stop();
+        this.ringtone.stop();
+        this.mTimer.cancel();
         stopForeground(true);
     }
 }

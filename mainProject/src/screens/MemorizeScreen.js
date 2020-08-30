@@ -50,7 +50,20 @@ export default class Memorize extends Component {
             //console.log("Memorize Constructor:", await AsyncStorage.getItem('popTime'));
             return nowdDate;
         })()
-        .then((nowdDate) => {
+        .then(async (nowdDate) => {
+            let nowTestState = null;
+            try{
+                nowTestState = await AsyncStorage.getItem('day' + nowdDate.toString());
+                console.log("check day", nowdDate.toString(), nowTestState);
+            }
+            catch(e){
+                console.log("fail to check day and testState", e);
+            }
+            if(nowTestState == 'testing' || nowTestState == "after test"){
+                console.log("=============alreay done testing!!!!");
+                this.props.navigation.navigate('TestScreen');
+            }
+
             database()
             .ref('/words/day' + nowdDate.toString())
             .once('value')
@@ -64,9 +77,6 @@ export default class Memorize extends Component {
                 });
             });
         });
-
-        
-        
         
         this.props.navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Test Loading...</Text> });
         //writeTestState('before test');
@@ -79,6 +89,13 @@ export default class Memorize extends Component {
         this._IsTestStart();
 
         // console.log('---------------in didmout');
+
+        this._unsubscribe = this.props.navigation.addListener('focus', () => {
+            var prm = this.props.route.params;
+            if((prm !== undefined && prm.isReset)){
+                this.setState({count: 1})
+            }
+        });
       }
     
     _IsTestStart(){

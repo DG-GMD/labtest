@@ -7,7 +7,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import  AlarmMain  from '../screens/AlarmMainScreen';
 import  AlarmSet  from '../screens/AlarmSetScreen';
 import  Check  from '../screens/CheckScreen';
-import TestStack from './TestStack';
+import  Memorize  from '../screens/MemorizeScreen';
+import  Test  from '../screens/TestScreen';
+//import TestStack from './TestStack';
 import { StackActions } from '@react-navigation/native';
 import database from '@react-native-firebase/database';
 
@@ -134,6 +136,27 @@ function AlarmStack({navigation}){
     <Stack.Navigator>
         <Stack.Screen name="AlarmMain" component={AlarmMain} />
         <Stack.Screen name="AlarmSet" component={AlarmSet} options={{ title: '알람설정'}}/>
+    </Stack.Navigator>
+  );
+}
+
+function TestStack({navigation}){
+  return (  
+    <Stack.Navigator>
+      <Stack.Screen
+        name="MemorizeScreen"
+        component={Memorize}
+        options={{
+          headerLeft: null
+        }}
+      />
+      <Stack.Screen
+        name="TestScreen"
+        component={Test}
+        options={{
+          headerLeft: null
+        }}
+      />
     </Stack.Navigator>
   );
 }

@@ -79,7 +79,7 @@ export default function Pop({navigation}){
                         var path = RNFS.DocumentDirectoryPath + '/popTime.txt';
 
                         // write the file
-                        RNFS.writeFile(path, now.getTime().toString(), 'utf8')
+                        RNFS.writeFile(path, new Date().getTime().toString(), 'utf8')
                         .then((success) => {
                             console.log('Pop Time WRITTEN!');
                             startDict(false);

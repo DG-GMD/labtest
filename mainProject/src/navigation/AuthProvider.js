@@ -117,26 +117,45 @@ async function writeStartTime(testNumber) {
 
   //기록된 최초 로그인 시간 정보가 없다면 새로 기록
   if(firstLoginTime == null){
-    var now = new Date();
-
-    // A post entry to set tin firebase DB
-    var postData = {
-      millitime: now.getTime()
-    };
-
     database()
     .ref('/users/'+ testNumber.toString() + '/startDate')
-    .update(postData)
-    .then(() => console.log('start data updated.'));
+    .once('value',async (snapshot) =>{
+      console.log('sanpshot', snapshot.val());
+      if(snapshot.val() == null){
+        var now = new Date();
 
-    //set data to local storage
-    try{
-      await AsyncStorage.setItem('firstLoginTime', now.getTime().toString());
-      // console.log('----------first login : ', now.getTime().toString());
-    }
-    catch(e){
-      // console.log("fail to set firstLoginTime", e);
-    }
+        // A post entry to set tin firebase DB
+        var postData = {
+          millitime: now.getTime()
+        };
+
+        database()
+        .ref('/users/'+ testNumber.toString() + '/startDate')
+        .update(postData)
+        .then(() => console.log('start data updated.'));
+
+        //set data to local storage
+        try{
+          await AsyncStorage.setItem('firstLoginTime', now.getTime().toString());
+          // console.log('----------first login : ', now.getTime().toString());
+        }
+        catch(e){
+          // console.log("fail to set firstLoginTime", e);
+        }
+      }
+      else{
+        //set data to local storage
+        try{
+          await AsyncStorage.setItem('firstLoginTime', snapshot.val().millitime.toString());
+          // console.log('----------first login : ', now.getTime().toString());
+        }
+        catch(e){
+          // console.log("fail to set firstLoginTime", e);
+        }
+      }
+    });
+
+    
   }else{
     // console.log("---------- firstLoginTime", firstLoginTime);
   }
