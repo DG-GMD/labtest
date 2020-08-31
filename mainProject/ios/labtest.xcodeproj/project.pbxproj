@@ -17,6 +17,13 @@
 		2DCD954D1E0B4F2C00145EB5 /* labtestTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* labtestTests.m */; };
 		50FE272DC8E11C1B19E23C06 /* libPods-labtest-labtestTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C4D540D947435070F0EC735 /* libPods-labtest-labtestTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		B0BBCDE724FD037900013D1E /* iosAlarmModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0BBCDE624FD037900013D1E /* iosAlarmModule.swift */; };
+		B0BBCDE824FD037900013D1E /* iosAlarmModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0BBCDE624FD037900013D1E /* iosAlarmModule.swift */; };
+		B0BBCDEA24FD041B00013D1E /* iosAlarmModule.m in Sources */ = {isa = PBXBuildFile; fileRef = B0BBCDE924FD041B00013D1E /* iosAlarmModule.m */; };
+		B0BBCDEB24FD041B00013D1E /* iosAlarmModule.m in Sources */ = {isa = PBXBuildFile; fileRef = B0BBCDE924FD041B00013D1E /* iosAlarmModule.m */; };
+		B0BBCDEF24FD0FCC00013D1E /* other-voice.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = B0BBCDEC24FD0FCC00013D1E /* other-voice.mp3 */; };
+		B0BBCDF024FD0FCC00013D1E /* Alarm bell.m4a in Resources */ = {isa = PBXBuildFile; fileRef = B0BBCDED24FD0FCC00013D1E /* Alarm bell.m4a */; };
+		B0BBCDF124FD0FCC00013D1E /* Self-voice.m4a in Resources */ = {isa = PBXBuildFile; fileRef = B0BBCDEE24FD0FCC00013D1E /* Self-voice.m4a */; };
 		B0C0A60424EC469900358DAE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B0C0A60324EC469900358DAE /* GoogleService-Info.plist */; };
 		BBC1C7AB7BFA13E8865981C8 /* libPods-labtest.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A5160CD903754FFFF2746E3 /* libPods-labtest.a */; };
 		DEA1558BCD6D40ECDAD3EB6A /* libPods-labtest-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8099C97395A86190B57657E8 /* libPods-labtest-tvOS.a */; };
@@ -74,6 +81,12 @@
 		9BCEC8713D464BE0959D91B8 /* Fontisto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Fontisto.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf"; sourceTree = "<group>"; };
 		A9BB1E904BC52D0B70295DF2 /* Pods-labtest-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-labtest-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-labtest-tvOSTests/Pods-labtest-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B005233524F42AFA00B4DC15 /* labtest.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = labtest.entitlements; path = labtest/labtest.entitlements; sourceTree = "<group>"; };
+		B0BBCDD424FC363A00013D1E /* labtest-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "labtest-Bridging-Header.h"; sourceTree = "<group>"; };
+		B0BBCDE624FD037900013D1E /* iosAlarmModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iosAlarmModule.swift; sourceTree = "<group>"; };
+		B0BBCDE924FD041B00013D1E /* iosAlarmModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = iosAlarmModule.m; sourceTree = "<group>"; };
+		B0BBCDEC24FD0FCC00013D1E /* other-voice.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "other-voice.mp3"; sourceTree = "<group>"; };
+		B0BBCDED24FD0FCC00013D1E /* Alarm bell.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Alarm bell.m4a"; sourceTree = "<group>"; };
+		B0BBCDEE24FD0FCC00013D1E /* Self-voice.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Self-voice.m4a"; sourceTree = "<group>"; };
 		B0C0A60324EC469900358DAE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		B979C18FD840A9945D12886E /* Pods-labtest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-labtest.debug.xcconfig"; path = "Target Support Files/Pods-labtest/Pods-labtest.debug.xcconfig"; sourceTree = "<group>"; };
 		CD4E8456920D85B28683DB21 /* Pods-labtest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-labtest.release.xcconfig"; path = "Target Support Files/Pods-labtest/Pods-labtest.release.xcconfig"; sourceTree = "<group>"; };
@@ -144,6 +157,9 @@
 		13B07FAE1A68108700A75B9A /* labtest */ = {
 			isa = PBXGroup;
 			children = (
+				B0BBCDED24FD0FCC00013D1E /* Alarm bell.m4a */,
+				B0BBCDEC24FD0FCC00013D1E /* other-voice.mp3 */,
+				B0BBCDEE24FD0FCC00013D1E /* Self-voice.m4a */,
 				B005233524F42AFA00B4DC15 /* labtest.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -152,6 +168,9 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				B0BBCDD424FC363A00013D1E /* labtest-Bridging-Header.h */,
+				B0BBCDE624FD037900013D1E /* iosAlarmModule.swift */,
+				B0BBCDE924FD041B00013D1E /* iosAlarmModule.m */,
 			);
 			name = labtest;
 			sourceTree = "<group>";
@@ -336,11 +355,12 @@
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
+						LastSwiftMigration = 1160;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = 4UH3R72NDN;
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1160;
 						ProvisioningStyle = Manual;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
@@ -388,7 +408,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				B0BBCDF124FD0FCC00013D1E /* Self-voice.m4a in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				B0BBCDF024FD0FCC00013D1E /* Alarm bell.m4a in Resources */,
+				B0BBCDEF24FD0FCC00013D1E /* other-voice.mp3 in Resources */,
 				B0C0A60424EC469900358DAE /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -683,6 +706,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				00E356F31AD99517003FC87E /* labtestTests.m in Sources */,
+				B0BBCDE824FD037900013D1E /* iosAlarmModule.swift in Sources */,
+				B0BBCDEB24FD041B00013D1E /* iosAlarmModule.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -691,7 +716,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				B0BBCDEA24FD041B00013D1E /* iosAlarmModule.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				B0BBCDE724FD037900013D1E /* iosAlarmModule.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -732,7 +759,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 72B69F072DAE5EA53CE5A605 /* Pods-labtest-labtestTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -747,6 +776,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "labtestTests-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/labtest.app/labtest";
 			};
 			name = Debug;
@@ -755,7 +787,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1F1193AD56D20DBF8E503E06 /* Pods-labtest-labtestTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = labtestTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -767,6 +801,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "labtestTests-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/labtest.app/labtest";
 			};
 			name = Release;
@@ -784,7 +820,7 @@
 				DEVELOPMENT_TEAM = 4UH3R72NDN;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = labtest/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -794,6 +830,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = labtest;
 				PROVISIONING_PROFILE_SPECIFIER = "adhoc profile";
+				SWIFT_OBJC_BRIDGING_HEADER = "labtest-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -812,7 +849,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4UH3R72NDN;
 				INFOPLIST_FILE = labtest/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -822,6 +859,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = labtest;
 				PROVISIONING_PROFILE_SPECIFIER = "adhoc profile";
+				SWIFT_OBJC_BRIDGING_HEADER = "labtest-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

@@ -394,6 +394,11 @@ PODS:
     - React
   - RNScreens (2.9.0):
     - React
+  - RNSound (0.11.0):
+    - React
+    - RNSound/Core (= 0.11.0)
+  - RNSound/Core (0.11.0):
+    - React
   - RNVectorIcons (7.0.0):
     - React
   - Toast (4.0.0)
@@ -465,6 +470,7 @@ DEPENDENCIES:
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - RNSound (from `../node_modules/react-native-sound`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -581,6 +587,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNSound:
+    :path: "../node_modules/react-native-sound"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
   Yoga:
@@ -652,11 +660,12 @@ SPEC CHECKSUMS:
   RNGestureHandler: b6b359bb800ae399a9c8b27032bdbf7c18f08a08
   RNReanimated: c2bb7438b57a3d987bb2e4e6e4bca94787e30b02
   RNScreens: c526239bbe0e957b988dacc8d75ac94ec9cb19da
+  RNSound: da030221e6ac7e8290c6b43f2b5f2133a8e225b0
   RNVectorIcons: da6fe858f5a65d7bbc3379540a889b0b12aa5976
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
   Yoga: 7740b94929bbacbddda59bf115b5317e9a161598
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 40acff352cd09015c83b987bf1ca1bc77939e848
+PODFILE CHECKSUM: ffd0d80925c9cd8ff0760c1f0999ba71944e7526
 
 COCOAPODS: 1.9.3

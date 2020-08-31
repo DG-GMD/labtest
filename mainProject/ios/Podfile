@@ -10,6 +10,8 @@ target 'labtest' do
 
 
 
+  pod 'RNSound', :path => '../node_modules/react-native-sound'
+
   target 'labtestTests' do
     inherit! :complete
     # Pods for testing
