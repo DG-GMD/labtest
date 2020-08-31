@@ -5998,6 +5998,11 @@ react-is@^16.12.0, react-is@^16.13.0, react-is@^16.7.0, react-is@^16.8.1, react-
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
+react-native-alarm-notification@^1.6.1:
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/react-native-alarm-notification/-/react-native-alarm-notification-1.6.1.tgz#88c3ec30dc45325b2c64eb92a47fff8f89745271"
+  integrity sha512-v7r1miZDO2ulLONOdbiG1LMhq0X6pvEA6zuPGD0CzTgnFN9H1GrWp1yVYLWCL3dJIoWxliUeUQR/FgNPI0Ob4w==
+
 react-native-exit-app@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/react-native-exit-app/-/react-native-exit-app-1.1.0.tgz#5ec082152974240e2d6a93f1608efb49a4385f21"

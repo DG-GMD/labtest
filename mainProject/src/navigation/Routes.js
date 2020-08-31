@@ -6,7 +6,7 @@ import AuthStack from './AuthStack';
 import HomeStack from './HomeStack';
 import { AuthContext } from './AuthProvider';
 import Loading from '../components/Loading';
-import { alarmModule } from '../utils/jvmodules'
+// import { alarmModule } from '../utils/jvmodules'
 import AsyncStorage from '@react-native-community/async-storage'
 
 import { createStackNavigator } from '@react-navigation/stack';
@@ -25,19 +25,19 @@ export default function Routes() {
   if(skip == 2)
     irn = "단어 학습";
 
-  alarmModule.checkIsAlarm(
-    (msg) => {
-      console.log(msg);
-    },
-    (isAlarm) => {
-      if(isAlarm){
-        setPop(true);
-      }
-      else{
-        setPop(false);
-      }
-    }
-  );
+  // alarmModule.checkIsAlarm(
+  //   (msg) => {
+  //     console.log(msg);
+  //   },
+  //   (isAlarm) => {
+  //     if(isAlarm){
+  //       setPop(true);
+  //     }
+  //     else{
+  //       setPop(false);
+  //     }
+  //   }
+  // );
 
   const { login } = useContext(AuthContext);
 

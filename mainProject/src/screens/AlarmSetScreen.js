@@ -2,11 +2,13 @@ import React, {Component} from 'react';
 import { LogBox, View, Text, Image, ScrollView, TextInput, Button, Platform, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage'
 
-import { alarmModule } from '../utils/jvmodules';
+// import { alarmModule } from '../utils/jvmodules';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import database from '@react-native-firebase/database';
 
 import LogoutButton from '../components/Logout';
+
+import ReactNativeAN from 'react-native-alarm-notification';
 
 // LogBox.ignoreLogs(['Warning: ...']);
 console.disableYellowBox = true;
@@ -16,6 +18,14 @@ Number.prototype.pad = function(size) {
     while (s.length < (size || 2)) {s = "0" + s;}
     return s;
 }
+
+const alarmNotifData = {
+    title: 'alarm title',
+    message: '단어 테스트!',
+    small_icon: "ic_launhcer",
+
+
+};
 
 export default class AlarmSet extends Component {
     constructor(props){
@@ -120,19 +130,23 @@ export default class AlarmSet extends Component {
                 dt.setHours(this.state.pickedHourValue);
                 dt.setMinutes(this.state.pickedMinValue);
 
-                alarmModule.diaryNotification(dt.getTime().toString());
+                // alarmModule.diaryNotification(dt.getTime().toString());
 
+                //DB정보를 저장
                 let alarmDataJson = snapshot.val();
                 let alarmData = {};
 
+                //key를 저장
                 for(let key in alarmDataJson){
                     alarmData = alarmDataJson[key];
                 }
 
+                //order를 가져와 새로운 order 값 계산
                 let order = parseInt(alarmData.order);
                 order += 1;
                 order = order.toString();
 
+                //db에 넣을 데이터 생성
                 var json = {};
                 json[order] = {
                     setHour: this.state.pickedHourValue,

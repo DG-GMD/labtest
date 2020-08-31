@@ -5,6 +5,7 @@ import database from '@react-native-firebase/database';
 
 import LogoutButton from '../components/Logout';
 
+import Sound from 'react-native-sound';
 // LogBox.ignoreLogs(['Warning: ...']);
 console.disableYellowBox = true;
 
@@ -24,6 +25,30 @@ export default class AlarmMain extends Component {
             flag: false,
             testNumber: null,
         }
+
+        Sound.setCategory('Playback');
+
+        var alarmSound = new Sound('Self-voice.m4a', Sound.MAIN_BUNDLE, (error)=>{
+            if(error){
+                console.log("failed to load the sound", error);
+                return;
+            }
+            //load successfully
+            console.log('duration in seconds ' + alarmSound.getDuration);
+
+            //set volume
+            alarmSound.setVolume(1);
+            console.log('media volume ', alarmSound.getVolume());
+            //play sound with onEnd callback
+            // alarmSound.play((success) => {
+            //     if(success){
+            //         console.log('successfully finish');
+            //     }
+            //     else{
+            //         console.log('playback fail');
+            //     }
+            // })
+        });
     };
 
     componentDidMount(){
