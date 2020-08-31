@@ -87,7 +87,7 @@
 		B0BBCDED24FD0FCC00013D1E /* Alarm bell.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Alarm bell.m4a"; sourceTree = "<group>"; };
 		B0BBCDEE24FD0FCC00013D1E /* Self-voice.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Self-voice.m4a"; sourceTree = SOURCE_ROOT; };
 		B0BBCE0324FD44D200013D1E /* Self-voice.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = "Self-voice.aiff"; sourceTree = "<group>"; };
-		B0BBCE0624FD4CDA00013D1E /* swiftAlarmModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = swiftAlarmModule.swift; sourceTree = SOURCE_ROOT; };
+		B0BBCE0624FD4CDA00013D1E /* swiftAlarmModule.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = swiftAlarmModule.swift; sourceTree = SOURCE_ROOT; tabWidth = 4; };
 		B0BBCE0924FD4D2200013D1E /* swiftAlarmModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = swiftAlarmModule.m; sourceTree = SOURCE_ROOT; };
 		B0BBCE0C24FD4E1C00013D1E /* labtest-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "labtest-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
 		B0C0A60324EC469900358DAE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };

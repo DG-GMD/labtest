@@ -160,7 +160,7 @@ export default class AlarmSet extends Component {
 
                 //background alarm sound 설정
                 const swiftAlarmModule = NativeModules.swiftAlarmModule;
-                swiftAlarmModule.setAlarmTime(1, 2);
+                swiftAlarmModule.setAlarmTime(this.state.pickedHourValue, this.state.pickedMinValue);
 
 
                 //DB정보를 저장
