@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { LogBox, View, Text, Image, ScrollView, TextInput, Button, Platform, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { NativeModules, LogBox, View, Text, Image, ScrollView, TextInput, Button, Platform, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage'
 
 // import { alarmModule } from '../utils/jvmodules';
@@ -19,13 +19,7 @@ Number.prototype.pad = function(size) {
     return s;
 }
 
-const alarmNotifData = {
-    title: 'alarm title',
-    message: '단어 테스트!',
-    small_icon: "ic_launhcer",
 
-
-};
 
 export default class AlarmSet extends Component {
     constructor(props){
@@ -132,6 +126,43 @@ export default class AlarmSet extends Component {
 
                 // alarmModule.diaryNotification(dt.getTime().toString());
 
+                //alarm notification 설정
+
+                //notification data
+                const alarmNotifData = {
+                    title: 'alarm title',
+                    message: '단어 테스트!',
+                    schedule_type: "repeat",
+                    play_sound: true,
+                    // loop_sound: true,
+                    repeat_interval: "daily",
+                    // interval_value: 2,
+                    // sound_name: "Self-voice.aiff",
+                    volume: 1.0,
+                    vibrate: true,
+                    vibration: 1000
+                };
+
+                //date picker에 있는 시간으로 매일 notification 설정
+                var pickerDate = new Date();
+                pickerDate.setHours(this.state.pickedHourValue);
+                pickerDate.setMinutes(this.state.pickedMinValue);
+
+                console.log("now!!!!", pickerDate);
+                
+                var fireDate = ReactNativeAN.parseDate(pickerDate);
+
+                // (async () => {
+                //     const alarm = await ReactNativeAN.scheduleAlarm({ ...alarmNotifData, fire_date: fireDate});
+                //     const alarmList = await ReactNativeAN.getScheduledAlarms();
+                //     console.log("-----alarmlist", alarmList);
+                // })();
+
+                //background alarm sound 설정
+                const swiftAlarmModule = NativeModules.swiftAlarmModule;
+                swiftAlarmModule.setAlarmTime(1, 2);
+
+
                 //DB정보를 저장
                 let alarmDataJson = snapshot.val();
                 let alarmData = {};
@@ -155,6 +186,7 @@ export default class AlarmSet extends Component {
                     order: parseInt(order),
                 };
 
+                //db에 json data upload
                 database()
                     .ref('/users/' + this.state.testNumber + '/alarm')
                     .update(json)

@@ -19,7 +19,13 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		B0BBCDEF24FD0FCC00013D1E /* other-voice.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = B0BBCDEC24FD0FCC00013D1E /* other-voice.mp3 */; };
 		B0BBCDF024FD0FCC00013D1E /* Alarm bell.m4a in Resources */ = {isa = PBXBuildFile; fileRef = B0BBCDED24FD0FCC00013D1E /* Alarm bell.m4a */; };
-		B0BBCDF124FD0FCC00013D1E /* Self-voice.m4a in Resources */ = {isa = PBXBuildFile; fileRef = B0BBCDEE24FD0FCC00013D1E /* Self-voice.m4a */; };
+		B0BBCE0424FD44D200013D1E /* Self-voice.aiff in Resources */ = {isa = PBXBuildFile; fileRef = B0BBCE0324FD44D200013D1E /* Self-voice.aiff */; };
+		B0BBCE0524FD44D200013D1E /* Self-voice.aiff in Resources */ = {isa = PBXBuildFile; fileRef = B0BBCE0324FD44D200013D1E /* Self-voice.aiff */; };
+		B0BBCE0724FD4CDA00013D1E /* swiftAlarmModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0BBCE0624FD4CDA00013D1E /* swiftAlarmModule.swift */; };
+		B0BBCE0A24FD4D2200013D1E /* swiftAlarmModule.m in Sources */ = {isa = PBXBuildFile; fileRef = B0BBCE0924FD4D2200013D1E /* swiftAlarmModule.m */; };
+		B0BBCE0D24FD784400013D1E /* swiftAlarmModule.swift in Resources */ = {isa = PBXBuildFile; fileRef = B0BBCE0624FD4CDA00013D1E /* swiftAlarmModule.swift */; };
+		B0BBCE0E24FD784800013D1E /* swiftAlarmModule.m in Resources */ = {isa = PBXBuildFile; fileRef = B0BBCE0924FD4D2200013D1E /* swiftAlarmModule.m */; };
+		B0BBCE0F24FD784B00013D1E /* labtest-Bridging-Header.h in Resources */ = {isa = PBXBuildFile; fileRef = B0BBCE0C24FD4E1C00013D1E /* labtest-Bridging-Header.h */; };
 		B0C0A60424EC469900358DAE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B0C0A60324EC469900358DAE /* GoogleService-Info.plist */; };
 		BBC1C7AB7BFA13E8865981C8 /* libPods-labtest.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A5160CD903754FFFF2746E3 /* libPods-labtest.a */; };
 		DEA1558BCD6D40ECDAD3EB6A /* libPods-labtest-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8099C97395A86190B57657E8 /* libPods-labtest-tvOS.a */; };
@@ -79,7 +85,11 @@
 		B005233524F42AFA00B4DC15 /* labtest.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = labtest.entitlements; path = labtest/labtest.entitlements; sourceTree = "<group>"; };
 		B0BBCDEC24FD0FCC00013D1E /* other-voice.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "other-voice.mp3"; sourceTree = "<group>"; };
 		B0BBCDED24FD0FCC00013D1E /* Alarm bell.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Alarm bell.m4a"; sourceTree = "<group>"; };
-		B0BBCDEE24FD0FCC00013D1E /* Self-voice.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Self-voice.m4a"; sourceTree = "<group>"; };
+		B0BBCDEE24FD0FCC00013D1E /* Self-voice.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Self-voice.m4a"; sourceTree = SOURCE_ROOT; };
+		B0BBCE0324FD44D200013D1E /* Self-voice.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = "Self-voice.aiff"; sourceTree = "<group>"; };
+		B0BBCE0624FD4CDA00013D1E /* swiftAlarmModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = swiftAlarmModule.swift; sourceTree = SOURCE_ROOT; };
+		B0BBCE0924FD4D2200013D1E /* swiftAlarmModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = swiftAlarmModule.m; sourceTree = SOURCE_ROOT; };
+		B0BBCE0C24FD4E1C00013D1E /* labtest-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "labtest-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
 		B0C0A60324EC469900358DAE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		B979C18FD840A9945D12886E /* Pods-labtest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-labtest.debug.xcconfig"; path = "Target Support Files/Pods-labtest/Pods-labtest.debug.xcconfig"; sourceTree = "<group>"; };
 		CD4E8456920D85B28683DB21 /* Pods-labtest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-labtest.release.xcconfig"; path = "Target Support Files/Pods-labtest/Pods-labtest.release.xcconfig"; sourceTree = "<group>"; };
@@ -150,6 +160,7 @@
 		13B07FAE1A68108700A75B9A /* labtest */ = {
 			isa = PBXGroup;
 			children = (
+				B0BBCE0324FD44D200013D1E /* Self-voice.aiff */,
 				B0BBCDED24FD0FCC00013D1E /* Alarm bell.m4a */,
 				B0BBCDEC24FD0FCC00013D1E /* other-voice.mp3 */,
 				B0BBCDEE24FD0FCC00013D1E /* Self-voice.m4a */,
@@ -161,6 +172,9 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				B0BBCE0624FD4CDA00013D1E /* swiftAlarmModule.swift */,
+				B0BBCE0924FD4D2200013D1E /* swiftAlarmModule.m */,
+				B0BBCE0C24FD4E1C00013D1E /* labtest-Bridging-Header.h */,
 			);
 			name = labtest;
 			sourceTree = "<group>";
@@ -390,6 +404,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0BBCE0524FD44D200013D1E /* Self-voice.aiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -397,8 +412,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0BBCE0F24FD784B00013D1E /* labtest-Bridging-Header.h in Resources */,
+				B0BBCE0E24FD784800013D1E /* swiftAlarmModule.m in Resources */,
+				B0BBCE0D24FD784400013D1E /* swiftAlarmModule.swift in Resources */,
+				B0BBCE0424FD44D200013D1E /* Self-voice.aiff in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
-				B0BBCDF124FD0FCC00013D1E /* Self-voice.m4a in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				B0BBCDF024FD0FCC00013D1E /* Alarm bell.m4a in Resources */,
 				B0BBCDEF24FD0FCC00013D1E /* other-voice.mp3 in Resources */,
@@ -429,6 +447,8 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
+			inputFileListPaths = (
+			);
 			inputPaths = (
 			);
 			name = "Bundle React Native code and images";
@@ -436,7 +456,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
 		074396A7D540C95963A5C125 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -704,6 +724,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				B0BBCE0A24FD4D2200013D1E /* swiftAlarmModule.m in Sources */,
+				B0BBCE0724FD4CDA00013D1E /* swiftAlarmModule.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -745,6 +767,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 72B69F072DAE5EA53CE5A605 /* Pods-labtest-labtestTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_MODULES = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -772,6 +795,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1F1193AD56D20DBF8E503E06 /* Pods-labtest-labtestTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_MODULES = YES;
 				COPY_PHASE_STRIP = NO;
@@ -801,6 +825,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 4UH3R72NDN;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = labtest/Info.plist;
@@ -831,6 +856,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 4UH3R72NDN;
 				INFOPLIST_FILE = labtest/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
