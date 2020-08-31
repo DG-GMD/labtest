@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { View, Text, Image, ScrollView, TextInput, Button, BackHandler, StyleSheet, Platform, TouchableOpacity} from 'react-native';
-import { alarmModule } from '../utils/jvmodules';
+// import { alarmModule } from '../utils/jvmodules';
 import { AuthContext } from '../navigation/AuthProvider';
 
 //import AsyncStorage from '@react-native-community/async-storage'
@@ -25,7 +25,7 @@ import RNFS from 'react-native-fs';
 
 const startDict = (admit) => {
     console.log("admit", admit);
-    alarmModule.startDict(admit);
+    // alarmModule.startDict(admit);
 }
 
 export default function Pop({navigation}){

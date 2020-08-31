@@ -18,7 +18,6 @@
 		50FE272DC8E11C1B19E23C06 /* libPods-labtest-labtestTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C4D540D947435070F0EC735 /* libPods-labtest-labtestTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		B0BBCDEF24FD0FCC00013D1E /* other-voice.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = B0BBCDEC24FD0FCC00013D1E /* other-voice.mp3 */; };
-		B0BBCDF024FD0FCC00013D1E /* Alarm bell.m4a in Resources */ = {isa = PBXBuildFile; fileRef = B0BBCDED24FD0FCC00013D1E /* Alarm bell.m4a */; };
 		B0BBCE0424FD44D200013D1E /* Self-voice.aiff in Resources */ = {isa = PBXBuildFile; fileRef = B0BBCE0324FD44D200013D1E /* Self-voice.aiff */; };
 		B0BBCE0524FD44D200013D1E /* Self-voice.aiff in Resources */ = {isa = PBXBuildFile; fileRef = B0BBCE0324FD44D200013D1E /* Self-voice.aiff */; };
 		B0BBCE0724FD4CDA00013D1E /* swiftAlarmModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0BBCE0624FD4CDA00013D1E /* swiftAlarmModule.swift */; };
@@ -26,6 +25,7 @@
 		B0BBCE0D24FD784400013D1E /* swiftAlarmModule.swift in Resources */ = {isa = PBXBuildFile; fileRef = B0BBCE0624FD4CDA00013D1E /* swiftAlarmModule.swift */; };
 		B0BBCE0E24FD784800013D1E /* swiftAlarmModule.m in Resources */ = {isa = PBXBuildFile; fileRef = B0BBCE0924FD4D2200013D1E /* swiftAlarmModule.m */; };
 		B0BBCE0F24FD784B00013D1E /* labtest-Bridging-Header.h in Resources */ = {isa = PBXBuildFile; fileRef = B0BBCE0C24FD4E1C00013D1E /* labtest-Bridging-Header.h */; };
+		B0BBCE1124FD98EF00013D1E /* Alarm-bell.aiff in Resources */ = {isa = PBXBuildFile; fileRef = B0BBCE1024FD98EF00013D1E /* Alarm-bell.aiff */; };
 		B0C0A60424EC469900358DAE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B0C0A60324EC469900358DAE /* GoogleService-Info.plist */; };
 		BBC1C7AB7BFA13E8865981C8 /* libPods-labtest.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A5160CD903754FFFF2746E3 /* libPods-labtest.a */; };
 		DEA1558BCD6D40ECDAD3EB6A /* libPods-labtest-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8099C97395A86190B57657E8 /* libPods-labtest-tvOS.a */; };
@@ -84,12 +84,11 @@
 		A9BB1E904BC52D0B70295DF2 /* Pods-labtest-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-labtest-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-labtest-tvOSTests/Pods-labtest-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B005233524F42AFA00B4DC15 /* labtest.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = labtest.entitlements; path = labtest/labtest.entitlements; sourceTree = "<group>"; };
 		B0BBCDEC24FD0FCC00013D1E /* other-voice.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "other-voice.mp3"; sourceTree = "<group>"; };
-		B0BBCDED24FD0FCC00013D1E /* Alarm bell.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Alarm bell.m4a"; sourceTree = "<group>"; };
-		B0BBCDEE24FD0FCC00013D1E /* Self-voice.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Self-voice.m4a"; sourceTree = SOURCE_ROOT; };
 		B0BBCE0324FD44D200013D1E /* Self-voice.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = "Self-voice.aiff"; sourceTree = "<group>"; };
 		B0BBCE0624FD4CDA00013D1E /* swiftAlarmModule.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = swiftAlarmModule.swift; sourceTree = SOURCE_ROOT; tabWidth = 4; };
 		B0BBCE0924FD4D2200013D1E /* swiftAlarmModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = swiftAlarmModule.m; sourceTree = SOURCE_ROOT; };
 		B0BBCE0C24FD4E1C00013D1E /* labtest-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "labtest-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
+		B0BBCE1024FD98EF00013D1E /* Alarm-bell.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = "Alarm-bell.aiff"; sourceTree = "<group>"; };
 		B0C0A60324EC469900358DAE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		B979C18FD840A9945D12886E /* Pods-labtest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-labtest.debug.xcconfig"; path = "Target Support Files/Pods-labtest/Pods-labtest.debug.xcconfig"; sourceTree = "<group>"; };
 		CD4E8456920D85B28683DB21 /* Pods-labtest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-labtest.release.xcconfig"; path = "Target Support Files/Pods-labtest/Pods-labtest.release.xcconfig"; sourceTree = "<group>"; };
@@ -160,10 +159,9 @@
 		13B07FAE1A68108700A75B9A /* labtest */ = {
 			isa = PBXGroup;
 			children = (
+				B0BBCE1024FD98EF00013D1E /* Alarm-bell.aiff */,
 				B0BBCE0324FD44D200013D1E /* Self-voice.aiff */,
-				B0BBCDED24FD0FCC00013D1E /* Alarm bell.m4a */,
 				B0BBCDEC24FD0FCC00013D1E /* other-voice.mp3 */,
-				B0BBCDEE24FD0FCC00013D1E /* Self-voice.m4a */,
 				B005233524F42AFA00B4DC15 /* labtest.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -418,9 +416,9 @@
 				B0BBCE0424FD44D200013D1E /* Self-voice.aiff in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				B0BBCDF024FD0FCC00013D1E /* Alarm bell.m4a in Resources */,
 				B0BBCDEF24FD0FCC00013D1E /* other-voice.mp3 in Resources */,
 				B0C0A60424EC469900358DAE /* GoogleService-Info.plist in Resources */,
+				B0BBCE1124FD98EF00013D1E /* Alarm-bell.aiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -822,7 +820,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = labtest/labtest.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
@@ -836,9 +834,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.labtestg;
 				PRODUCT_NAME = labtest;
-				PROVISIONING_PROFILE_SPECIFIER = "adhoc profile";
+				PROVISIONING_PROFILE_SPECIFIER = "developer profile";
 				SWIFT_OBJC_BRIDGING_HEADER = "labtest-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -853,7 +851,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = labtest/labtest.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
@@ -866,9 +864,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.labtestg;
 				PRODUCT_NAME = labtest;
-				PROVISIONING_PROFILE_SPECIFIER = "adhoc profile";
+				PROVISIONING_PROFILE_SPECIFIER = "developer profile";
 				SWIFT_OBJC_BRIDGING_HEADER = "labtest-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";

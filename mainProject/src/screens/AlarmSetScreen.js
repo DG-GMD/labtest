@@ -7,8 +7,10 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import database from '@react-native-firebase/database';
 
 import LogoutButton from '../components/Logout';
+import NotifService from '../utils/NotifService';
 
-import ReactNativeAN from 'react-native-alarm-notification';
+import PushNotificationIOS from "@react-native-community/push-notification-ios";
+
 
 // LogBox.ignoreLogs(['Warning: ...']);
 console.disableYellowBox = true;
@@ -34,6 +36,11 @@ export default class AlarmSet extends Component {
             flag: false,
             testNumber: null,
         };
+
+        this.notif = new NotifService(
+            this.onRegister.bind(this),
+            this.onNotif.bind(this),
+        );
     }
 
     componentDidMount(){
@@ -126,37 +133,39 @@ export default class AlarmSet extends Component {
 
                 // alarmModule.diaryNotification(dt.getTime().toString());
 
-                //alarm notification 설정
-
-                //notification data
-                const alarmNotifData = {
-                    title: 'alarm title',
-                    message: '단어 테스트!',
-                    schedule_type: "repeat",
-                    play_sound: true,
-                    // loop_sound: true,
-                    repeat_interval: "daily",
-                    // interval_value: 2,
-                    // sound_name: "Self-voice.aiff",
-                    volume: 1.0,
-                    vibrate: true,
-                    vibration: 1000
-                };
-
-                //date picker에 있는 시간으로 매일 notification 설정
+                this.notif.cancelAll();
+                //date picker에 있는 시간 추출
                 var pickerDate = new Date();
                 pickerDate.setHours(this.state.pickedHourValue);
                 pickerDate.setMinutes(this.state.pickedMinValue);
 
                 console.log("now!!!!", pickerDate);
-                
-                var fireDate = ReactNativeAN.parseDate(pickerDate);
 
-                // (async () => {
-                //     const alarm = await ReactNativeAN.scheduleAlarm({ ...alarmNotifData, fire_date: fireDate});
-                //     const alarmList = await ReactNativeAN.getScheduledAlarms();
-                //     console.log("-----alarmlist", alarmList);
-                // })();
+                //testNumber로 알람 소리 설정
+                let soundName;
+                //본인 목소리
+                if(parseInt(this.state.testNumber/1000) == 1){
+                    soundName = "Self-voice.aiff";
+                }
+                //컴퓨터 목소리
+                else if(parseInt(this.state.testNumber/1000) == 2){
+                    soundName = "other-voice.mp3";
+                }
+                //알람 벨
+                else if(parseInt(this.state.testNumber/1000) == 3){
+                    soundName = "Alarm-bell.aiff";
+                }
+
+                console.log('sound name is ', soundName);
+                //date piker에 있는 시간으로 notification 설정
+                // this.notif.scheduleNotif(pickerDate, soundName);
+                
+                //pop init notification 
+                this.notif.popInitialNotification();
+               
+                this.notif.getScheduledLocalNotifications((data)=>{
+                    console.log(data);
+                });
 
                 //background alarm sound 설정
                 const swiftAlarmModule = NativeModules.swiftAlarmModule;

@@ -140,7 +140,7 @@ class swiftAlarmModule: NSObject, UNUserNotificationCenterDelegate {
 
         DispatchQueue.main.async(execute: {
             self.initAlarm()
-            self.clickButton()
+//            self.clickButton()
         })
     }
 
