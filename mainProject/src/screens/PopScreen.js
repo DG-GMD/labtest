@@ -9,6 +9,8 @@ import { Player } from '@react-native-community/audio-toolkit';
 
 import RNFS from 'react-native-fs';
 
+import swiftAlarmModule from "../utils/swiftModule";
+
 // async function savePopTime(){
 //     //popScreen이 표시된 시간을 로컬 저장소에 저장
     
@@ -54,6 +56,7 @@ export default function Pop({navigation}){
                 <TouchableOpacity
                     style={styles.buttonContainer}
                     onPress = {() => {
+                        swiftAlarmModule.confirmFromPopScreen();
                         var path = RNFS.DocumentDirectoryPath + '/popTime.txt';
 
                         // write the file
@@ -76,6 +79,7 @@ export default function Pop({navigation}){
                 <TouchableOpacity
                     style={styles.buttonContainer}
                     onPress = {() => {
+                        swiftAlarmModule.confirmFromPopScreen();
                         var path = RNFS.DocumentDirectoryPath + '/popTime.txt';
 
                         // write the file

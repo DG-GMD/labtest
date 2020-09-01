@@ -11,6 +11,7 @@ import NotifService from '../utils/NotifService';
 
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 
+// import swiftAlarmModule from '../utils/swiftModule';
 
 // LogBox.ignoreLogs(['Warning: ...']);
 console.disableYellowBox = true;
@@ -133,7 +134,9 @@ export default class AlarmSet extends Component {
 
                 // alarmModule.diaryNotification(dt.getTime().toString());
 
+                this.notif.cancelNotif();
                 this.notif.cancelAll();
+                
                 //date picker에 있는 시간 추출
                 var pickerDate = new Date();
                 pickerDate.setHours(this.state.pickedHourValue);
@@ -161,16 +164,16 @@ export default class AlarmSet extends Component {
                 // this.notif.scheduleNotif(pickerDate, soundName);
                 
                 //pop init notification 
-                this.notif.popInitialNotification();
+                //this.notif.popInitialNotification();
                
-                this.notif.getScheduledLocalNotifications((data)=>{
-                    console.log(data);
-                });
+                // this.notif.getScheduledLocalNotifications((data)=>{
+                //     console.log(data);
+                // });
 
                 //background alarm sound 설정
                 const swiftAlarmModule = NativeModules.swiftAlarmModule;
+                
                 swiftAlarmModule.setAlarmTime(this.state.pickedHourValue, this.state.pickedMinValue);
-
 
                 //DB정보를 저장
                 let alarmDataJson = snapshot.val();

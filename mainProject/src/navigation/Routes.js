@@ -13,6 +13,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import PopScreen from '../screens/PopScreen';
 const Stack = createStackNavigator();
 import LoginScreen from '../screens/LoginScreen';
+import {swiftAlarmModule} from '../utils/swiftModule';
 
 export default function Routes() {
   const { user, setUser } = useContext(AuthContext);
@@ -24,6 +25,18 @@ export default function Routes() {
   let irn = "알람 설정";
   if(skip == 2)
     irn = "단어 학습";
+
+
+  //popscreen을 띄워도 되는지 확인
+  swiftAlarmModule.isTimeToPop(
+    (isAlarm) => {
+    if(isAlarm){
+      setPop(true);
+    }
+    else{
+      setPop(false);
+    }
+  });
 
   // alarmModule.checkIsAlarm(
   //   (msg) => {

@@ -11,5 +11,8 @@
 @interface RCT_EXTERN_MODULE(swiftAlarmModule, NSObject)
 
 RCT_EXTERN_METHOD(setAlarmTime:(NSInteger)hour minute:(NSInteger)minute)
+RCT_EXTERN_METHOD(checkAlarm:(NSString)name)
+RCT_EXTERN_METHOD(confirmFromPopScreen)
+RCT_EXTERN_METHOD(isTimeToPop: (RCTResponseSenderBlock)callback)
 
 @end

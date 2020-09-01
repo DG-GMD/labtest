@@ -1,7 +1,7 @@
 import React from 'react';
 import { AuthProvider } from './AuthProvider';
 import Routes from './Routes';
-import { Alert, Platform } from 'react-native';
+import { NativeModules, Alert, Platform } from 'react-native';
 // import { alarmModule } from '../utils/jvmodules'
 import NotifService from '../utils/NotifService';
 
@@ -13,6 +13,10 @@ export default function Providers() {
   );
 
   notifObj.requestPermissions();
+
+  //start check alardm
+  // const swiftAlarmModule = NativeModules.swiftAlarmModule;
+  // swiftAlarmModule.checkAlarm();
 
   return (
     <AuthProvider>

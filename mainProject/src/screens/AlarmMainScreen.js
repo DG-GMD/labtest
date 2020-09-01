@@ -1,11 +1,14 @@
 import React, {Component} from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, NativeModules } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import database from '@react-native-firebase/database';
 
 import LogoutButton from '../components/Logout';
 
 import Sound from 'react-native-sound';
+
+// import swiftAlarmModule from '../utils/swiftModule';
+
 // LogBox.ignoreLogs(['Warning: ...']);
 console.disableYellowBox = true;
 
@@ -87,6 +90,25 @@ export default class AlarmMain extends Component {
                         })
                     }
                 })
+
+                //testNumber로 알람 소리 설정
+                let soundName;
+                //본인 목소리
+                if(parseInt(testNumber/1000) == 1){
+                    soundName = "Self-voice.aiff";
+                }
+                //컴퓨터 목소리
+                else if(parseInt(testNumber/1000) == 2){
+                    soundName = "other-voice.mp3";
+                }
+                //알람 벨
+                else if(parseInt(testNumber/1000) == 3){
+                    soundName = "Alarm-bell.aiff";
+                }
+
+                //swift moudule init
+                const swiftAlarmModule = NativeModules.swiftAlarmModule;
+                swiftAlarmModule.checkAlarm(soundName);
             });
         }
 
