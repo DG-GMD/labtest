@@ -7,7 +7,7 @@ import LogoutButton from '../components/Logout';
 
 import Sound from 'react-native-sound';
 
-// import swiftAlarmModule from '../utils/swiftModule';
+import swiftAlarmModule from '../utils/swiftModule';
 
 // LogBox.ignoreLogs(['Warning: ...']);
 console.disableYellowBox = true;
@@ -107,7 +107,7 @@ export default class AlarmMain extends Component {
                 }
 
                 //swift moudule init
-                const swiftAlarmModule = NativeModules.swiftAlarmModule;
+                // const swiftAlarmModule = NativeModules.swiftAlarmModule;
                 swiftAlarmModule.checkAlarm(soundName);
             });
         }

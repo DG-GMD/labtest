@@ -11,7 +11,7 @@ import NotifService from '../utils/NotifService';
 
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 
-// import swiftAlarmModule from '../utils/swiftModule';
+import swiftAlarmModule from '../utils/swiftModule';
 
 // LogBox.ignoreLogs(['Warning: ...']);
 console.disableYellowBox = true;
@@ -171,7 +171,7 @@ export default class AlarmSet extends Component {
                 // });
 
                 //background alarm sound 설정
-                const swiftAlarmModule = NativeModules.swiftAlarmModule;
+                // const swiftAlarmModule = NativeModules.swiftAlarmModule;
                 
                 swiftAlarmModule.setAlarmTime(this.state.pickedHourValue, this.state.pickedMinValue);
 

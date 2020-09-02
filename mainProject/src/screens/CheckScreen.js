@@ -9,8 +9,8 @@ import { LogBox, Button, StyleSheet, View, Text, Image, ScrollView, TextInput
 import { Table, TableWrapper, Row, Rows, Cell, Col } from 'react-native-table-component';
 
 import AsyncStorage from '@react-native-community/async-storage'
-
 import LogoutButton from '../components/Logout';
+
 
 // LogBox.ignoreLogs(['Warning: ...']);
 console.disableYellowBox = true;
