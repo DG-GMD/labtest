@@ -13,7 +13,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import PopScreen from '../screens/PopScreen';
 const Stack = createStackNavigator();
 import LoginScreen from '../screens/LoginScreen';
-import {swiftAlarmModule} from '../utils/swiftModule';
+import swiftAlarmModule from '../utils/swiftModule';
 
 export default function Routes() {
   const { user, setUser } = useContext(AuthContext);
@@ -37,6 +37,8 @@ export default function Routes() {
       setPop(false);
     }
   });
+
+  console.log("-------isPop", Pop);
 
   // alarmModule.checkIsAlarm(
   //   (msg) => {

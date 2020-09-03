@@ -11,6 +11,8 @@ import RNFS from 'react-native-fs';
 
 import swiftAlarmModule from "../utils/swiftModule";
 
+import Routes from "../navigation/Routes";
+
 // async function savePopTime(){
 //     //popScreen이 표시된 시간을 로컬 저장소에 저장
     
@@ -32,7 +34,14 @@ const startDict = (admit) => {
 
 export default function Pop({navigation}){
     const { setSkip } = useContext(AuthContext);
+    const [refresh, setRefresh] = useState(true);
     
+    const refreshPage = () => {
+        console.log("refresh page!!!");
+        setRefresh(!refresh);
+    };
+
+
     return (
         <View
             style={{
@@ -57,6 +66,8 @@ export default function Pop({navigation}){
                     style={styles.buttonContainer}
                     onPress = {() => {
                         swiftAlarmModule.confirmFromPopScreen();
+                        
+                    
                         var path = RNFS.DocumentDirectoryPath + '/popTime.txt';
 
                         // write the file
@@ -65,6 +76,7 @@ export default function Pop({navigation}){
                             console.log('Pop Time WRITTEN!');
                             startDict(true);
                             setSkip(2);
+                            refreshPage();
                         })
                         .catch((err) => {
                             console.log(err.message);
@@ -88,6 +100,7 @@ export default function Pop({navigation}){
                             console.log('Pop Time WRITTEN!');
                             startDict(false);
                             BackHandler.exitApp();
+                            refreshPage();
                         })
                         .catch((err) => {
                             console.log(err.message);
