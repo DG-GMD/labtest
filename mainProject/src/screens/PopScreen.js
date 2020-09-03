@@ -11,7 +11,8 @@ import RNFS from 'react-native-fs';
 
 import swiftAlarmModule from "../utils/swiftModule";
 
-import Routes from "../navigation/Routes";
+import UserContext from '../navigation/UserContext';
+
 
 // async function savePopTime(){
 //     //popScreen이 표시된 시간을 로컬 저장소에 저장
@@ -34,15 +35,15 @@ const startDict = (admit) => {
 
 export default function Pop({navigation}){
     const { setSkip } = useContext(AuthContext);
-    const [refresh, setRefresh] = useState(true);
+    const {isPop} = useContext(UserContext);
+    const {setPop} = useContext(UserContext);
+    const {showRefresh} = useContext(UserContext);
     
-    const refreshPage = () => {
-        console.log("refresh page!!!");
-        setRefresh(!refresh);
-    };
 
 
     return (
+        
+
         <View
             style={{
                 flex: 1,
@@ -65,9 +66,6 @@ export default function Pop({navigation}){
                 <TouchableOpacity
                     style={styles.buttonContainer}
                     onPress = {() => {
-                        swiftAlarmModule.confirmFromPopScreen();
-                        
-                    
                         var path = RNFS.DocumentDirectoryPath + '/popTime.txt';
 
                         // write the file
@@ -76,11 +74,15 @@ export default function Pop({navigation}){
                             console.log('Pop Time WRITTEN!');
                             startDict(true);
                             setSkip(2);
-                            refreshPage();
+
+                            setPop(false);
+                            showRefresh();
+                            swiftAlarmModule.confirmFromPopScreen();
                         })
                         .catch((err) => {
                             console.log(err.message);
                         });
+                        
                     }}
                 >
                     <Text style={{fontSize: 18}}>
@@ -100,7 +102,7 @@ export default function Pop({navigation}){
                             console.log('Pop Time WRITTEN!');
                             startDict(false);
                             BackHandler.exitApp();
-                            refreshPage();
+                            
                         })
                         .catch((err) => {
                             console.log(err.message);

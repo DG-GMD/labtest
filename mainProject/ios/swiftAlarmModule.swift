@@ -169,7 +169,7 @@ class swiftAlarmModule: NSObject, UNUserNotificationCenterDelegate {
                 shouldPop = true
             }
             //다음날로 넘어가는 시점부터 혹은 popscreen에서 입력이 들어왔을 때
-            else{ 
+            else{
                 shouldPop = false
                 isAlarmRing = false
                 isPop = false

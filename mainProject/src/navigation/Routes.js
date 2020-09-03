@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, createContext } from 'react';
 import { StyleSheet, Text,  Platform } from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
@@ -15,12 +15,19 @@ const Stack = createStackNavigator();
 import LoginScreen from '../screens/LoginScreen';
 import swiftAlarmModule from '../utils/swiftModule';
 
+import UserContext, {UserProvider} from './UserContext';
+
+
+
+
 export default function Routes() {
   const { user, setUser } = useContext(AuthContext);
   const { skip } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
   const [initializing, setInitializing] = useState(true);
-  const [Pop, setPop] = useState(false);
+  
+
+  const {isPop, setPop} = useContext(UserContext);
 
   let irn = "알람 설정";
   if(skip == 2)
@@ -38,7 +45,7 @@ export default function Routes() {
     }
   });
 
-  console.log("-------isPop", Pop);
+  console.log("-------isPop", isPop);
 
   // alarmModule.checkIsAlarm(
   //   (msg) => {
@@ -68,6 +75,16 @@ export default function Routes() {
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     console.log(onAuthStateChanged);
+    //popscreen을 띄워도 되는지 확인
+  swiftAlarmModule.isTimeToPop(
+    (isAlarm) => {
+    if(isAlarm){
+      setPop(true);
+    }
+    else{
+      setPop(false);
+    }
+  });
     return subscriber; // unsubscribe on unmount
   }, []);
 
@@ -91,17 +108,11 @@ export default function Routes() {
     return <Loading />;
   }
 
-  if(Pop){
+  if(isPop){
     return(
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen
-            name='Pop'
-            component={PopScreen}
-            options={{ title: 'Lab Test'}}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+      
+        <PopScreen/>
+      
     );
   } else {
     return (
