@@ -38,7 +38,7 @@ export default function Pop({navigation}){
     const {isPop} = useContext(UserContext);
     const {setPop} = useContext(UserContext);
     const {showRefresh} = useContext(UserContext);
-    
+    const {startMemorize} = useContext(UserContext);
 
 
     return (
@@ -66,8 +66,11 @@ export default function Pop({navigation}){
                 <TouchableOpacity
                     style={styles.buttonContainer}
                     onPress = {() => {
+                        startMemorize();
                         var path = RNFS.DocumentDirectoryPath + '/popTime.txt';
 
+                        // setPop(new Date().getTime().toString());
+                        
                         // write the file
                         RNFS.writeFile(path, new Date().getTime().toString(), 'utf8')
                         .then((success) => {
@@ -75,13 +78,16 @@ export default function Pop({navigation}){
                             startDict(true);
                             setSkip(2);
 
-                            setPop(false);
+                            
                             showRefresh();
                             swiftAlarmModule.confirmFromPopScreen();
                         })
                         .catch((err) => {
                             console.log(err.message);
                         });
+
+                        
+                            
                         
                     }}
                 >

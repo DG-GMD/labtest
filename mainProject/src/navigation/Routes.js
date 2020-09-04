@@ -117,9 +117,18 @@ export default function Routes() {
   } else {
     return (
       <NavigationContainer>
-        {user ? <HomeStack 
+        {isPop ? 
+          (<PopScreen/>)
+          : 
+          (
+            user ? <HomeStack 
+              initialRouteName={irn} 
+            /> : <AuthStack />
+          )  
+        }          
+        {/* {user ? <HomeStack 
                   initialRouteName={irn} 
-                /> : <AuthStack />}
+                /> : <AuthStack />} */}
       </NavigationContainer>
     );
   }

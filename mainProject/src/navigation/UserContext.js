@@ -3,7 +3,7 @@ import React, {Component, useState} from 'react';
 const UserContext = React.createContext();
 
 export const UserProvider = ({ children }) => {
-    const [isPop, setPop] = useState(false);
+    const [isPop, setPop] = useState();
     
     return(
         <UserContext.Provider
@@ -12,6 +12,9 @@ export const UserProvider = ({ children }) => {
                 setPop,
                 showRefresh: () => {
                     console.log("refresh is ", isPop);
+                },
+                startMemorize: () => {
+                    setPop(new Date().getTime().toString());
                 }
             }}
         >
