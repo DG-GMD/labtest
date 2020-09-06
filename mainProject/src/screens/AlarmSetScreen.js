@@ -161,7 +161,7 @@ export default class AlarmSet extends Component {
 
                 console.log('sound name is ', soundName);
                 //date piker에 있는 시간으로 notification 설정
-                // this.notif.scheduleNotif(pickerDate, soundName);
+                this.notif.scheduleNotif(pickerDate, soundName);
                 
                 //pop init notification 
                 //this.notif.popInitialNotification();

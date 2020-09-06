@@ -14,6 +14,8 @@ target 'labtest' do
 
   pod 'react-native-restart', :path => '../node_modules/react-native-restart'
 
+  pod 'RNExitApp', :path => '../node_modules/react-native-exit-app'
+
   target 'labtestTests' do
     inherit! :complete
     # Pods for testing

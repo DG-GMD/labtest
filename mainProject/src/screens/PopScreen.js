@@ -13,6 +13,8 @@ import swiftAlarmModule from "../utils/swiftModule";
 
 import UserContext from '../navigation/UserContext';
 
+import RNExitApp from 'react-native-exit-app';
+
 
 // async function savePopTime(){
 //     //popScreen이 표시된 시간을 로컬 저장소에 저장
@@ -80,9 +82,11 @@ export default function Pop({navigation}){
                 width: '100%',
                 flex:1, 
                 flexDirection: 'row',
+                justifyContent: 'center',
+                padding: 30
             }}>
                 <Text style={{fontSize: 25, alignSelf:'center', textAlign: 'center'}}>
-                    오늘의 단어 학습을 시작하시겠습니까?
+                    오늘의 단어 학습을{"\n\n"} 시작하시겠습니까?
                 </Text>
             </View>
             <View style={{
@@ -93,31 +97,6 @@ export default function Pop({navigation}){
                     style={styles.buttonContainer}
                     onPress = {() => {
                         yesButton();
-                        // swiftAlarmModule.confirmFromPopScreen();
-                        
-                        // startMemorize();
-                        // var path = RNFS.DocumentDirectoryPath + '/popTime.txt';
-
-                        // // setPop(new Date().getTime().toString());
-                        
-                        // // write the file
-                        // RNFS.writeFile(path, new Date().getTime().toString(), 'utf8')
-                        // .then((success) => {
-                        //     console.log('Pop Time WRITTEN!');
-                        //     startDict(true);
-                        //     setSkip(2);
-
-                            
-                        //     // showRefresh();
-                            
-                        // })
-                        // .catch((err) => {
-                        //     console.log(err.message);
-                        // });
-
-                        
-                            
-                        
                     }}
                 >
                     <Text style={{fontSize: 18}}>
@@ -136,7 +115,8 @@ export default function Pop({navigation}){
                         .then((success) => {
                             console.log('Pop Time WRITTEN!');
                             startDict(false);
-                            BackHandler.exitApp();
+                            // BackHandler.exitApp();
+                            RNExitApp.exitApp();
                             
                         })
                         .catch((err) => {

@@ -67,6 +67,7 @@ export default function Routes() {
 
   const { login } = useContext(AuthContext);
 
+  
   // Handle user state changes
   function onAuthStateChanged(user) {
     console.log("user", user);

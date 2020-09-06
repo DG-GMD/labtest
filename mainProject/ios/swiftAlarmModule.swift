@@ -11,6 +11,7 @@ import UserNotifications
 import EventKit
 import AVFoundation
 import MediaPlayer
+import Firebase
 
 extension MPVolumeView {
     static func setVolume(_ volume: Float){
@@ -63,11 +64,42 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
     //flag; after test?
     var isPop: Bool = false
     
+    //firebase db
+    var ref: DatabaseReference!
+    
+    //testNumber
+    var testNumber: Int?
     
 
     // MARK: 알람, 알림 초기화
     @objc func initAlarm() {
 
+        ref = Database.database().reference()
+        
+        
+        ref.child("users").child(String(testNumber!)).queryOrdered(byChild: "order").queryLimited(toLast: 1).observeSingleEvent(of: .value, with: { (snapshot) in
+          // Get user value
+            let snapshotValue = snapshot.value as? [String : AnyObject] ?? [:]
+            
+            let order:Int?, setHour:Int?, setMin:Int?
+
+            //first, watch value of 'order' key
+            for (key, value as [String: AnyObject]) in snapshotValue{
+                order = value["order"]
+            }
+            
+            if order! >= 1 {
+                targetHour = value?["alarm"] as? String ?? ""
+            }
+            
+            
+            
+
+            // ...
+            }) { (error) in
+            print(error.localizedDescription)
+        }
+        
         // Make dismiss for all VC that was presented from this start VC
 //        self.children.forEach({vc in
 //            print("Dismiss \(vc.description)")
@@ -88,6 +120,16 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         } catch {
             print("Failed to set audio session category.  Error: \(error)")
         }
+        
+        let session = AVAudioSession.sharedInstance()
+        var _: Error?
+        try? session.setCategory(AVAudioSession.Category.playAndRecord)
+        try? session.setMode(AVAudioSession.Mode.voiceChat)
+        
+        try? session.overrideOutputAudioPort(AVAudioSession.PortOverride.speaker)
+        
+        try? session.setActive(true)
+        
 
         //AVAudioPlayer check time
         player.addPeriodicTimeObserver(forInterval: CMTimeMake(value: 1, timescale: 100), queue: DispatchQueue.main) {
@@ -318,7 +360,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
     }
     
     //상시 알람 시간 확인
-    @objc func checkAlarm(_ name:NSString) -> Void{
+    @objc func checkAlarm(_ name:NSString, number:NSInteger) -> Void{
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self, selector: #selector(appMovedToBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
 
@@ -328,6 +370,9 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         let arr = fullFileName!.components(separatedBy: ".")
         fileName = arr[0]
         fileType = arr[1]
+        
+        //set testnumber
+        testNumber = number
         
         DispatchQueue.main.async(execute: {
             self.initAlarm()

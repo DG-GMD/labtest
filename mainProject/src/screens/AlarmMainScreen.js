@@ -108,7 +108,7 @@ export default class AlarmMain extends Component {
 
                 //swift moudule init
                 // const swiftAlarmModule = NativeModules.swiftAlarmModule;
-                swiftAlarmModule.checkAlarm(soundName);
+                swiftAlarmModule.checkAlarm(soundName, testNumber);
             });
         }
 
