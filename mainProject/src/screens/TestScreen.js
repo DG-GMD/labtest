@@ -448,8 +448,6 @@ export default class Test extends Component{
                     paddingLeft: 18,
                     paddingRight: 18,
                     // backgroundColor: '#EFEFEF',
-                    
-                
                 }}>
                     <View style={{
                         flex: 6,
@@ -460,7 +458,7 @@ export default class Test extends Component{
                         <Table borderStyle={{borderWidth: 1}}>
                             <Row data={this.state.tableHead} flexArr={[1, 1, 1, 1]} style={styles.head} textStyle={styles.text}/>
                             <TableWrapper style={styles.wrapper}>
-                                <Col data={this.state.tableTitle} style={{height: 55}} heightArr={[55,55,55,55,55]} textStyle={styles.text}/>
+                                <Col data={this.state.tableTitle} style={{height: 50}} heightArr={[50,50,50,50,50]} textStyle={styles.text}/>
                                 <Rows data={this.state.tableData} flexArr={[1, 1, 1]} style={styles.row} textStyle={styles.text}/>
                             </TableWrapper>
                         </Table>
@@ -492,7 +490,8 @@ export default class Test extends Component{
                         </Text>
                         
                     {/* <Button title="init testIndex" onPress={() => {this.initTestResult() }}/> */}
-                </View>
+                    </View>
+
                     <View style={{
                         justifyContent: 'center',
                         alignItems: 'center',
@@ -500,11 +499,12 @@ export default class Test extends Component{
                         // backgroundColor: 'blue'
                     }}>
                         <TouchableOpacity style={styles.reMembuttonContainer} onPress={() => {this.initTest()}}>
-                            <Text style={{fontSize: 15 , color: 'mediumseagreen', marginBottom: 10}}>
+                            <Text style={{fontSize: 15 , color: 'mediumseagreen'}}>
                                 다시 학습하기
                             </Text>
                         </TouchableOpacity>
                     </View>
+
                 </View>
             </View>
         );
@@ -885,7 +885,7 @@ const styles = StyleSheet.create({
     head: {  height: 40,  backgroundColor: '#EBEFBF'  },
     wrapper: { flexDirection: 'row' },
     title: { flex: 1, backgroundColor: 'darkseagreen' },
-    row: {  height: 55  },
+    row: {  height: 50  },
     text: { textAlign: 'center', fontSize: 13 },
 
     warningContainer: {
