@@ -27,10 +27,14 @@ static void InitializeFlipper(UIApplication *application) {
 }
 #endif
 
+NSDictionary * saveLaunchOptions;
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  saveLaunchOptions = launchOptions;
+  
   if ([FIRApp defaultApp] == nil) {
     [FIRApp configure];
   }
@@ -57,6 +61,8 @@ static void InitializeFlipper(UIApplication *application) {
   
   return YES;
 }
+
+
 
 //Called when a notification is delivered to a foreground app.
 -(void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler

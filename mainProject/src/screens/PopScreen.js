@@ -33,6 +33,8 @@ const startDict = (admit) => {
     // alarmModule.startDict(admit);
 }
 
+
+
 export default function Pop({navigation}){
     const { setSkip } = useContext(AuthContext);
     const {isPop} = useContext(UserContext);
@@ -40,6 +42,30 @@ export default function Pop({navigation}){
     const {showRefresh} = useContext(UserContext);
     const {startMemorize} = useContext(UserContext);
 
+
+    const yesButton = () => {
+        swiftAlarmModule.confirmFromPopScreen();
+                            
+        startMemorize();
+        var path = RNFS.DocumentDirectoryPath + '/popTime.txt';
+    
+        // setPop(new Date().getTime().toString());
+        
+        // write the file
+        RNFS.writeFile(path, new Date().getTime().toString(), 'utf8')
+        .then((success) => {
+            console.log('Pop Time WRITTEN!');
+            startDict(true);
+            setSkip(2);
+    
+            
+            // showRefresh();
+            
+        })
+        .catch((err) => {
+            console.log(err.message);
+        });
+    }
 
     return (
         
@@ -66,25 +92,28 @@ export default function Pop({navigation}){
                 <TouchableOpacity
                     style={styles.buttonContainer}
                     onPress = {() => {
-                        startMemorize();
-                        var path = RNFS.DocumentDirectoryPath + '/popTime.txt';
-
-                        // setPop(new Date().getTime().toString());
+                        yesButton();
+                        // swiftAlarmModule.confirmFromPopScreen();
                         
-                        // write the file
-                        RNFS.writeFile(path, new Date().getTime().toString(), 'utf8')
-                        .then((success) => {
-                            console.log('Pop Time WRITTEN!');
-                            startDict(true);
-                            setSkip(2);
+                        // startMemorize();
+                        // var path = RNFS.DocumentDirectoryPath + '/popTime.txt';
+
+                        // // setPop(new Date().getTime().toString());
+                        
+                        // // write the file
+                        // RNFS.writeFile(path, new Date().getTime().toString(), 'utf8')
+                        // .then((success) => {
+                        //     console.log('Pop Time WRITTEN!');
+                        //     startDict(true);
+                        //     setSkip(2);
 
                             
-                            showRefresh();
-                            swiftAlarmModule.confirmFromPopScreen();
-                        })
-                        .catch((err) => {
-                            console.log(err.message);
-                        });
+                        //     // showRefresh();
+                            
+                        // })
+                        // .catch((err) => {
+                        //     console.log(err.message);
+                        // });
 
                         
                             

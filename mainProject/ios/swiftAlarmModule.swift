@@ -25,7 +25,7 @@ extension MPVolumeView {
 }
 
 @objc(swiftAlarmModule)
-class swiftAlarmModule: NSObject, UNUserNotificationCenterDelegate {
+class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
 
 //    @IBOutlet weak var myDatePicker: UIDatePicker!
     //    let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -62,10 +62,19 @@ class swiftAlarmModule: NSObject, UNUserNotificationCenterDelegate {
     
     //flag; after test?
     var isPop: Bool = false
+    
+    
 
     // MARK: 알람, 알림 초기화
     @objc func initAlarm() {
 
+        // Make dismiss for all VC that was presented from this start VC
+//        self.children.forEach({vc in
+//            print("Dismiss \(vc.description)")
+//            vc.dismiss(animated: false, completion: nil)
+//        })
+        
+        
         //looper를 통해 무한하게 음악 재생하게 설정
         self.playerLooper = AVPlayerLooper(player: player, templateItem: songs[0])
         
@@ -81,20 +90,21 @@ class swiftAlarmModule: NSObject, UNUserNotificationCenterDelegate {
         }
 
         //AVAudioPlayer check time
-//        player.addPeriodicTimeObserver(forInterval: CMTimeMake(value: 1, timescale: 100), queue: DispatchQueue.main) {
-//            [weak self] time in
-//            guard let self = self else { return }
-//            let timeString = String(format: "%02.2f", CMTimeGetSeconds(time))
-//
-//            if UIApplication.shared.applicationState == .active {
-//                //            self.timeLabel.text = timeString
-//            } else {
-//                print("Background: \(timeString)")
-//            }
-//        }
+        player.addPeriodicTimeObserver(forInterval: CMTimeMake(value: 1, timescale: 100), queue: DispatchQueue.main) {
+            [weak self] time in
+            guard let self = self else { return }
+            let timeString = String(format: "%02.2f", CMTimeGetSeconds(time))
+
+            if UIApplication.shared.applicationState == .active {
+                //            self.timeLabel.text = timeString
+            } else {
+                print("Background: \(timeString)")
+            }
+        }
 
         //MARK: make scheduler to update time
         Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateTime), userInfo: nil, repeats: true)
+        
 
 
         // MARK: Notification Options
@@ -106,13 +116,13 @@ class swiftAlarmModule: NSObject, UNUserNotificationCenterDelegate {
         
     }
 
-//    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?)
-//    {
-//        if keyPath == "currentItem", let player = object as? AVPlayer,
-//        let currentItem = player.currentItem?.asset as? AVURLAsset {
-//        //        songLabel.text = currentItem.url.lastPathComponent
-//        }
-//    }
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?)
+    {
+        if keyPath == "currentItem", let player = object as? AVPlayer,
+        let currentItem = player.currentItem?.asset as? AVURLAsset {
+        //        songLabel.text = currentItem.url.lastPathComponent
+        }
+    }
 
     //take song list
     private lazy var songs: [AVPlayerItem] = {
@@ -138,12 +148,14 @@ class swiftAlarmModule: NSObject, UNUserNotificationCenterDelegate {
     }
     
     @objc func confirmFromPopScreen(){
-        isPop = true
+        isPop = false
+        isAlarmRing = false
+        shouldPop = false
     }
     
     @objc
     func isTimeToPop(_ callback: RCTResponseSenderBlock){
-        callback([isAlarmRing])
+        callback([shouldPop])
     }
     
     //이전 알람 데이터를 확인해 flag들 조정
@@ -161,7 +173,7 @@ class swiftAlarmModule: NSObject, UNUserNotificationCenterDelegate {
             formatter.dateFormat = "dd" // date format
             let nowDate = formatter.string(from: Date()) // get today's date
         
-            print("now date is \(alarmDate)")
+            print("checkAlarmCondition(): now date is \(alarmDate)")
             
             //동일 날짜, 알람이 이미 울림, 아직 popscreen에서 입력 없음
             if nowDate == alarmDate && isAlarmRing && !isPop{
@@ -170,13 +182,14 @@ class swiftAlarmModule: NSObject, UNUserNotificationCenterDelegate {
             }
             //다음날로 넘어가는 시점부터 혹은 popscreen에서 입력이 들어왔을 때
             else{
-                shouldPop = false
+//                shouldPop = false
                 isAlarmRing = false
                 isPop = false
                 player.pause()
+                print("checkAlarmCondition(): player.pause() clear")
             }
             
-            print("isPop!!!!!!! \(isPop)")
+            print("checkAlarmCondition(): isPop!!!!!!! \(isPop)")
         }
     }
 
@@ -203,6 +216,8 @@ class swiftAlarmModule: NSObject, UNUserNotificationCenterDelegate {
         //update alarm flag
         checkAlarmCondition()
         
+        
+        print("updateTime(): checkAlarmCondition() clear")
         //check alarm is ring
         if(isAlarmRing){
             return
@@ -214,12 +229,23 @@ class swiftAlarmModule: NSObject, UNUserNotificationCenterDelegate {
             print("\(nowTimeHour! == targetHour!) and \(nowTimeMinute! == targetMinute!)")
             if nowTimeHour! == targetHour! && nowTimeMinute! == targetMinute!{
                 isPlayConfirm = true
+                //volume MAX
+                MPVolumeView.setVolume(1)
+                
+                print("playMusic(): volume up claer")
+                //play music
+                player.play()
+                
                 playMusic()
                 print("in play!!")
                 //call updateTime() after 60s
                 //알람이 울린 후 알람 소리를 멈추면 60초 후부터 타겟 시간 확인하게 하기
                 Timer.scheduledTimer(timeInterval: 60.0, target: self, selector: #selector(timerOn), userInfo: nil, repeats: false)
                 isAlarmRing = true
+                
+                
+                //suspend app
+                UIControl().sendAction(#selector(URLSessionTask.suspend), to: UIApplication.shared, for: nil)
             }
         }
         
@@ -228,12 +254,9 @@ class swiftAlarmModule: NSObject, UNUserNotificationCenterDelegate {
     
     //알람 소리 재생
     func playMusic(){
-        //volume MAX
-        MPVolumeView.setVolume(1)
         
-        //play music
-        player.play()
         
+        print("playMusic(): play clear")
         //get file url
         let pathString:NSURL? = getFileUrl()
         
@@ -248,12 +271,15 @@ class swiftAlarmModule: NSObject, UNUserNotificationCenterDelegate {
         
         //repeat 10 times
         Timer.scheduledTimer(timeInterval: musicLength*10, target: self, selector: #selector(stopMusic), userInfo: nil, repeats: false)
+        print("playMusic(): schedule clear")
     }
 
     //알라 소리 멈추기
     @objc func stopMusic(){
-        print("stop!!!!")
-        player.pause()
+        if(isPlayConfirm){
+            print("stopMusic(): stop!!!!")
+            player.pause()
+        }
     }
     
     @objc func getFileUrl() -> NSURL? {

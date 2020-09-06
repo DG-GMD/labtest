@@ -171,6 +171,8 @@ export default class Test extends Component{
             checkedList: _checkedList,
             checked: _value
         });
+
+        
     }
     increaseCount(){
         let _checkedList = [...this.state.checkedList];
@@ -187,7 +189,7 @@ export default class Test extends Component{
                 checked: _checked,
                 count: this.state.count+1,
                 word: this.state.wordList[this.state.count+1].word,
-                checked: -1
+                
             });
         }
         // console.log(_checkedList);
@@ -208,7 +210,7 @@ export default class Test extends Component{
                 checked: _checked,
                 count: this.state.count-1,
                 word: this.state.wordList[this.state.count-1].word,
-                checked: -1
+                
             });
         }
         // console.log(_checkedList);
@@ -224,6 +226,8 @@ export default class Test extends Component{
         let _answerList = tempAnswerList;
         let _checkedList = [...this.state.checkedList];
         let _checked = _checkedList[this.state.count];
+
+        console.log("setProblemItems: _checked=", _checked);
 
         
         let _probelmItemList = tempProblemItemList;
@@ -805,12 +809,10 @@ async function writeTestResultToDB(item, _lastIndex) {
 
 function MeaningRadioButton(props){
     return (
-        <View>
-            <Text style={styles.problemMeaning}>{props.number}. {props.meaning}</Text>
-            
-            <RadioButton value={props.number} />
+        
+            <RadioButton.Item label={props.number + ". " + props.meaning} value={props.number} />
     
-        </View>
+        
     );
 }
 

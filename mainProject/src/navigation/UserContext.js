@@ -14,7 +14,8 @@ export const UserProvider = ({ children }) => {
                     console.log("refresh is ", isPop);
                 },
                 startMemorize: () => {
-                    setPop(new Date().getTime().toString());
+                    console.log("start memorize.. from UserContext");
+                    setPop(true);
                 }
             }}
         >
