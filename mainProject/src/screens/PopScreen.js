@@ -44,6 +44,7 @@ export default function Pop({navigation}){
     const {showRefresh} = useContext(UserContext);
     const {startMemorize} = useContext(UserContext);
 
+    const [refresh, setRefresh] = useState(null);
 
     const yesButton = () => {
         swiftAlarmModule.confirmFromPopScreen();
@@ -59,9 +60,9 @@ export default function Pop({navigation}){
             console.log('Pop Time WRITTEN!');
             startDict(true);
             setSkip(2);
-    
-            
-            // showRefresh();
+            setRefresh(true);
+            console.log("PopScreen: isPop is", isPop);
+            setPop(false);
             
         })
         .catch((err) => {

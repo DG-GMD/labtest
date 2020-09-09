@@ -16,8 +16,6 @@
 #import <SKIOSNetworkPlugin/SKIOSNetworkAdapter.h>
 #import <FlipperKitReactPlugin/FlipperKitReactPlugin.h>
 
-@import Firebase;
-
 
 static void InitializeFlipper(UIApplication *application) {
   FlipperClient *client = [FlipperClient sharedClient];
@@ -61,9 +59,8 @@ NSDictionary * saveLaunchOptions;
   // Define UNUserNotificationCenter
   UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
   center.delegate = self;
-  
-  [FIRApp configure];
-  
+
+
   return YES;
 }
 
@@ -117,6 +114,11 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
 {
  [RNCPushNotificationIOS didReceiveLocalNotification:notification];
+}
+
+
+- (void)application:(UIApplication *)application applicationWillTerminate:(UIApplication *)application {
+    //termination
 }
 
 @end

@@ -9,6 +9,8 @@ import Loading from '../components/Loading';
 // import { alarmModule } from '../utils/jvmodules'
 import AsyncStorage from '@react-native-community/async-storage'
 
+import database from '@react-native-firebase/database';
+
 import { createStackNavigator } from '@react-navigation/stack';
 import PopScreen from '../screens/PopScreen';
 const Stack = createStackNavigator();
@@ -16,6 +18,8 @@ import LoginScreen from '../screens/LoginScreen';
 import swiftAlarmModule from '../utils/swiftModule';
 
 import UserContext, {UserProvider} from './UserContext';
+
+import RNRestart from 'react-native-restart'; // Import package from node modules
 
 
 
@@ -30,26 +34,45 @@ export default function Routes() {
   const [appStateVisible, setAppStateVisible] = useState(appState.current);
   const [refresh, setRefresh] = useState(false);
   const {isPop, setPop} = useContext(UserContext);
+  // const [isPop, setPop] = useState(false);
+
+  //한번 로그인했었으면 해당 정보로 자동 로그인
+  (async () => {
+    const storageUserName = await AsyncStorage.getItem('user');
+    // console.log("get name!");
+    
+    if( storageUserName != null){
+      const storageUserBirth = await AsyncStorage.getItem('birth');
+      const storageUserNumber = await AsyncStorage.getItem('testNumber');
+          
+      // console.log(typeof(storageUserName), typeof(storageUserBirth),typeof(storageUserNumber));
+      // console.log(storageUserName, storageUserBirth, storageUserNumber);
+      login(storageUserName, storageUserBirth, storageUserNumber);
+    }
+  })();
 
   let irn = "알람 설정";
   if(skip == 2)
     irn = "단어 학습";
 
 
-  //popscreen을 띄워도 되는지 확인
-  swiftAlarmModule.isTimeToPop(
-    (isAlarm) => {
-    if(isAlarm){
-      setPop(true);
-      console.log("routes: isTimeToPop: isAlarm is true!!");
-    }
-    else{
-      setPop(false);
-      console.log("routes: isTimeToPop: isAlarm is true!!");
-    }
-  });
+    //popscreen을 띄워도 되는지 확인
+    swiftAlarmModule.isTimeToPop(
+      (isAlarm) => {
+      if(isAlarm == true){
+        setPop(true);
+        console.log("routes: isTimeToPop: isAlarm is true!!", isPop);
+      }
+      else{
+        setPop(false);
+        console.log("routes: isTimeToPop: isAlarm is false!!", isPop);
+      }
+    });
+   
 
-  console.log("-------isPop", isPop);
+  
+
+  
 
   // alarmModule.checkIsAlarm(
   //   (msg) => {
@@ -100,42 +123,36 @@ export default function Routes() {
 
     swiftAlarmModule.isTimeToPop(
       (isAlarm) => {
-      if(isAlarm){
+      if(isAlarm == true){
         setPop(true);
-        console.log("useEffect: isTimeToPop: isAlarm is true!!");
+        console.log("useEffect: isTimeToPop: isAlarm is true!!", isPop);
+        // Immediately reload the React Native Bundle
+        // RNRestart.Restart();
       }
       else{
         setPop(false);
-        console.log("useEffect: isTimeToPop: isAlarm is false!!");
+        console.log("useEffect: isTimeToPop: isAlarm is false!!", isPop);
+        // Immediately reload the React Native Bundle
+        // RNRestart.Restart();
       }
-    });
+    })
+
 
     appState.current = nextAppState;
     setAppStateVisible(appState.current);
     console.log("AppState", appState.current);
+
+    // RNRestart.Restart();
   };
 
-  //한번 로그인했었으면 해당 정보로 자동 로그인
-  (async () => {
-    const storageUserName = await AsyncStorage.getItem('user');
-    // console.log("get name!");
-    
-    if( storageUserName != null){
-      const storageUserBirth = await AsyncStorage.getItem('birth');
-      const storageUserNumber = await AsyncStorage.getItem('testNumber');
-          
-      // console.log(typeof(storageUserName), typeof(storageUserBirth),typeof(storageUserNumber));
-      // console.log(storageUserName, storageUserBirth, storageUserNumber);
-      login(storageUserName, storageUserBirth, storageUserNumber);
-    }
-  })();
   
+  console.log("-------isPop", isPop);
 
   if (loading) {
     return <Loading />;
   }
 
-  if(isPop){
+  if(isPop == true){
     return(
       
         <PopScreen/>

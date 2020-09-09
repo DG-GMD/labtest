@@ -25,6 +25,34 @@ extension MPVolumeView {
     }
 }
 
+class DbAlarmData: NSObject {
+    
+    var order: String
+    var saveTime: String
+    var setHour: String
+    var setMin: String
+    
+    
+    init(order: String,
+    saveTime: String,
+    setHour: String,
+    setMin: String) {
+        
+        self.order = order
+        self.saveTime = saveTime
+        self.setHour = setHour
+        self.setMin = setMin
+    }
+    
+    convenience override init() {
+        self.init(order: "",
+        saveTime: "",
+        setHour: "",
+        setMin: "")
+    }
+}
+
+
 @objc(swiftAlarmModule)
 class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
 
@@ -35,7 +63,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
     lazy var player: AVQueuePlayer = self.makePlayer()
     
     //looper: takes player
-    var playerLooper: AVPlayerLooper!
+    var playerLooper: AVPlayerLooper?
 
     //time data
     var nowTimeHour: Int?
@@ -51,6 +79,8 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
     //player flag
     var isPlayConfirm = false
 
+    //flag; just checking once or not?
+    var justOnceCheckFlag = false
 
     //check flag; is it alarmed?
     var isAlarmRing: Bool = false
@@ -68,33 +98,56 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
     var ref: DatabaseReference!
     
     //testNumber
-    var testNumber: Int?
+    var testNumber: String?
     
-
+    //timer
+    var alarmTimer : Timer?
+    var stopAlarmTimer: Timer?
+    
     // MARK: 알람, 알림 초기화
     @objc func initAlarm() {
 
         ref = Database.database().reference()
         
         
-        ref.child("users").child(String(testNumber!)).queryOrdered(byChild: "order").queryLimited(toLast: 1).observeSingleEvent(of: .value, with: { (snapshot) in
+        ref.child("users").child(String(testNumber!) + "/alarm").queryOrdered(byChild: "order").queryLimited(toLast: 1).observeSingleEvent(of: .value, with: { (snapshot) in
           // Get user value
-            let snapshotValue = snapshot.value as? [String : AnyObject] ?? [:]
+            let alarmDic = snapshot.value as? Dictionary<String, Any>
+            print("snapshot data \(alarmDic)")
             
-            let order:Int?, setHour:Int?, setMin:Int?
-
-            //first, watch value of 'order' key
-            for (key, value as [String: AnyObject]) in snapshotValue{
-                order = value["order"]
+//            let firstKey = Array(alarmDic!)[0].key as String
+//            print(alarmDic![firstKey]r!)
+            
+            if alarmDic != nil{
+            let data = Array(alarmDic!)[0].value as AnyObject?
+            let order = data?.object(forKey: "order") as AnyObject?
+            
+            
+//            var data = alarmDic![firstKey].order
+            
+            
+            var dbAlarmHour: Int = -1
+            var dbAlarmMinute: Int = -1
+        
+            print("order is \(order!)")
+            if order as! Int >= 1 {
+                self.targetHour = data?.object(forKey: "setHour") as AnyObject? as? Int
+                self.targetMinute = data?.object(forKey: "setMin") as AnyObject? as? Int
+                
+                dbAlarmHour = self.targetHour!
+                dbAlarmMinute = self.targetMinute!
+                
+                print("dbAlarmHour: \(dbAlarmHour) dbAlarmMinute: \(dbAlarmMinute)")
             }
             
-            if order! >= 1 {
-                targetHour = value?["alarm"] as? String ?? ""
+            if dbAlarmMinute == -1{
+                print("db is nil!!!!!!!!!!")
             }
             
             
+            self.checkAlarmCondition()
+            }
             
-
             // ...
             }) { (error) in
             print(error.localizedDescription)
@@ -132,20 +185,22 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         
 
         //AVAudioPlayer check time
-        player.addPeriodicTimeObserver(forInterval: CMTimeMake(value: 1, timescale: 100), queue: DispatchQueue.main) {
-            [weak self] time in
-            guard let self = self else { return }
-            let timeString = String(format: "%02.2f", CMTimeGetSeconds(time))
+//        player.addPeriodicTimeObserver(forInterval: CMTimeMake(value: 1, timescale: 100), queue: DispatchQueue.main) {
+//            [weak self] time in
+//            guard let self = self else { return }
+//            let timeString = String(format: "%02.2f", CMTimeGetSeconds(time))
+//r
+//            if UIApplication.shared.applicationState == .active {
+//                //            self.timeLabel.text = timeString
+//            } else {
+//                print("Background: \(timeString)")
+//            }
+//        }
 
-            if UIApplication.shared.applicationState == .active {
-                //            self.timeLabel.text = timeString
-            } else {
-                print("Background: \(timeString)")
-            }
-        }
-
+        stopTimer()
+        
         //MARK: make scheduler to update time
-        Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateTime), userInfo: nil, repeats: true)
+        alarmTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateTime), userInfo: nil, repeats: true)
         
 
 
@@ -157,14 +212,25 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         
         
     }
-
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?)
-    {
-        if keyPath == "currentItem", let player = object as? AVPlayer,
-        let currentItem = player.currentItem?.asset as? AVURLAsset {
-        //        songLabel.text = currentItem.url.lastPathComponent
+    
+    func stopTimer(){
+        if alarmTimer != nil{
+            alarmTimer?.invalidate()
+            alarmTimer = nil
+        }
+        if stopAlarmTimer != nil{
+            stopAlarmTimer?.invalidate()
+            stopAlarmTimer = nil
         }
     }
+
+//    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?)
+//    {
+//        if keyPath == "currentItem", let player = object as? AVPlayer,
+//        let currentItem = player.currentItem?.asset as? AVURLAsset {
+//        //        songLabel.text = currentItem.url.lastPathComponent
+//        }
+//    }
 
     //take song list
     private lazy var songs: [AVPlayerItem] = {
@@ -197,6 +263,30 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
     
     @objc
     func isTimeToPop(_ callback: RCTResponseSenderBlock){
+//        var formatter = DateFormatter() // 특정 포맷으로 날짜를 보여주기 위한 변수 선언
+//        formatter.dateFormat = "HH" // hour format
+//        nowTimeHour = Int(formatter.string(from: Date()))
+//
+//        formatter = DateFormatter() // 특정 포맷으로 날짜를 보여주기 위한 변수 선언
+//        formatter.dateFormat = "mm" // minute format
+//        nowTimeMinute = Int(formatter.string(from: Date()))
+//
+//        //타겟 시간이 존재할 때만 알람 체크
+//        if targetHour != nil && targetMinute != nil && !isPlayConfirm{
+//            //현재 시간과 타겟 시간이 같다면?
+//            print("\(nowTimeHour! == targetHour!) and \(nowTimeMinute! == targetMinute!)")
+//            if nowTimeHour! == targetHour! && nowTimeMinute! == targetMinute!{
+//                isPlayConfirm = true
+//                isAlarmRing = true
+//
+//                //call updateTime() after 60s
+//                //알람이 울린 후 알람 소리를 멈추면 60초 후부터 타겟 시간 확인하게 하기
+////                stopAlarmTimer = Timer.scheduledTimer(timeInterval: 60.0, target: self, selector: #selector(self.timerOn), userInfo: nil, repeats: false)
+//
+//            }
+//        }
+        
+        print("isTimeToPop:return shouldPop=\(shouldPop)")
         callback([shouldPop])
     }
     
@@ -220,6 +310,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
             //동일 날짜, 알람이 이미 울림, 아직 popscreen에서 입력 없음
             if nowDate == alarmDate && isAlarmRing && !isPop{
                 //popscreen을 띄워저야한다
+                print("shouldPop is true")
                 shouldPop = true
             }
             //다음날로 넘어가는 시점부터 혹은 popscreen에서 입력이 들어왔을 때
@@ -271,20 +362,22 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
             print("\(nowTimeHour! == targetHour!) and \(nowTimeMinute! == targetMinute!)")
             if nowTimeHour! == targetHour! && nowTimeMinute! == targetMinute!{
                 isPlayConfirm = true
-                //volume MAX
-                MPVolumeView.setVolume(1)
-                
-                print("playMusic(): volume up claer")
-                //play music
-                player.play()
-                
-                playMusic()
-                print("in play!!")
-                //call updateTime() after 60s
-                //알람이 울린 후 알람 소리를 멈추면 60초 후부터 타겟 시간 확인하게 하기
-                Timer.scheduledTimer(timeInterval: 60.0, target: self, selector: #selector(timerOn), userInfo: nil, repeats: false)
                 isAlarmRing = true
                 
+                if(!justOnceCheckFlag){
+                    //call updateTime() after 60s
+                    //알람이 울린 후 알람 소리를 멈추면 60초 후부터 타겟 시간 확인하게 하기
+                    stopAlarmTimer = Timer.scheduledTimer(timeInterval: 60.0, target: self, selector: #selector(timerOn), userInfo: nil, repeats: false)
+                    //volume MAX
+                    MPVolumeView.setVolume(1)
+                    
+                    print("playMusic(): volume up claer")
+                    //play music
+                    player.play()
+                    
+                    playMusic()
+                    print("in play!!")
+                }
                 
                 //suspend app
                 UIControl().sendAction(#selector(URLSessionTask.suspend), to: UIApplication.shared, for: nil)
@@ -312,7 +405,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         print(musicLength)
         
         //repeat 10 times
-        Timer.scheduledTimer(timeInterval: musicLength*10, target: self, selector: #selector(stopMusic), userInfo: nil, repeats: false)
+        Timer.scheduledTimer(timeInterval: musicLength*5, target: self, selector: #selector(stopMusic), userInfo: nil, repeats: false)
         print("playMusic(): schedule clear")
     }
 
@@ -360,9 +453,10 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
     }
     
     //상시 알람 시간 확인
-    @objc func checkAlarm(_ name:NSString, number:NSInteger) -> Void{
+    @objc func checkAlarm(_ name:NSString, number:NSString) -> Void{
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self, selector: #selector(appMovedToBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
+//        notificationCenter.addObserver(self, selector: #selector(appMovedToBackground), name: UIApplication.willTerminateNotification, object: nil)
 
         fullFileName = String(name)
         
@@ -372,14 +466,19 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         fileType = arr[1]
         
         //set testnumber
-        testNumber = number
+        testNumber = String(number)
         
         DispatchQueue.main.async(execute: {
-            self.initAlarm()
+           
+            if self.playerLooper == nil{
+                self.initAlarm()
+            }
+            
         })
     }
 
     @objc func appMovedToBackground() {
+
         makeNotification()
     }
 
@@ -390,11 +489,25 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
 
         print("make notification")
 
+        var title: String?
+        var body: String?
+        
+        //alarm is ringing?
+        if isAlarmRing == true{
+            title = "알람이 울리고 있습니다!"
+            body = "이 알람을 누르거나 앱 아이콘을 터치하여 앱에 재진입해주세요!"
+        }
+        //alarm isn't ringing
+        else{
+            title = "주의사항"
+            body = "백그라운드에서 종료 시 무음모드에서 소리가 나지 않습니다!"
+        }
         //Setting content of the notification
         let content = UNMutableNotificationContent()
-        content.title = "주의사항!!"
-        content.subtitle = "⭐️⭐️⭐️⭐️⭐️⭐️⭐️"
-        content.body = "백그라운드에서 종료 시 무음모드에서 소리가 나지 않습니다!"
+        content.title = title!
+        content.subtitle = "⭐️⭐️⭐️"
+        content.body = body!
+        
         content.summaryArgument = "skku"
         content.summaryArgumentCount = 40
         content.sound = UNNotificationSound.default
