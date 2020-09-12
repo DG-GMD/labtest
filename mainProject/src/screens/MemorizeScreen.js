@@ -318,11 +318,11 @@ export default class Memorize extends Component {
         }
         //1~4번째 영단어
         else if(flag){
-            bottomText = '화면을 탭하면 단어의 뜻이 나타납니다.';
+            bottomText = '화면을 탭하면 \n단어의 뜻이 나타납니다.';
         }
         //1~4번째 영단어의 한글 뜻
         else {
-            bottomText = '화면을 탭하면 다음 영단어가 나타납니다.';
+            bottomText = '화면을 탭하면 \n다음 영단어가 나타납니다.';
         }
         return(
             <Text style={{

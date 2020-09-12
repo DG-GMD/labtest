@@ -305,7 +305,7 @@ export default class AlarmSet extends Component {
                         style={{
                             width: '100%',
                             flex:4,
-                            backgroundColor: 'rgba(142,228,175,0.1)',
+                            backgroundColor: 'rgba(142,228,175,0.6)',
                             justifyContent: 'center',
                         }}
                     >

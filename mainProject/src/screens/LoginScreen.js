@@ -44,7 +44,7 @@ export default function LoginScreen({ navigation }) {
         marginBottom: 20,
         paddingBotom: 50,
         width: '80%',
-        height: 380,
+        
         flex: 3,
         backgroundColor: 'white',
         borderRadius: 40,
@@ -116,7 +116,7 @@ export default function LoginScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
+    // position: 'absolute',
     backgroundColor: '#EFEFEF',
     flex: 1,
     justifyContent: 'center',
