@@ -59,8 +59,12 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
 //    @IBOutlet weak var myDatePicker: UIDatePicker!
     //    let appDelegate = UIApplication.shared.delegate as! AppDelegate
 
+    
     //player
-    lazy var player: AVQueuePlayer = self.makePlayer()
+     var player: AVQueuePlayer?
+    
+    //soundFile Path
+    var soundFilePath: URL?
     
     //looper: takes player
     var playerLooper: AVPlayerLooper?
@@ -97,6 +101,10 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
     //firebase db
     var ref: DatabaseReference!
     
+    //flag; firebase storage is downloaded?
+    var isDownloadSoundFile: Bool = false
+    
+    
     //testNumber
     var testNumber: String?
     
@@ -107,8 +115,76 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
     // MARK: 알람, 알림 초기화
     @objc func initAlarm() {
 
-        ref = Database.database().reference()
+        var testFlag:Bool = true
+        var soundFileName: String?
+        //test 중이라 실제 음원 파일이 없을 때
+        if testFlag{
+            let sampleFileNumber = Int(Int(testNumber!)!/1000)
+    
+            soundFileName = String(sampleFileNumber) + ".mp3"
+        }
+        //release service
+        else{
+            soundFileName = testNumber! + ".mp3"
+        }
         
+        //firebase storage
+        if !isDownloadSoundFile {
+            print("start donwload soundfile")
+            let storage = Storage.storage()
+            
+            // Create a reference with an initial file path and name
+            let pathReference = storage.reference(withPath: "alarm")
+//            let pathReference = storage.reference(forURL: "gs://labtest-6b089.appspot.com/alarm")
+            
+            // Create a reference to the file you want to download
+            let soundFileRef = pathReference.child(soundFileName!)
+
+            guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {return}
+
+            let localURL = documentsDirectory.appendingPathComponent(soundFileName!)
+            soundFilePath = localURL
+            print(soundFilePath)
+            // Create local filesystem URL
+//            let localURL = URL(string: "file:///labtest")!
+
+            // Download to the local filesystem
+            let downloadTask = soundFileRef.write(toFile: localURL) { url, error in
+              if let error = error {
+                // Uh-oh, an error occurred!
+                print("----------------------")
+                print("Firebase Storage Error!! \(error)")
+                print("----------------------")
+              } else {
+                // Local file URL for "images/island.jpg" is returned
+                print("----------------------")
+                print("Firebase Storage Download Complete!!")
+                print("----------------------")
+              }
+            }
+            
+            downloadTask.observe(.success) { snapshot in
+                print("----------------------")
+                print("Observer: Firebase Storage Download Complete!!")
+                print("----------------------")
+              // Download completed successfully
+                
+                self.setPlayer()
+                self.isDownloadSoundFile = true
+            }
+        }
+        else{print("----------------------")
+            print("already download soundfile")
+            print("----------------------")
+        }
+        
+        //set soundfile's name and type
+        fileName = testNumber!
+        fileType = "mp3"
+        
+        //firebase DB
+        
+        ref = Database.database().reference()
         
         ref.child("users").child(String(testNumber!) + "/alarm").queryOrdered(byChild: "order").queryLimited(toLast: 1).observeSingleEvent(of: .value, with: { (snapshot) in
           // Get user value
@@ -160,28 +236,6 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
 //        })
         
         
-        //looper를 통해 무한하게 음악 재생하게 설정
-        self.playerLooper = AVPlayerLooper(player: player, templateItem: songs[0])
-        
-        //AVAudioPlayer Setting
-        do {
-            try AVAudioSession.sharedInstance().setCategory(
-              AVAudioSession.Category.playAndRecord,
-              mode: .default,
-              options: []
-            )
-        } catch {
-            print("Failed to set audio session category.  Error: \(error)")
-        }
-        
-        let session = AVAudioSession.sharedInstance()
-        var _: Error?
-        try? session.setCategory(AVAudioSession.Category.playAndRecord)
-        try? session.setMode(AVAudioSession.Mode.voiceChat)
-        
-        try? session.overrideOutputAudioPort(AVAudioSession.PortOverride.speaker)
-        
-        try? session.setActive(true)
         
 
         //AVAudioPlayer check time
@@ -197,11 +251,15 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
 //            }
 //        }
 
-        stopTimer()
+//        stopTimer()
         
         //MARK: make scheduler to update time
-        alarmTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateTime), userInfo: nil, repeats: true)
+//        alarmTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateTime), userInfo: nil, repeats: true)
         
+//        let commandCenter = MPRemoteCommandCenter.shared()
+//        commandCenter.nextTrackCommand.isEnabled = true
+//        commandCenter.nextTrackCommand.addTarget(self, action:#selector(updateTime))
+
 
 
         // MARK: Notification Options
@@ -213,6 +271,33 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         
     }
     
+    func setPlayer(){
+        self.player = self.makePlayer()
+        //MARK: AVPlayer Sound Setting
+
+        //looper를 통해 무한하게 음악 재생하게 설정
+        self.playerLooper = AVPlayerLooper(player: player!, templateItem: songs[0])
+        
+        //AVAudioPlayer Setting
+        do {
+            try AVAudioSession.sharedInstance().setCategory(
+              AVAudioSession.Category.playAndRecord,
+              mode: .default,
+              options: []
+            )
+        } catch {
+            print("Failed to set audio session category.  Error: \(error)")
+        }
+        
+        let session = AVAudioSession.sharedInstance()
+        var _: Error?
+        try? session.setCategory(AVAudioSession.Category.playback)
+        try? session.setMode(AVAudioSession.Mode.voiceChat)
+        
+        try? session.overrideOutputAudioPort(AVAudioSession.PortOverride.speaker)
+        
+        try? session.setActive(true)
+    }
     func stopTimer(){
         if alarmTimer != nil{
             alarmTimer?.invalidate()
@@ -235,10 +320,10 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
     //take song list
     private lazy var songs: [AVPlayerItem] = {
         let songNames = [fileName!]
-        return songNames.map {
-            let url = Bundle.main.url(forResource: $0, withExtension: fileType!)!
-            return AVPlayerItem(url: url)
-        }
+        print("sound file name=\(fileName!) type=\(fileType!)")
+        
+        let url = soundFilePath!
+        return [AVPlayerItem(url: url)]
     }()
 
     //make music player
@@ -251,7 +336,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
 
     @objc func pauseAlarm() {
         if isPlayConfirm{
-            player.pause()
+            player?.pause()
         }
     }
     
@@ -318,7 +403,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
 //                shouldPop = false
                 isAlarmRing = false
                 isPop = false
-                player.pause()
+                player?.pause()
                 print("checkAlarmCondition(): player.pause() clear")
             }
             
@@ -373,7 +458,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
                     
                     print("playMusic(): volume up claer")
                     //play music
-                    player.play()
+                    player?.play()
                     
                     playMusic()
                     print("in play!!")
@@ -413,7 +498,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
     @objc func stopMusic(){
         if(isPlayConfirm){
             print("stopMusic(): stop!!!!")
-            player.pause()
+            player?.pause()
         }
     }
     
@@ -430,8 +515,8 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
     //init flag
     @objc func timerOn(){
         isPlayConfirm = false
-        player.pause()
-        player.seek(to: CMTime.zero)
+        player?.pause()
+        player?.seek(to: CMTime.zero)
     }
 
     //타겟 시간(알람 시간) 설정
@@ -450,58 +535,59 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         alarmDate = formatter.string(from: Date()) // get today's date
         
         print("alarm date is \(alarmDate)")
+        
+        makeNotification()
     }
     
     //상시 알람 시간 확인
-    @objc func checkAlarm(_ name:NSString, number:NSString) -> Void{
+    @objc func checkAlarm(_ number:NSString) -> Void{
         let notificationCenter = NotificationCenter.default
-        notificationCenter.addObserver(self, selector: #selector(appMovedToBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
+//        notificationCenter.addObserver(self, selector: #selector(appMovedToBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
 //        notificationCenter.addObserver(self, selector: #selector(appMovedToBackground), name: UIApplication.willTerminateNotification, object: nil)
 
-        fullFileName = String(name)
-        
-        //split full file name
-        let arr = fullFileName!.components(separatedBy: ".")
-        fileName = arr[0]
-        fileType = arr[1]
+        notificationCenter.addObserver(self,
+                                       selector: #selector(turnOnAlarm),
+                                       name: NSNotification.Name(rawValue: "alarmOn"),
+                                        object: nil)
         
         //set testnumber
         testNumber = String(number)
+        DispatchQueue.main.async{
+            self.initAlarm()
+        }
         
-        DispatchQueue.main.async(execute: {
-           
-            if self.playerLooper == nil{
-                self.initAlarm()
-            }
-            
-        })
+//        makeNotification()
+
     }
 
+    @objc func turnOnAlarm(){
+        print()
+        print("Enter turnOnAlarm()")
+    }
+    
+    
     @objc func appMovedToBackground() {
-
-        makeNotification()
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.default).async {
+            
+        }
+        
+        
     }
 
 
 
     //MARK:set alarm and notification
     @objc func makeNotification() {
-
+        print("-----")
         print("make notification")
 
         var title: String?
         var body: String?
         
-        //alarm is ringing?
-        if isAlarmRing == true{
-            title = "알람이 울리고 있습니다!"
-            body = "이 알람을 누르거나 앱 아이콘을 터치하여 앱에 재진입해주세요!"
-        }
-        //alarm isn't ringing
-        else{
-            title = "주의사항"
-            body = "백그라운드에서 종료 시 무음모드에서 소리가 나지 않습니다!"
-        }
+        
+        title = "알람이 울리고 있습니다!"
+        body = "이 알람을 누르거나 앱 아이콘을 터치하여 앱에 재진입해주세요!"
+        
         //Setting content of the notification
         let content = UNMutableNotificationContent()
         content.title = title!
@@ -522,10 +608,15 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         var dateCompenents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
 
 
-        dateCompenents.hour = targetHour
-        dateCompenents.minute = targetMinute
-        //        dateCompenents.second = 0
+        dateCompenents.hour = targetHour!
+        dateCompenents.minute = targetMinute!
+//        dateCompenents.second = 0
 
+        print("*******")
+        print("targetHour=\(targetHour) targetMinute=\(targetMinute)")
+        print(dateCompenents)
+        print(content)
+        print("*******")
 
         let calendartrigger = UNCalendarNotificationTrigger(dateMatching: dateCompenents, repeats: true)
 
@@ -536,10 +627,9 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
 
         //Adding Request
         // MARK: - identifier가 다 달라야만 Notification Grouping이 됩니닷..!!
-        let request = UNNotificationRequest(identifier: "\(index)timerdone", content: content, trigger: TimeIntervalTrigger)
+        let request = UNNotificationRequest(identifier: "\(String(describing: index))timerdone", content: content, trigger: TimeIntervalTrigger)
 
         UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
-
     }
 }
 

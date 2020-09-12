@@ -36,6 +36,7 @@ NSDictionary * saveLaunchOptions;
 {
   saveLaunchOptions = launchOptions;
   
+  // Use Firebase library to configure APIs
   if ([FIRApp defaultApp] == nil) {
     [FIRApp configure];
   }
@@ -60,9 +61,14 @@ NSDictionary * saveLaunchOptions;
   UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
   center.delegate = self;
 
-
   return YES;
 }
+
+- (void)applicationDidEnterBackground:(UIApplication *)application {
+    // 앱이 백그라운드 상태일 때 실행
+  
+}
+
 
 
 
@@ -108,6 +114,16 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
          withCompletionHandler:(void (^)(void))completionHandler
 {
   [RNCPushNotificationIOS didReceiveNotificationResponse:response];
+  
+  // Objective-C Example: Post Notification
+  NSDictionary *userInfo = @{ @"message": @"Message using notification..." };
+  [[NSNotificationCenter defaultCenter] postNotificationName:@"alarmOn"
+                                                      object:nil
+                                                    userInfo:userInfo];
+  NSLog(@"********");
+  NSLog(@"Notification received!");
+  NSLog(@"********");
+  
   completionHandler();
 }
 // IOS 4-10 Required for the localNotification event.

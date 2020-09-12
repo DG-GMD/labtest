@@ -134,8 +134,8 @@ export default class AlarmSet extends Component {
 
                 // alarmModule.diaryNotification(dt.getTime().toString());
 
-                this.notif.cancelNotif();
-                this.notif.cancelAll();
+                // this.notif.cancelNotif();
+                // this.notif.cancelAll();
                 
                 //date picker에 있는 시간 추출
                 var pickerDate = new Date();
