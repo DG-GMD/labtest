@@ -6,6 +6,8 @@ import { alarmModule } from '../utils/jvmodules';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import database from '@react-native-firebase/database';
 
+import RNFS from 'react-native-fs';
+
 import LogoutButton from '../components/Logout';
 
 // LogBox.ignoreLogs(['Warning: ...']);
@@ -120,7 +122,55 @@ export default class AlarmSet extends Component {
                 dt.setHours(this.state.pickedHourValue);
                 dt.setMinutes(this.state.pickedMinValue);
 
-                alarmModule.diaryNotification(dt.getTime().toString());
+                RNFS.readDir(RNFS.DocumentDirectoryPath) // On Android, use "RNFS.DocumentDirectoryPath" (MainBundlePath is not defined)
+                .then((result) => {
+                    //console.log('GOT RESULT', result);
+
+                    var i = 0, index = 0;
+                    result.forEach((element) => {
+                        if(element.name.toString() === 'popTime.txt'){
+                            //console.log('element', element);
+                            index = i;
+                        }
+                        i++;
+                    });
+
+                    return Promise.all([RNFS.stat(result[index].path), result[index].path]);
+                })
+                .then((statResult) => {
+                    //console.log('statResult', statResult);
+                    if (statResult[0].isFile()) {
+                        // if we have a file, read it
+                        return RNFS.readFile(statResult[1], 'utf8');
+                    }
+
+                    return 'no file';
+                })
+                .then((contents) => {
+                    // log the file contents
+                    //console.log('popTime', contents);
+
+                    //PopScreen이 표시된 시간 확인 확인
+                    let popScreenTime = contents;
+                    //console.log('popScreenTime: ', popScreenTime);
+
+                    var nowDate = (new Date()).getDate();
+                    var popDate = (new Date(popScreenTime - 0)).getDate();
+                    //console.log('nowDate: ', nowDate)
+                    //console.log('popDate: ', popDate)
+                    if(popScreenTime == -1){
+                        alarmModule.diaryNotification(dt.getTime().toString(), false);
+                    }
+                    else if(nowDate == popDate){
+                        alarmModule.diaryNotification(dt.getTime().toString(), true);
+                    }
+                    else {
+                        alarmModule.diaryNotification(dt.getTime().toString(), false);
+                    }
+                })
+                .catch((err) => {
+                    console.log(err.message, err.code);
+                });
 
                 let alarmDataJson = snapshot.val();
                 let alarmData = {};

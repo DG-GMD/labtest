@@ -168,7 +168,7 @@ public class alarmModule extends ReactContextBaseJavaModule {
   // };
 
   @ReactMethod
-  public void diaryNotification(String milliString)
+  public void diaryNotification(String milliString, Boolean alreadyPop)
   {
     Context context = reactContext;
     Activity activity = getCurrentActivity();
@@ -190,7 +190,7 @@ public class alarmModule extends ReactContextBaseJavaModule {
     Calendar nextNotifyTime = new GregorianCalendar();
     nextNotifyTime.setTimeInMillis(millis);
 
-    if (current_calendar.after(nextNotifyTime)) {
+    if (current_calendar.after(nextNotifyTime) || alreadyPop) {
         current_calendar.add(Calendar.DATE, 1);
         nextNotifyTime.set(current_calendar.get(Calendar.YEAR),current_calendar.get(Calendar.MONTH),current_calendar.get(Calendar.DATE));
     }
