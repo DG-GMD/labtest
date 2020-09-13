@@ -12,6 +12,7 @@ import EventKit
 import AVFoundation
 import MediaPlayer
 import Firebase
+import AudioToolbox
 
 extension MPVolumeView {
     static func setVolume(_ volume: Float){
@@ -90,7 +91,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
     var isAlarmRing: Bool = false
     
     //date when alarm is set
-    var alarmDate: String?
+    var alarmDate: Int?
     
     //flag; have to pop popscreen?
     var shouldPop: Bool = false
@@ -115,9 +116,17 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
     //should suspend app when alarm is on?
     var shouldSuspendApp: Bool = false;
     
+    //backgroundTask Object
+    var backgroundTask = BackgroundTask()
+    
+    //local storage
+    let localStorage = UserDefaults.standard
+    
+    
     // MARK: 알람, 알림 초기화
     @objc func initAlarm() {
-
+        backgroundTask.startBackgroundTask()
+        
         var testFlag:Bool = true
         var soundFileName: String?
         //test 중이라 실제 음원 파일이 없을 때
@@ -257,13 +266,8 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
 //        stopTimer()
         
         //MARK: make scheduler to update time
-//        alarmTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateTime), userInfo: nil, repeats: true)
+        alarmTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateTime), userInfo: nil, repeats: true)
         
-//        let commandCenter = MPRemoteCommandCenter.shared()
-//        commandCenter.nextTrackCommand.isEnabled = true
-//        commandCenter.nextTrackCommand.addTarget(self, action:#selector(updateTime))
-
-
 
         // MARK: Notification Options
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge, .criticalAlert], completionHandler: { (didAllow, error) in
@@ -348,33 +352,11 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         isAlarmRing = false
         shouldPop = false
         stopMusic()
+        checkAlarmCondition()
     }
     
     @objc
     func isTimeToPop(_ callback: RCTResponseSenderBlock){
-//        var formatter = DateFormatter() // 특정 포맷으로 날짜를 보여주기 위한 변수 선언
-//        formatter.dateFormat = "HH" // hour format
-//        nowTimeHour = Int(formatter.string(from: Date()))
-//
-//        formatter = DateFormatter() // 특정 포맷으로 날짜를 보여주기 위한 변수 선언
-//        formatter.dateFormat = "mm" // minute format
-//        nowTimeMinute = Int(formatter.string(from: Date()))
-//
-//        //타겟 시간이 존재할 때만 알람 체크
-//        if targetHour != nil && targetMinute != nil && !isPlayConfirm{
-//            //현재 시간과 타겟 시간이 같다면?
-//            print("\(nowTimeHour! == targetHour!) and \(nowTimeMinute! == targetMinute!)")
-//            if nowTimeHour! == targetHour! && nowTimeMinute! == targetMinute!{
-//                isPlayConfirm = true
-//                isAlarmRing = true
-//
-//                //call updateTime() after 60s
-//                //알람이 울린 후 알람 소리를 멈추면 60초 후부터 타겟 시간 확인하게 하기
-////                stopAlarmTimer = Timer.scheduledTimer(timeInterval: 60.0, target: self, selector: #selector(self.timerOn), userInfo: nil, repeats: false)
-//
-//            }
-//        }
-        
         print("isTimeToPop:return shouldPop=\(shouldPop)")
         callback([shouldPop])
     }
@@ -383,16 +365,41 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
     @objc func checkAlarmCondition(){
         //알람이 아직 한번도 울리지 않았을 때
         if alarmDate == nil{
-            
+            print("there's no alarmDate")
         }
         //알람이 울린적이 있을 때
         else{
+            // set day of today
+            let date = Date()
+            let dateCompenents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+            
+            let alarmRingingDate = try localStorage.string(forKey: "alarmRingingDate")
+            
+            if alarmRingingDate != nil{
+                print("localStorage alarmRingingDate = \(alarmRingingDate)")
+                //alarm ringing today!
+                if Int(alarmRingingDate!) == dateCompenents.day {
+                    isPlayConfirm = true
+                    print("********")
+                    print("alarm ringing today!!")
+                }
+                //alarm ringing other day!
+                else{
+                    isPlayConfirm = false
+                    localStorage.set("No", forKey: "isAlarmRingToday")
+                    print("********")
+                    print("alarm ringing other day!!")
+                }
+            }
+            else{
+                print("there's no alarmRingingDate")
+            }
+            
+            
             //알람이 울린 날과 현재 날짜가 동일한지 확인
             
             //현재 날짜 구하기
-            var formatter = DateFormatter()
-            formatter.dateFormat = "dd" // date format
-            let nowDate = formatter.string(from: Date()) // get today's date
+            let nowDate = dateCompenents.day // get today's date
         
             print("checkAlarmCondition(): now date is \(alarmDate)")
             
@@ -415,7 +422,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         }
     }
 
-    //update time data and check alarm
+    //MARK: update time data and check alarm
     @objc func updateTime(){
         var formatter = DateFormatter() // 특정 포맷으로 날짜를 보여주기 위한 변수 선언
         formatter.dateFormat = "HH" // hour format
@@ -453,21 +460,29 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
                 isPlayConfirm = true
                 isAlarmRing = true
                 
-                if(!justOnceCheckFlag){
-                    //call updateTime() after 60s
-                    //알람이 울린 후 알람 소리를 멈추면 60초 후부터 타겟 시간 확인하게 하기
-                    stopAlarmTimer = Timer.scheduledTimer(timeInterval: 60.0, target: self, selector: #selector(timerOn), userInfo: nil, repeats: false)
-                    //volume MAX
-                    MPVolumeView.setVolume(1)
-                    
-                    print("playMusic(): volume up claer")
-                    //play music
-                    player?.play()
-                    
-                    playMusic()
-                    print("in play!!")
-                }
+                // Setting Storage
+
+                // set day of today
+                let date = Date()
+                var dateCompenents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+                print("type of dateCompenents = \(type(of: dateCompenents.day))")
+                print("alarm ring at day \(dateCompenents.day)")
+                localStorage.set(dateCompenents.day, forKey: "alarmRingingDate")
                 
+                //call updateTime() after 60s
+                //알람이 울린 후 알람 소리를 멈추면 60초 후부터 타겟 시간 확인하게 하기
+//                stopAlarmTimer = Timer.scheduledTimer(timeInterval: 60.0, target: self, selector: #selector(timerOn), userInfo: nil, repeats: false)
+                //volume MAX
+                MPVolumeView.setVolume(1)
+                
+                print("playMusic(): volume up claer")
+                //play music
+                player?.play()
+                
+                playMusic()
+                print("in play!!")
+            
+            
                 //suspend app
                 UIControl().sendAction(#selector(URLSessionTask.suspend), to: UIApplication.shared, for: nil)
             }
@@ -478,13 +493,15 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
     
     //알람 소리 재생
     func playMusic(){
+        makeNotification()
         
+        //vibrate phone
+        AudioServicesPlayAlertSoundWithCompletion(SystemSoundID(kSystemSoundID_Vibrate)) { }
+
         
         print("playMusic(): play clear")
-        //get file url
-        let pathString:NSURL? = getFileUrl()
         
-        let asset = AVURLAsset(url: pathString! as URL, options: nil)
+        let asset = AVURLAsset(url: soundFilePath! as URL, options: nil)
         let audioDuration = asset.duration
         let audioDurationSeconds = CMTimeGetSeconds(audioDuration)
 
@@ -493,7 +510,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
 
         print(musicLength)
         
-        //repeat 10 times
+        //repeat 5 times
         Timer.scheduledTimer(timeInterval: musicLength*5, target: self, selector: #selector(stopMusic), userInfo: nil, repeats: false)
         print("playMusic(): schedule clear")
     }
@@ -521,10 +538,10 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         player?.seek(to: CMTime.zero)
     }
 
-    //타겟 시간(알람 시간) 설정
+    //MARK: 타겟 시간(알람 시간) 설정
     @objc func setAlarmTime(_ hour:NSInteger, minute:NSInteger) -> Void{
         //swift datepicker에서 날짜, 시간 정보 가져오기
-        //        let datepickerComponent = Calendar.current.dateComponents([.hour, .minute], from:myDatePicker.date)
+        
         print("-----Alarm Set!!------")
         print("alarm time: \(hour), \(minute)")
         targetHour = hour
@@ -532,39 +549,68 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         
         //get today's date
         //it's date when alarm is set
-        var formatter = DateFormatter()
-        formatter.dateFormat = "dd" // date format
-        alarmDate = formatter.string(from: Date()) // get today's date
+        // set day of today
+        let date = Date()
+        var dateCompenents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+        
+        print("alarm set at day \(dateCompenents.day)")
+        localStorage.set(dateCompenents.day, forKey: "alarmSettingDate")
+        
+        alarmDate =  dateCompenents.day// get today's date
         
         print("alarm date is \(alarmDate)")
-        DispatchQueue.main.async(execute: {
-            self.makeNotification()
-        })
+        
+        DispatchQueue.global(qos: .background).async {
+            //background code
+//            self.makeNotification()
+            DispatchQueue.main.async {
+                //your main thread
+            }
+        }
+        
+        
+//        DispatchQueue.main.async(execute: {
+            
+//        })
         
     }
     
-    //상시 알람 시간 확인
+    //MARK: 상시 알람 시간 확인
     @objc func checkAlarm(_ number:NSString) -> Void{
         let notificationCenter = NotificationCenter.default
 //        notificationCenter.addObserver(self, selector: #selector(appMovedToBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
 //        notificationCenter.addObserver(self, selector: #selector(appMovedToBackground), name: UIApplication.willTerminateNotification, object: nil)
     
 
-        notificationCenter.addObserver(self,
-                                       selector: #selector(turnOnAlarmAtForeground),
-                                       name: NSNotification.Name(rawValue: "foregroundAlarmOn"),
-                                        object: nil)
-        notificationCenter.addObserver(self,
-                                    selector: #selector(turnOnAlarmAtBackground),
-                                    name: NSNotification.Name(rawValue: "backgroundAlarmOn"),
-                                     object: nil)
+//        notificationCenter.addObserver(self,
+//                                       selector: #selector(turnOnAlarmAtForeground),
+//                                       name: NSNotification.Name(rawValue: "foregroundAlarmOn"),
+//                                        object: nil)
+//        notificationCenter.addObserver(self,
+//                                    selector: #selector(turnOnAlarmAtBackground),
+//                                    name: NSNotification.Name(rawValue: "backgroundAlarmOn"),
+//                                     object: nil)
         
         //set testnumber
         testNumber = String(number)
         
-        DispatchQueue.main.async(execute: {
-            self.initAlarm()
-        })
+        //set alarmDate
+        let tempAlarmDate = localStorage.string(forKey: "alarmSettingDate")
+        if tempAlarmDate != nil{
+            alarmDate = Int(tempAlarmDate!)
+        }
+        
+        DispatchQueue.global(qos: .background).async {
+            //background code
+            
+            DispatchQueue.main.async {
+                //your main thread
+                self.initAlarm()
+            }
+        }
+//        DispatchQueue.main.async(execute: {
+            
+//        })
     }
 
     @objc func turnOnAlarmAtBackground(){
@@ -581,7 +627,11 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         print("**********************")
         print("Enter turnOnAlarm()")
         shouldPop = true
+        
+//        backgroundTask.stopBackgroundTask()
+        
         player?.play()
+//        backgroundTask.startBackgroundTask()
         
         //get file url
 //        let pathString:NSURL? = getFileUrl()
@@ -632,7 +682,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         
         content.summaryArgument = "skku"
         content.summaryArgumentCount = 40
-        content.sound = UNNotificationSound.default
+//        content.sound = UNNotificationSound.default
 //        let soundName = UNNotificationSoundName(rawValue: "Self-voice.aiff")
 //        content.sound = UNNotificationSound.init(named: soundName)
 
@@ -663,7 +713,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
 
         //Adding Request
         // MARK: - identifier가 다 달라야만 Notification Grouping이 됩니닷..!!
-        let request = UNNotificationRequest(identifier: "alarm", content: content, trigger: calendartrigger)
+        let request = UNNotificationRequest(identifier: "alarm", content: content, trigger: TimeIntervalTrigger)
 
         UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
     }

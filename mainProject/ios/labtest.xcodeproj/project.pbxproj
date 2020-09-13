@@ -17,6 +17,8 @@
 		2DCD954D1E0B4F2C00145EB5 /* labtestTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* labtestTests.m */; };
 		50FE272DC8E11C1B19E23C06 /* libPods-labtest-labtestTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C4D540D947435070F0EC735 /* libPods-labtest-labtestTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		B092F670250E996E008E8548 /* BackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B092F66E250E996E008E8548 /* BackgroundTask.swift */; };
+		B092F673250E9F1B008E8548 /* blank.wav in Resources */ = {isa = PBXBuildFile; fileRef = B092F672250E9F1B008E8548 /* blank.wav */; };
 		B0BBCDEF24FD0FCC00013D1E /* other-voice.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = B0BBCDEC24FD0FCC00013D1E /* other-voice.mp3 */; };
 		B0BBCE0424FD44D200013D1E /* Self-voice.aiff in Resources */ = {isa = PBXBuildFile; fileRef = B0BBCE0324FD44D200013D1E /* Self-voice.aiff */; };
 		B0BBCE0524FD44D200013D1E /* Self-voice.aiff in Resources */ = {isa = PBXBuildFile; fileRef = B0BBCE0324FD44D200013D1E /* Self-voice.aiff */; };
@@ -82,6 +84,8 @@
 		9BCEC8713D464BE0959D91B8 /* Fontisto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Fontisto.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf"; sourceTree = "<group>"; };
 		A9BB1E904BC52D0B70295DF2 /* Pods-labtest-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-labtest-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-labtest-tvOSTests/Pods-labtest-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B005233524F42AFA00B4DC15 /* labtest.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = labtest.entitlements; path = labtest/labtest.entitlements; sourceTree = "<group>"; };
+		B092F66E250E996E008E8548 /* BackgroundTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundTask.swift; sourceTree = "<group>"; };
+		B092F672250E9F1B008E8548 /* blank.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = blank.wav; sourceTree = "<group>"; };
 		B0BBCDEC24FD0FCC00013D1E /* other-voice.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "other-voice.mp3"; sourceTree = "<group>"; };
 		B0BBCE0324FD44D200013D1E /* Self-voice.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = "Self-voice.aiff"; sourceTree = "<group>"; };
 		B0BBCE0624FD4CDA00013D1E /* swiftAlarmModule.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = swiftAlarmModule.swift; sourceTree = SOURCE_ROOT; tabWidth = 4; };
@@ -237,6 +241,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				B092F66D250E9926008E8548 /* BackgroundTask */,
 				B0C0A60324EC469900358DAE /* GoogleService-Info.plist */,
 				13B07FAE1A68108700A75B9A /* labtest */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -260,6 +265,15 @@
 				2D02E4901E0B4A5D006451C7 /* labtest-tvOSTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		B092F66D250E9926008E8548 /* BackgroundTask */ = {
+			isa = PBXGroup;
+			children = (
+				B092F672250E9F1B008E8548 /* blank.wav */,
+				B092F66E250E996E008E8548 /* BackgroundTask.swift */,
+			);
+			path = BackgroundTask;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -411,6 +425,7 @@
 			files = (
 				B0BBCE0F24FD784B00013D1E /* labtest-Bridging-Header.h in Resources */,
 				B0BBCE0E24FD784800013D1E /* swiftAlarmModule.m in Resources */,
+				B092F673250E9F1B008E8548 /* blank.wav in Resources */,
 				B0BBCE0424FD44D200013D1E /* Self-voice.aiff in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
@@ -722,6 +737,7 @@
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				B0BBCE0A24FD4D2200013D1E /* swiftAlarmModule.m in Sources */,
 				B0BBCE0724FD4CDA00013D1E /* swiftAlarmModule.swift in Sources */,
+				B092F670250E996E008E8548 /* BackgroundTask.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

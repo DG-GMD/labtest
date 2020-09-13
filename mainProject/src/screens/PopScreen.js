@@ -108,21 +108,27 @@ export default function Pop({navigation}){
                 <TouchableOpacity
                     style={styles.buttonContainer}
                     onPress = {() => {
-                        swiftAlarmModule.confirmFromPopScreen();
+                        swiftAlarmModule.confirmFromPopScreen()
+                        
+                        startMemorize();
                         var path = RNFS.DocumentDirectoryPath + '/popTime.txt';
-
+                        
                         // write the file
                         RNFS.writeFile(path, new Date().getTime().toString(), 'utf8')
                         .then((success) => {
                             console.log('Pop Time WRITTEN!');
-                            startDict(false);
+                            startDict(true);
+                            setSkip(2);
+                            setRefresh(true);
+                            console.log("PopScreen: isPop is", isPop);
+                            setPop(false);
                             // BackHandler.exitApp();
                             RNExitApp.exitApp();
-                            
                         })
                         .catch((err) => {
                             console.log(err.message);
                         });
+                        
                     }} 
                 >
                     <Text style={{fontSize: 18}}>

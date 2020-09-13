@@ -133,14 +133,14 @@ fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 didReceiveNotificationResponse:(UNNotificationResponse *)response
          withCompletionHandler:(void (^)(void))completionHandler
 {
-  
-  
+
+
   [RNCPushNotificationIOS didReceiveNotificationResponse:response];
+
+
+
   
-  
-  
-  completionHandler();
-  
+
   // Objective-C Example: Post Notification
   NSDictionary *userInfo = @{ @"message": @"Message using notification..." };
   [[NSNotificationCenter defaultCenter] postNotificationName:@"backgroundAlarmOn"
@@ -149,6 +149,8 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
   NSLog(@"********");
   NSLog(@"Background Notification received!");
   NSLog(@"********");
+  
+  completionHandler();
 }
 // IOS 4-10 Required for the localNotification event.
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
@@ -164,6 +166,9 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
 
 - (void)application:(UIApplication *)application applicationWillTerminate:(UIApplication *)application {
     //termination
+  NSLog(@"********");
+  NSLog(@"applicationWillTerminate!");
+  NSLog(@"********");
 }
 
 @end
