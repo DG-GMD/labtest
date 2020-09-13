@@ -199,7 +199,9 @@ public class alarmModule extends ReactContextBaseJavaModule {
     String date_text = new SimpleDateFormat("yyyy년 MM월 dd일 EE요일 a hh시 mm분 ", Locale.getDefault()).format(currentDateTime);
     //Toast.makeText(context.getApplicationContext(),"다음 알람은 " + date_text + "으로 알람이 설정되었습니다!", Toast.LENGTH_SHORT).show();
 
-    simpleToast(context.getFilesDir().getAbsolutePath());
+    RingtoneManager.setActualDefaultRingtoneUri(context, RingtoneManager.TYPE_ALARM, Uri.parse(context.getFilesDir().getAbsolutePath() + "/alarm.mp3"));
+    Uri uri = RingtoneManager.getActualDefaultRingtoneUri(context, RingtoneManager.TYPE_ALARM);
+    simpleToast(uri.toString());
 
     if (alarmManager != null){
       alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextNotifyTime.getTimeInMillis(), pendingIntent);

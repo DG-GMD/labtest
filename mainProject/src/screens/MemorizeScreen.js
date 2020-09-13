@@ -109,6 +109,11 @@ export default class Memorize extends Component {
                         //console.log('element', element);
                         index = i;
                     }
+
+                    if(element.name.toString() === 'alarm.mp3'){
+                        console.log('Fucking Alarm is exist already!', element);
+                        index = i;
+                    }
                     i++;
                 });
 
