@@ -123,6 +123,8 @@ async function writeStartTime(testNumber) {
       console.log('sanpshot', snapshot.val());
       if(snapshot.val() == null){
         var now = new Date();
+        now.setHours(0);
+        now.setMinutes(1);
 
         // A post entry to set tin firebase DB
         var postData = {
@@ -144,9 +146,13 @@ async function writeStartTime(testNumber) {
         }
       }
       else{
+        var now = new Date(snapshot.val().millitime);
+        now.setHours(0);
+        now.setMinutes(1);
+
         //set data to local storage
         try{
-          await AsyncStorage.setItem('firstLoginTime', snapshot.val().millitime.toString());
+          await AsyncStorage.setItem('firstLoginTime', now.getTime().toString());
           // console.log('----------first login : ', now.getTime().toString());
         }
         catch(e){
@@ -154,8 +160,6 @@ async function writeStartTime(testNumber) {
         }
       }
     });
-
-    
   }else{
     // console.log("---------- firstLoginTime", firstLoginTime);
   }

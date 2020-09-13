@@ -3,6 +3,8 @@ import { Dimensions, View, StyleSheet, TouchableOpacity, Text } from 'react-nati
 import AsyncStorage from '@react-native-community/async-storage'       
                 
 import { AuthContext } from '../navigation/AuthProvider';
+
+import RNFS from 'react-native-fs';
              
 var {height, width} = Dimensions.get('window');
 
@@ -92,6 +94,17 @@ function logoutAndExit(){
 
     (async () => {
         await AsyncStorage.removeItem('firstLoginTime');
+
+        var path = RNFS.DocumentDirectoryPath + '/popTime.txt';
+
+        // write the file
+        await RNFS.writeFile(path, '0', 'utf8')
+        .then((success) => {
+            console.log('Pop Time Removed!');
+        })
+        .catch((err) => {
+            console.log(err.message);
+        });
     })();
     
 }

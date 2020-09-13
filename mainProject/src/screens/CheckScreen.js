@@ -148,67 +148,18 @@ export default class Check extends Component {
               //표의 모든 요소를 loop로 돌아본다
               for(let i=0; i<testDateList.length; i++){
                 let date = testDateList[i];
-                //testList의 i번째 데이터 = i번째 날짜의 시험 결과
-                //여기에 정보가 존재한다면 i번째 날은 시험을 본 것이다.
-
-               
-                let dDate = await AsyncStorage.getItem('lastDate');
-
-                //시험 정보가 있는 날(correctCount != -1 )
-                if(date != 7 && date != 14){
-                  // 0<=i<=6
-                  if( ((date-1) / 7) < 1){
-                    _tableData1[0][date-1] = '✅';  
-                  }
-                  // 7<=i<=13
-                  else{
-                    _tableData2[0][date-8] = '✅';  
-                  }
+                
+                // 0<=i<=6
+                if( ((date-1) / 7) < 1){
+                  _tableData1[0][date-1] = '✅';  
                 }
-                //시험 정보가 있는 날인데 그 날이 7, 14일째라면
-                else if( date == 7 || date == 14){
-                  //체크 표시와 링크 문구를 함계 표에 표기해한다
-
-                  //link DB를 가져온다
-                  let linkDB = this.state.linkList;
-                  //7일째라면
-                  if(date==7){
-                    let link1 = linkDB[0]["link"];
-                    let returnDOM1;
-
-                    returnDOM1 = <View >
-                      {/* <Text style={{fontSize:14}}>v</Text> */}
-                      <Text style={{fontSize:11, color: 'blue', alignContent:'center', textAlign: 'center'}} onPress={() => {OpenInvestigationLink(this.state.nowDdate, link1, 7)}}>
-                        설문조사{"\n"}✅
-                      </Text>
-                    </View>;
-
-                    //_tableData1[0][6] = returnDOM1;
-                    _tableData1[0][6] = '✅';
-                  }
-
-                  //14일째라면
-                  else if(date==14){
-                    let link2 = linkDB[1]["link"];
-                    let returnDOM2;
-
-                    returnDOM2 = <View >
-                      {/* <Text style={{fontSize:14}}>v</Text> */}
-                      <Text style={{fontSize:11, color: 'blue', alignContent:'center', textAlign: 'center'}} onPress={() => {OpenInvestigationLink(this.state.nowDdate, link2, 14)}}>
-                        설문조사{"\n"}✅
-                      </Text>
-                    </View>;
-
-                    //_tableData2[0][6] = returnDOM2;
-                    _tableData1[0][6] = '✅';
-                  }
+                // 7<=i<=13
+                else{
+                  _tableData2[0][date-8] = '✅';  
                 }
-                //시험 정보가 없는 날(correctCount == -1)
-                else if(date != 7 && date != 14){
-                  //do nothing
-                }
+                //do nothing
               }
-              
+            
               this.setState({
                 tableData1: _tableData1,
                 tableData2: _tableData2

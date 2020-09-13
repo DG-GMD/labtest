@@ -80,9 +80,10 @@ public class RingtonePlayingService extends Service {
             AudioManager.FLAG_SHOW_UI
         );
 
-        RingtoneManager.setActualDefaultRingtoneUri(this,RingtoneManager.TYPE_ALARM, Uri.parse(this.getFilesDir().getAbsolutePath() + "/alarm.mp3"));
-        Uri uri = RingtoneManager.getActualDefaultRingtoneUri(this, RingtoneManager.TYPE_ALARM);
-        this.ringtone = RingtoneManager.getRingtone(this, uri);
+        // RingtoneManager.setActualDefaultRingtoneUri(this,RingtoneManager.TYPE_ALARM, Uri.parse(this.getFilesDir().getAbsolutePath() + "/alarm.mp3"));
+        // Uri uri = RingtoneManager.getActualDefaultRingtoneUri(this, RingtoneManager.TYPE_ALARM);
+        // this.ringtone = RingtoneManager.getRingtone(this, uri);
+        this.ringtone = RingtoneManager.getRingtone(this, Uri.parse(this.getFilesDir().getAbsolutePath() + "/alarm.mp3"));
         if (ringtone != null) {
             ringtone.setAudioAttributes(new AudioAttributes.Builder()
                     .setUsage(AudioAttributes.USAGE_ALARM)
