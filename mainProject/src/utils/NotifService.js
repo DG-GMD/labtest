@@ -40,7 +40,7 @@ export default class NotifService {
     PushNotification.popInitialNotification((notification) => console.log('InitialNotication:', notification));
   }
 
-  localNotif(soundName) {
+  localNotif() {
     this.lastId++;
     PushNotification.localNotification({
       /* Android Only Properties */
@@ -73,14 +73,15 @@ export default class NotifService {
       title: 'Local Notification', // (optional)
       message: 'My Notification Message', // (required)
       userInfo: { screen: 'home' }, // (optional) default: {} (using null throws a JSON value '<null>' error)
-      playSound: !!soundName, // (optional) default: true
-      soundName: soundName ? soundName : 'default', // (optional) Sound to play when the notification is shown. Value of 'default' plays the default sound. It can be set to a custom sound such as 'android.resource://com.xyz/raw/my_sound'. It will look for the 'my_sound' audio file in 'res/raw' directory and play it. default: 'default' (default sound is played)
+      playSound: true, // (optional) default: true
+      soundName: 'default', // (optional) Sound to play when the notification is shown. Value of 'default' plays the default sound. It can be set to a custom sound such as 'android.resource://com.xyz/raw/my_sound'. It will look for the 'my_sound' audio file in 'res/raw' directory and play it. default: 'default' (default sound is played)
       number: 10, // (optional) Valid 32 bit integer specified as string. default: none (Cannot be zero)
     });
   }
 
-  scheduleNotif(date, soundName) {
+  scheduleNotif(date) {
     this.lastId++;
+    console.log(date);
     PushNotification.localNotificationSchedule({
       date: date, 
       
@@ -95,7 +96,7 @@ export default class NotifService {
       userInfo: { sceen: "home" }, // (optional) default: {} (using null throws a JSON value '<null>' error)
       playSound: true, // (optional) default: true
       number: 10, // (optional) Valid 32 bit integer specified as string. default: none (Cannot be zero)
-      soundName: soundName ? soundName : 'default', // (optional) Sound to play when the notification is shown. Value of 'default' plays the default sound. It can be set to a custom sound such as 'android.resource://com.xyz/raw/my_sound'. It will look for the 'my_sound' audio file in 'res/raw' directory and play it. default: 'default' (default sound is played)
+      soundName: 'default', // (optional) Sound to play when the notification is shown. Value of 'default' plays the default sound. It can be set to a custom sound such as 'android.resource://com.xyz/raw/my_sound'. It will look for the 'my_sound' audio file in 'res/raw' directory and play it. default: 'default' (default sound is played)
       repeatType: "day",
     });
   }

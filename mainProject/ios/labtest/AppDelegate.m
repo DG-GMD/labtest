@@ -28,13 +28,14 @@ static void InitializeFlipper(UIApplication *application) {
 }
 #endif
 
-NSDictionary * saveLaunchOptions;
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  saveLaunchOptions = launchOptions;
+  NSLog(@"********");
+  NSLog(@"Application Start!");
+  NSLog(@"********");
   
   // Use Firebase library to configure APIs
   if ([FIRApp defaultApp] == nil) {
@@ -75,6 +76,15 @@ NSDictionary * saveLaunchOptions;
 //Called when a notification is delivered to a foreground app.
 -(void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler
 {
+  NSLog(@"********");
+  NSLog(@"willPresentNotification!");
+  NSLog(@"********");
+  
+  NSDictionary *userInfo = @{ @"message": @"Message using notification..." };
+  [[NSNotificationCenter defaultCenter] postNotificationName:@"foregroundAlarmOn"
+                                                      object:nil
+                                                    userInfo:userInfo];
+  
   completionHandler(UNAuthorizationOptionSound | UNAuthorizationOptionAlert | UNAuthorizationOptionBadge);
 }
 
@@ -91,6 +101,9 @@ NSDictionary * saveLaunchOptions;
 - (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
 {
  [RNCPushNotificationIOS didRegisterUserNotificationSettings:notificationSettings];
+  NSLog(@"********");
+  NSLog(@"didRegisterUserNotificationSettings!");
+  NSLog(@"********");
 }
 // Required for the register event.
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
@@ -102,34 +115,50 @@ NSDictionary * saveLaunchOptions;
 fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
   [RNCPushNotificationIOS didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
+  NSLog(@"********");
+  NSLog(@"didReceiveRemoteNotification!");
+  NSLog(@"********");
+  
 }
 // Required for the registrationError event.
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 {
  [RNCPushNotificationIOS didFailToRegisterForRemoteNotificationsWithError:error];
+  NSLog(@"********");
+  NSLog(@"didFailToRegisterForRemoteNotificationsWithError!");
+  NSLog(@"********");
 }
 // IOS 10+ Required for localNotification event
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center
 didReceiveNotificationResponse:(UNNotificationResponse *)response
          withCompletionHandler:(void (^)(void))completionHandler
 {
+  
+  
   [RNCPushNotificationIOS didReceiveNotificationResponse:response];
+  
+  
+  
+  completionHandler();
   
   // Objective-C Example: Post Notification
   NSDictionary *userInfo = @{ @"message": @"Message using notification..." };
-  [[NSNotificationCenter defaultCenter] postNotificationName:@"alarmOn"
+  [[NSNotificationCenter defaultCenter] postNotificationName:@"backgroundAlarmOn"
                                                       object:nil
                                                     userInfo:userInfo];
   NSLog(@"********");
-  NSLog(@"Notification received!");
+  NSLog(@"Background Notification received!");
   NSLog(@"********");
-  
-  completionHandler();
 }
 // IOS 4-10 Required for the localNotification event.
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
 {
  [RNCPushNotificationIOS didReceiveLocalNotification:notification];
+  NSLog(@"********");
+  NSLog(@"didReceiveLocalNotification!");
+  NSLog(@"********");
+  
+  
 }
 
 

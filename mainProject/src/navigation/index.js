@@ -14,7 +14,7 @@ export default function Providers() {
     null,
   );
 
-  notifObj.requestPermissions();
+  // notifObj.requestPermissions();
 
   //start check alardm
   // const swiftAlarmModule = NativeModules.swiftAlarmModule;

@@ -112,6 +112,9 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
     var alarmTimer : Timer?
     var stopAlarmTimer: Timer?
     
+    //should suspend app when alarm is on?
+    var shouldSuspendApp: Bool = false;
+    
     // MARK: 알람, 알림 초기화
     @objc func initAlarm() {
 
@@ -266,7 +269,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge, .criticalAlert], completionHandler: { (didAllow, error) in
           
         })
-        UNUserNotificationCenter.current().delegate = self
+//        UNUserNotificationCenter.current().delegate = self
         
         
     }
@@ -344,6 +347,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         isPop = false
         isAlarmRing = false
         shouldPop = false
+        stopMusic()
     }
     
     @objc
@@ -496,10 +500,8 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
 
     //알라 소리 멈추기
     @objc func stopMusic(){
-        if(isPlayConfirm){
-            print("stopMusic(): stop!!!!")
-            player?.pause()
-        }
+        print("stopMusic(): stop!!!!")
+        player?.pause()
     }
     
     @objc func getFileUrl() -> NSURL? {
@@ -535,8 +537,10 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         alarmDate = formatter.string(from: Date()) // get today's date
         
         print("alarm date is \(alarmDate)")
+        DispatchQueue.main.async(execute: {
+            self.makeNotification()
+        })
         
-        makeNotification()
     }
     
     //상시 알람 시간 확인
@@ -544,25 +548,64 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         let notificationCenter = NotificationCenter.default
 //        notificationCenter.addObserver(self, selector: #selector(appMovedToBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
 //        notificationCenter.addObserver(self, selector: #selector(appMovedToBackground), name: UIApplication.willTerminateNotification, object: nil)
+    
 
         notificationCenter.addObserver(self,
-                                       selector: #selector(turnOnAlarm),
-                                       name: NSNotification.Name(rawValue: "alarmOn"),
+                                       selector: #selector(turnOnAlarmAtForeground),
+                                       name: NSNotification.Name(rawValue: "foregroundAlarmOn"),
                                         object: nil)
+        notificationCenter.addObserver(self,
+                                    selector: #selector(turnOnAlarmAtBackground),
+                                    name: NSNotification.Name(rawValue: "backgroundAlarmOn"),
+                                     object: nil)
         
         //set testnumber
         testNumber = String(number)
-        DispatchQueue.main.async{
-            self.initAlarm()
-        }
         
-//        makeNotification()
-
+        DispatchQueue.main.async(execute: {
+            self.initAlarm()
+        })
     }
 
+    @objc func turnOnAlarmAtBackground(){
+        shouldSuspendApp = false
+        turnOnAlarm()
+    }
+    
+    @objc func turnOnAlarmAtForeground(){
+        shouldSuspendApp = true
+        turnOnAlarm()
+    }
+    
     @objc func turnOnAlarm(){
-        print()
+        print("**********************")
         print("Enter turnOnAlarm()")
+        shouldPop = true
+        player?.play()
+        
+        //get file url
+//        let pathString:NSURL? = getFileUrl()
+        
+        print("turnonAlarm(): soundfilePath=\(soundFilePath!)")
+        
+        let asset = AVURLAsset(url: soundFilePath! as URL, options: nil)
+        let audioDuration = asset.duration
+        let audioDurationSeconds = CMTimeGetSeconds(audioDuration)
+
+        //get length of music file
+        let musicLength:Double = audioDurationSeconds
+
+        print(musicLength)
+        
+        //repeat 10 times
+        Timer.scheduledTimer(timeInterval: musicLength*5, target: self, selector: #selector(stopMusic), userInfo: nil, repeats: false)
+        
+        if shouldSuspendApp {
+            //suspend app
+            UIControl().sendAction(#selector(URLSessionTask.suspend), to: UIApplication.shared, for: nil)
+        }
+        
+        
     }
     
     
@@ -580,19 +623,12 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
     @objc func makeNotification() {
         print("-----")
         print("make notification")
-
-        var title: String?
-        var body: String?
-        
-        
-        title = "알람이 울리고 있습니다!"
-        body = "이 알람을 누르거나 앱 아이콘을 터치하여 앱에 재진입해주세요!"
         
         //Setting content of the notification
         let content = UNMutableNotificationContent()
-        content.title = title!
+        content.title = NSString.localizedUserNotificationString(forKey: "알람이 울리고 있습니다!", arguments: nil)
         content.subtitle = "⭐️⭐️⭐️"
-        content.body = body!
+        content.body = NSString.localizedUserNotificationString(forKey: "이 알람을 누르거나 앱 아이콘을 터치하여 앱에 재진입해주세요!", arguments: nil)
         
         content.summaryArgument = "skku"
         content.summaryArgumentCount = 40
@@ -610,10 +646,10 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
 
         dateCompenents.hour = targetHour!
         dateCompenents.minute = targetMinute!
-//        dateCompenents.second = 0
+        dateCompenents.second = 0
 
         print("*******")
-        print("targetHour=\(targetHour) targetMinute=\(targetMinute)")
+        print("targetHour=\(targetHour!) targetMinute=\(targetMinute!)")
         print(dateCompenents)
         print(content)
         print("*******")
@@ -627,7 +663,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
 
         //Adding Request
         // MARK: - identifier가 다 달라야만 Notification Grouping이 됩니닷..!!
-        let request = UNNotificationRequest(identifier: "\(String(describing: index))timerdone", content: content, trigger: TimeIntervalTrigger)
+        let request = UNNotificationRequest(identifier: "alarm", content: content, trigger: calendartrigger)
 
         UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
     }

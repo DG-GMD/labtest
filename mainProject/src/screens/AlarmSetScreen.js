@@ -134,13 +134,14 @@ export default class AlarmSet extends Component {
 
                 // alarmModule.diaryNotification(dt.getTime().toString());
 
-                // this.notif.cancelNotif();
-                // this.notif.cancelAll();
+                this.notif.cancelNotif();
+                this.notif.cancelAll();
                 
                 //date picker에 있는 시간 추출
                 var pickerDate = new Date();
                 pickerDate.setHours(this.state.pickedHourValue);
                 pickerDate.setMinutes(this.state.pickedMinValue);
+                pickerDate.setSeconds(0);
 
                 console.log("now!!!!", pickerDate);
 
@@ -161,8 +162,8 @@ export default class AlarmSet extends Component {
 
                 console.log('sound name is ', soundName);
                 //date piker에 있는 시간으로 notification 설정
-                // this.notif.scheduleNotif(pickerDate, soundName);
-                
+                // this.notif.scheduleNotif(pickerDate);
+                // this.notif.localNotif();
                 //pop init notification 
                 //this.notif.popInitialNotification();
                
