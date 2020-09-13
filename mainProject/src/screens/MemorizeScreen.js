@@ -19,7 +19,6 @@ export default class Memorize extends Component {
     constructor(props){
         super(props);
         
-        
         this.ShowWordsAndMeaning = this.ShowWordsAndMeaning.bind(this);
         this._IsTestStart = this._IsTestStart.bind(this);
         this._setToFirstWord = this._setToFirstWord.bind(this);

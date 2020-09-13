@@ -19,8 +19,13 @@ export default function LoginScreen({ navigation }) {
     let filePath = RNFS.DocumentDirectoryPath;
     console.log("filePath", filePath)
     const downloadTo =  Platform.OS==='android' ?  `${filePath}/alarm.mp3` : 'alarm.mp3';
+    var category = parseInt(testNumber/1000);
 
-    var alarmPath = '/alarm/' + parseInt(testNumber/1000) + '.mp3';
+    var alarmPath = '';
+    if(category == 1)
+      alarmPath = '/alarm/' + parseInt(testNumber) + '.mp3';
+    else
+      alarmPath = '/alarm/' + category + '.mp3';
 
     const task = storage()
       .ref(alarmPath)
