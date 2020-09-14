@@ -55,7 +55,7 @@
     function exportExcel(){
       firebase.database().ref('/users').on('value', snapshot => {
         let jsonData = snapshot.val();
-        console.log(jsonData);
+        //console.log(jsonData);
 
         // step 1. workbook 생성
         var wb = XLSX.utils.book_new();
@@ -89,7 +89,15 @@
           mDt.name = dt.name;
           mDt.birth = dt.birth;
           mDt.set_alarm = dt.alarm.length - 1;
-          //mDt.current_alarm
+          if(mDt.set_alarm > 0){
+            let lastAlarm = '';
+            for(i in dt.alarm){
+              let alarmData = dt.alarm[i];
+              if(alarmData.setHour != null)
+                lastAlarm = alarmData.setHour.toString() + ' : ' + alarmData.setMin.toString();
+            }
+            mDt.current_alarm_time = lastAlarm;
+          }
           mDt.start_date = dt.startDate == null ? null : (new Date(dt.startDate.millitime)).toString();
           if(dt.test == null || dt.test == undefined)
             mDt.test_count = 0;
@@ -101,55 +109,61 @@
           jsonArr.push(mDt);
         }
 
+        //console.log('First Sheet Data', jsonArr);
         return jsonArr;
       },
       SecondSheetData: function(jsonData) {
         var jsonArr = [];
         for(rNum in jsonData){
           let dt = jsonData[rNum];
-          let mDt = {};
 
-          mDt.research_number = rNum;
-          mDt.name = dt.name;
-          mDt.birth = dt.birth;
-          mDt.set_alarm = dt.alarm.length - 1;
-          //mDt.current_alarm
-          mDt.start_date = dt.startDate == null ? null : (new Date(dt.startDate.millitime)).toString();
-          if(dt.test == null || dt.test == undefined)
-            mDt.test_count = 0;
-          else if(Array.isArray(dt.test))
-            mDt.test_count = countTheObjects(dt.test);
-          else
-            mDt.test_count = Object.keys(dt.test).length;
-          
-          jsonArr.push(mDt);
+          if(dt.alarm.length > 1){
+            for(i in dt.alarm){
+              let alarmData = dt.alarm[i];
+              if(alarmData.setHour != null){
+                let mDt = {};
+
+                mDt.research_number = rNum;
+                mDt.set_alarm_time = alarmData.setHour.toString() + ' : ' + alarmData.setMin.toString();
+                mDt.set_date = alarmData.saveTime;
+
+                jsonArr.push(mDt);
+              }
+            }
+          }
         }
 
-        return [];
+        //console.log('Second Sheet Data', jsonArr);
+        return jsonArr;
       },
       ThirdSheetData: function(jsonData) {
         var jsonArr = [];
         for(rNum in jsonData){
           let dt = jsonData[rNum];
-          let mDt = {};
-
-          mDt.research_number = rNum;
-          mDt.name = dt.name;
-          mDt.birth = dt.birth;
-          mDt.set_alarm = dt.alarm.length - 1;
-          //mDt.current_alarm
-          mDt.start_date = dt.startDate == null ? null : (new Date(dt.startDate.millitime)).toString();
-          if(dt.test == null || dt.test == undefined)
-            mDt.test_count = 0;
-          else if(Array.isArray(dt.test))
-            mDt.test_count = countTheObjects(dt.test);
-          else
-            mDt.test_count = Object.keys(dt.test).length;
           
-          jsonArr.push(mDt);
+          if(dt.test !== null && dt.test != undefined){
+            for(i in dt.test){
+              let testData = dt.test[i]
+              for(j in testData){
+                let testDateData = testData[j]
+                if(testDateData !== null && testDateData !== undefined) {
+                  let mDt = {};
+
+                  mDt.research_number = rNum;
+                  mDt.test_date = i;
+                  mDt.try_order = Number(j)+1;
+                  mDt.correct_count = testDateData.correctCount;
+                  mDt.try_date = testDateData.date;
+
+                  jsonArr.push(mDt);
+                }
+              }
+            }
+          }
         }
 
-        return [];
+        //console.log('Third Sheet Data', jsonArr);
+        return jsonArr;
       },
     };
 
