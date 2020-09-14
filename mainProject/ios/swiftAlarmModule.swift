@@ -457,6 +457,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
             //현재 시간과 타겟 시간이 같다면?
             print("\(nowTimeHour! == targetHour!) and \(nowTimeMinute! == targetMinute!)")
             if nowTimeHour! == targetHour! && nowTimeMinute! == targetMinute!{
+                makeNotification()
                 isPlayConfirm = true
                 isAlarmRing = true
                 
@@ -493,8 +494,6 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
     
     //알람 소리 재생
     func playMusic(){
-        makeNotification()
-        
         //vibrate phone
         AudioServicesPlayAlertSoundWithCompletion(SystemSoundID(kSystemSoundID_Vibrate)) { }
 
@@ -562,7 +561,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         
         DispatchQueue.global(qos: .background).async {
             //background code
-//            self.makeNotification()
+//            self.selectNotification()
             DispatchQueue.main.async {
                 //your main thread
             }
@@ -574,6 +573,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
 //        })
         
     }
+    
     
     //MARK: 상시 알람 시간 확인
     @objc func checkAlarm(_ number:NSString) -> Void{
@@ -682,7 +682,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         
         content.summaryArgument = "skku"
         content.summaryArgumentCount = 40
-//        content.sound = UNNotificationSound.default
+        content.sound = UNNotificationSound.default
 //        let soundName = UNNotificationSoundName(rawValue: "Self-voice.aiff")
 //        content.sound = UNNotificationSound.init(named: soundName)
 
@@ -690,10 +690,9 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         //블로그 예제에서는 TimeIntervalNotificationTrigger을 사용했지만, UNCalendarNotificationTrigger사용법도 같이 올려놓을게요!
 
         //1. Use UNCalendarNotificationTrigger
-        let date = Date()
-        var dateCompenents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
-
-
+        
+        var dateCompenents = DateComponents()
+        
         dateCompenents.hour = targetHour!
         dateCompenents.minute = targetMinute!
         dateCompenents.second = 0
@@ -717,5 +716,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
 
         UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
     }
+    
+    
 }
 
