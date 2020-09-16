@@ -47,7 +47,7 @@ export default function Pop({navigation}){
                 if(data == null || data == undefined){
                     json['0'] = {
                         'order' : 0,
-                        'Cicked': boolButton,
+                        'clicked': boolButton,
                         'registeredDate': new Date().toString()
                     }
                 }

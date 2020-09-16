@@ -69,6 +69,8 @@
         XLSX.utils.book_append_sheet(wb, newWorksheet, 'Alarm');
         newWorksheet = XLSX.utils.json_to_sheet(dataHandler.ThirdSheetData(jsonData));
         XLSX.utils.book_append_sheet(wb, newWorksheet, 'DictTest');
+        newWorksheet = XLSX.utils.json_to_sheet(dataHandler.FourthSheetData(jsonData));
+        XLSX.utils.book_append_sheet(wb, newWorksheet, 'DictStart');
 
         // step 4. 엑셀 파일 만들기 
         var wbout = XLSX.write(wb, {bookType:'xlsx',  type: 'binary'});
@@ -157,6 +159,31 @@
 
                   jsonArr.push(mDt);
                 }
+              }
+            }
+          }
+        }
+
+        //console.log('Third Sheet Data', jsonArr);
+        return jsonArr;
+      },
+      FourthSheetData: function(jsonData) {
+        var jsonArr = [];
+        for(rNum in jsonData){
+          let dt = jsonData[rNum];
+          
+          if(dt.popCheck !== null && dt.popCheck != undefined){
+            for(i in dt.popCheck){
+              if(i !== 'popTime'){
+                let checkData = dt.popCheck[i]
+                let mDt = {};
+
+                mDt.research_number = rNum;
+                mDt.order = checkData.order + 1;
+                mDt.clicked_button = checkData.clicked ? 'yes' : 'no';
+                mDt.clicked_date = checkData.registeredDate;
+
+                jsonArr.push(mDt);
               }
             }
           }
