@@ -525,9 +525,6 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         let musicLength:Double = audioDurationSeconds
 
         print(musicLength)
-        
-        //repeat 5 times
-        Timer.scheduledTimer(timeInterval: musicLength*5, target: self, selector: #selector(stopMusic), userInfo: nil, repeats: false)
 //        print("playMusic(): schedule clear")
     }
 

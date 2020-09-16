@@ -4,7 +4,7 @@ import { View, Text, Image, ScrollView, TextInput, Button, BackHandler, StyleShe
 import { AuthContext } from '../navigation/AuthProvider';
 
 //import AsyncStorage from '@react-native-community/async-storage'
-
+import database from '@react-native-firebase/database';
 import { Player } from '@react-native-community/audio-toolkit';
 
 import RNFS from 'react-native-fs';
@@ -38,7 +38,8 @@ const startDict = (admit) => {
 
 
 export default function Pop({navigation}){
-    const { setSkip } = useContext(AuthContext);
+    const { setSkip, testNumber } = useContext(AuthContext);
+
     const {isPop} = useContext(UserContext);
     const {setPop} = useContext(UserContext);
     const {showRefresh} = useContext(UserContext);
@@ -50,20 +51,73 @@ export default function Pop({navigation}){
         swiftAlarmModule.confirmFromPopScreen();
                             
         startMemorize();
-        var path = RNFS.DocumentDirectoryPath + '/popTime.txt';
-    
-        // setPop(new Date().getTime().toString());
-        
-        // write the file
-        RNFS.writeFile(path, new Date().getTime().toString(), 'utf8')
-        .then((success) => {
-            console.log('Pop Time WRITTEN!');
-            startDict(true);
+        startDict(true);
             setSkip(2);
             setRefresh(true);
             console.log("PopScreen: isPop is", isPop);
             setPop(false);
-            
+    }
+
+    const onButtonClicked = (boolButton) => {
+        var path = RNFS.DocumentDirectoryPath + '/popTime.txt';
+        var popTimeStr = new Date().getTime().toString();
+
+        // write the file
+        RNFS.writeFile(path, popTimeStr, 'utf8')
+        .then((success) => {
+            console.log('Pop Time WRITTEN!');
+
+            database()
+            .ref('/users/' + testNumber + '/popCheck')
+            .orderByChild('order')
+            .limitToLast(1)
+            .once('value')
+            .then(snapshot => {
+                var data = snapshot.val();
+
+                var popData = {};
+                for(let key in data){
+                    popData = data[key];
+                }
+
+                json = {};
+                json.popTime = popTimeStr;
+                console.log('popCheckData', data);
+                if(data == null || data == undefined){
+                    json['0'] = {
+                        'order' : 0,
+                        'clicked': boolButton,
+                        'registeredDate': new Date().toString()
+                    }
+                }
+                else{
+                    let currentOrder = popData.order + 1;
+                    json[currentOrder.toString()] = {
+                        'order' : currentOrder,
+                        'clicked': boolButton,
+                        'registeredDate': new Date().toString()
+                    }
+                }
+
+                database()
+                .ref('/users/' + testNumber + '/popCheck')
+                .update(json)
+                .then(() => {
+                    console.log('Pop Time saved to firebase');
+
+                    if(boolButton){
+                        startDict(true);
+                        setSkip(2);
+                    }
+                    else {
+                        startDict(false);
+                        BackHandler.exitApp();
+                    }
+                })
+                .catch((err)=>{
+                    console.log(err.message);
+                })
+            });
         })
         .catch((err) => {
             console.log(err.message);
@@ -98,6 +152,7 @@ export default function Pop({navigation}){
                     style={styles.buttonContainer}
                     onPress = {() => {
                         yesButton();
+                        onButtonClicked(true);
                     }}
                 >
                     <Text style={{fontSize: 18}}>
@@ -111,24 +166,14 @@ export default function Pop({navigation}){
                         swiftAlarmModule.confirmFromPopScreen()
                         
                         startMemorize();
-                        var path = RNFS.DocumentDirectoryPath + '/popTime.txt';
                         
-                        // write the file
-                        RNFS.writeFile(path, new Date().getTime().toString(), 'utf8')
-                        .then((success) => {
-                            console.log('Pop Time WRITTEN!');
-                            startDict(true);
-                            setSkip(2);
-                            setRefresh(true);
-                            console.log("PopScreen: isPop is", isPop);
-                            setPop(false);
-                            // BackHandler.exitApp();
-                            RNExitApp.exitApp();
-                        })
-                        .catch((err) => {
-                            console.log(err.message);
-                        });
-                        
+                        onButtonClicked(false);
+                        startDict(true);
+                        setSkip(2);
+                        setRefresh(true);
+                        console.log("PopScreen: isPop is", isPop);
+                        setPop(false);
+                        RNExitApp.exitApp();
                     }} 
                 >
                     <Text style={{fontSize: 18}}>
