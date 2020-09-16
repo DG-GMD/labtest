@@ -3,33 +3,87 @@ import { View, Text, Image, ScrollView, TextInput, Button, BackHandler, StyleShe
 import { alarmModule } from '../utils/jvmodules';
 import { AuthContext } from '../navigation/AuthProvider';
 
+import database from '@react-native-firebase/database';
+
 //import AsyncStorage from '@react-native-community/async-storage'
 
 import { Player } from '@react-native-community/audio-toolkit';
 
 import RNFS from 'react-native-fs';
 
-// async function savePopTime(){
-//     //popScreen이 표시된 시간을 로컬 저장소에 저장
-    
-//     let now = new Date();
-//     try{
-//         console.log('savePoptime ', now.getTime().toString());
-//         await AsyncStorage.setItem('popTime', now.getTime().toString());
-//     }
-//     catch(e){
-//         console.log('fail to save poptime ', e);
-//     }
-    
-// }
-
-const startDict = (admit) => {
-    console.log("admit", admit);
-    alarmModule.startDict(admit);
-}
-
 export default function Pop({navigation}){
-    const { setSkip } = useContext(AuthContext);
+    const { setSkip, testNumber } = useContext(AuthContext);
+
+    const startDict = (admit) => {
+        console.log("admit", admit);
+        alarmModule.startDict(admit);
+    }
+
+    const onButtonClicked = (boolButton) => {
+        var path = RNFS.DocumentDirectoryPath + '/popTime.txt';
+        var popTimeStr = new Date().getTime().toString();
+
+        // write the file
+        RNFS.writeFile(path, popTimeStr, 'utf8')
+        .then((success) => {
+            console.log('Pop Time WRITTEN!');
+
+            database()
+            .ref('/users/' + testNumber + '/popCheck')
+            .orderByChild('order')
+            .limitToLast(1)
+            .once('value')
+            .then(snapshot => {
+                var data = snapshot.val();
+
+                var popData = {};
+                for(let key in data){
+                    popData = data[key];
+                }
+
+                json = {};
+                json.popTime = popTimeStr;
+                console.log('popCheckData', data);
+                if(data == null || data == undefined){
+                    json['0'] = {
+                        'order' : 0,
+                        'Cicked': boolButton,
+                        'registeredDate': new Date().toString()
+                    }
+                }
+                else{
+                    let currentOrder = popData.order + 1;
+                    json[currentOrder.toString()] = {
+                        'order' : currentOrder,
+                        'Cicked': boolButton,
+                        'registeredDate': new Date().toString()
+                    }
+                }
+
+                database()
+                .ref('/users/' + testNumber + '/popCheck')
+                .update(json)
+                .then(() => {
+                    console.log('Pop Time saved to firebase');
+
+                    if(boolButton){
+                        startDict(true);
+                        setSkip(2);
+                    }
+                    else {
+                        startDict(false);
+                        BackHandler.exitApp();
+                    }
+                })
+                .catch((err)=>{
+                    console.log(err.message);
+                })
+            });
+        })
+        .catch((err) => {
+            console.log(err.message);
+        });
+    }
     
     return (
         <View
@@ -54,18 +108,7 @@ export default function Pop({navigation}){
                 <TouchableOpacity
                     style={styles.buttonContainer}
                     onPress = {() => {
-                        var path = RNFS.DocumentDirectoryPath + '/popTime.txt';
-
-                        // write the file
-                        RNFS.writeFile(path, new Date().getTime().toString(), 'utf8')
-                        .then((success) => {
-                            console.log('Pop Time WRITTEN!');
-                            startDict(true);
-                            setSkip(2);
-                        })
-                        .catch((err) => {
-                            console.log(err.message);
-                        });
+                        onButtonClicked(true);
                     }}
                 >
                     <Text style={{fontSize: 18}}>
@@ -76,18 +119,7 @@ export default function Pop({navigation}){
                 <TouchableOpacity
                     style={styles.buttonContainer}
                     onPress = {() => {
-                        var path = RNFS.DocumentDirectoryPath + '/popTime.txt';
-
-                        // write the file
-                        RNFS.writeFile(path, new Date().getTime().toString(), 'utf8')
-                        .then((success) => {
-                            console.log('Pop Time WRITTEN!');
-                            startDict(false);
-                            BackHandler.exitApp();
-                        })
-                        .catch((err) => {
-                            console.log(err.message);
-                        });
+                        onButtonClicked(false);
                     }} 
                 >
                     <Text style={{fontSize: 18}}>

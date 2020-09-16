@@ -4,6 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, Text} from "react-native";
 import AsyncStorage from '@react-native-community/async-storage';
 
+import RNFS from 'react-native-fs';
+
 /**
  * This provider is created
  * to access user in whole app
@@ -118,10 +120,11 @@ async function writeStartTime(testNumber) {
   //기록된 최초 로그인 시간 정보가 없다면 새로 기록
   if(firstLoginTime == null){
     database()
-    .ref('/users/'+ testNumber.toString() + '/startDate')
+    .ref('/users/'+ testNumber.toString())
     .once('value',async (snapshot) =>{
       console.log('sanpshot', snapshot.val());
-      if(snapshot.val() == null){
+      var userData = snapshot.val();
+      if(userData.startDate == null){
         var now = new Date();
         now.setHours(0);
         now.setMinutes(1);
@@ -146,17 +149,31 @@ async function writeStartTime(testNumber) {
         }
       }
       else{
-        var now = new Date(snapshot.val().millitime);
+        var now = new Date(userData.startDate.millitime);
         now.setHours(0);
         now.setMinutes(1);
+
+        if(userData.popCheck != null){
+          var path = RNFS.DocumentDirectoryPath + '/popTime.txt';
+
+          console.log('popCheck data', userData.popCheck);
+          // write the file
+          RNFS.writeFile(path, userData.popCheck.popTime, 'utf8')
+          .then((success) => {
+              console.log('Pop Time WRITTEN!');
+          })
+          .catch((err) => {
+              console.log(err.message);
+          });
+        }
 
         //set data to local storage
         try{
           await AsyncStorage.setItem('firstLoginTime', now.getTime().toString());
-          // console.log('----------first login : ', now.getTime().toString());
+          console.log('----------first login : ', now.getTime().toString());
         }
         catch(e){
-          // console.log("fail to set firstLoginTime", e);
+          console.log("fail to set firstLoginTime", e);
         }
       }
     });
