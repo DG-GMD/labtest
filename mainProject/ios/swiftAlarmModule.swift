@@ -91,13 +91,13 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
     var isAlarmRing: Bool = false
     
     //date when alarm is set
-    var alarmDate: Int?
+    var alarmSettingDate: Int?
     
     //flag; have to pop popscreen?
     var shouldPop: Bool = false
     
     //flag; after test?
-    var isPop: Bool = false
+    var isConfirmFromPop: Bool = false
     
     //firebase db
     var ref: DatabaseReference!
@@ -340,17 +340,14 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
 //        player.addObserver(self, forKeysPath: "currentItem", options: [.new, .initial] , context: nil)
         return player
     }
-
-    @objc func pauseAlarm() {
-        if isPlayConfirm{
-            player?.pause()
-        }
-    }
     
     @objc func confirmFromPopScreen(){
-        isPop = false
-        isAlarmRing = false
+        // popscreen에서 입력이 들어왔음을 표시
+        isConfirmFromPop = true
+
+        // 더 이상 popscreen을 표시 안해도 된다고 표시
         shouldPop = false
+        
         stopMusic()
         checkAlarmCondition()
     }
@@ -364,7 +361,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
     //이전 알람 데이터를 확인해 flag들 조정
     @objc func checkAlarmCondition(){
         //알람이 아직 한번도 울리지 않았을 때
-        if alarmDate == nil{
+        if alarmSettingDate == nil{
             print("there's no alarmDate")
         }
         //알람이 울린적이 있을 때
@@ -373,20 +370,35 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
             let date = Date()
             let dateCompenents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
             
+            // get date of alarm ringing
             let alarmRingingDate = try localStorage.string(forKey: "alarmRingingDate")
             
             if alarmRingingDate != nil{
-                print("localStorage alarmRingingDate = \(alarmRingingDate)")
+                print("checkCondition: localStorage alarmRingingDate = \(String(describing: alarmRingingDate))")
+                print("checkCondition: dateCompenents.day=\(dateCompenents.day)")
                 //alarm ringing today!
-                if Int(alarmRingingDate!) == dateCompenents.day {
+                if Int(alarmRingingDate!)! == dateCompenents.day! {
+                    // 알람이 오늘 울렸으니까 플레이어 또한 이미 재생된적이 있다고 표시
                     isPlayConfirm = true
                     print("********")
                     print("alarm ringing today!!")
                 }
                 //alarm ringing other day!
                 else{
+                    // 최소한 알람이 울린 날짜에서 하루가 지났으므로
+                    // 해당 날짜에 대한 정보들 삭제
+                    // 플레이어는 아직 재생 안된거고
                     isPlayConfirm = false
-                    localStorage.set("No", forKey: "isAlarmRingToday")
+                    
+                    // 알람은 아직 안 울린거임
+                    isAlarmRing = false
+                    
+                    // Popscreen에서 입력이 한번도 안 들어온거임
+                    isConfirmFromPop = false
+                    
+                    // Popscreen을 띄우면 안됨
+                    shouldPop = false
+                    
                     print("********")
                     print("alarm ringing other day!!")
                 }
@@ -401,29 +413,33 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
             //현재 날짜 구하기
             let nowDate = dateCompenents.day // get today's date
         
-            print("checkAlarmCondition(): now date is \(alarmDate)")
+//            print("checkAlarmCondition(): now date is \(alarmSettingDate)")
             
-            //동일 날짜, 알람이 이미 울림, 아직 popscreen에서 입력 없음
-            if nowDate == alarmDate && isAlarmRing && !isPop{
+            // 오늘 알람을 맞췄는데 두번째로 맞춘 알람이 울릴 차례라면
+            if isAlarmRing {
+                // 오늘은 더 이상 알람을 울리면 안된다
+                
+            }
+            
+            // 오늘 알람이 이미 울렸는데 아직 popscreen에서 '예/아니오' 입력이 없다면
+            if isAlarmRing && !isConfirmFromPop{
                 //popscreen을 띄워저야한다
-                print("shouldPop is true")
+                print("Popscreen should pop")
                 shouldPop = true
             }
-            //다음날로 넘어가는 시점부터 혹은 popscreen에서 입력이 들어왔을 때
+            // isAlarmRing = false : 알람이 아직 안 울렸다면
+            // !isConfirmFromPop = false : popscreen에서 '예/아니오' 입력이 있었다면
             else{
-//                shouldPop = false
-                isAlarmRing = false
-                isPop = false
-                player?.pause()
-                print("checkAlarmCondition(): player.pause() clear")
+                
             }
             
-            print("checkAlarmCondition(): isPop!!!!!!! \(isPop)")
+            print("checkAlarmCondition(): isConfirmFromPop!!!!!!! \(isConfirmFromPop)")
         }
     }
 
     //MARK: update time data and check alarm
     @objc func updateTime(){
+        print()
         var formatter = DateFormatter() // 특정 포맷으로 날짜를 보여주기 위한 변수 선언
         formatter.dateFormat = "HH" // hour format
         nowTimeHour = Int(formatter.string(from: Date()))
@@ -445,8 +461,11 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         //update alarm flag
         checkAlarmCondition()
         
+        print("isAlarmRing=\(isAlarmRing)")
+        print("isConfirmFromPop=\(isConfirmFromPop)")
+        print("isPlayConfirm=\(isPlayConfirm)")
+        print("shouldPop=\(shouldPop)")
         
-        print("updateTime(): checkAlarmCondition() clear")
         //check alarm is ring
         if(isAlarmRing){
             return
@@ -465,24 +484,22 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
 
                 // set day of today
                 let date = Date()
-                var dateCompenents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+                let dateCompenents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
                 print("type of dateCompenents = \(type(of: dateCompenents.day))")
-                print("alarm ring at day \(dateCompenents.day)")
+                print("alarm ring at day \(String(describing: dateCompenents.day))")
+                
                 localStorage.set(dateCompenents.day, forKey: "alarmRingingDate")
                 
-                //call updateTime() after 60s
-                //알람이 울린 후 알람 소리를 멈추면 60초 후부터 타겟 시간 확인하게 하기
-//                stopAlarmTimer = Timer.scheduledTimer(timeInterval: 60.0, target: self, selector: #selector(timerOn), userInfo: nil, repeats: false)
+                
                 //volume MAX
                 MPVolumeView.setVolume(1)
                 
-                print("playMusic(): volume up claer")
+//                print("playMusic(): volume up claer")
                 //play music
                 player?.play()
                 
                 playMusic()
-                print("in play!!")
-            
+//                print("in play!!")
             
                 //suspend app
                 UIControl().sendAction(#selector(URLSessionTask.suspend), to: UIApplication.shared, for: nil)
@@ -511,7 +528,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         
         //repeat 5 times
         Timer.scheduledTimer(timeInterval: musicLength*5, target: self, selector: #selector(stopMusic), userInfo: nil, repeats: false)
-        print("playMusic(): schedule clear")
+//        print("playMusic(): schedule clear")
     }
 
     //알라 소리 멈추기
@@ -529,13 +546,6 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
                 return nil
         }
     }
-    
-    //init flag
-    @objc func timerOn(){
-        isPlayConfirm = false
-        player?.pause()
-        player?.seek(to: CMTime.zero)
-    }
 
     //MARK: 타겟 시간(알람 시간) 설정
     @objc func setAlarmTime(_ hour:NSInteger, minute:NSInteger) -> Void{
@@ -545,6 +555,8 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         print("alarm time: \(hour), \(minute)")
         targetHour = hour
         targetMinute = minute
+        localStorage.set(hour, forKey: "hour")
+        localStorage.set(minute, forKey: "minute")
         
         //get today's date
         //it's date when alarm is set
@@ -555,9 +567,9 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         print("alarm set at day \(dateCompenents.day)")
         localStorage.set(dateCompenents.day, forKey: "alarmSettingDate")
         
-        alarmDate =  dateCompenents.day// get today's date
+        alarmSettingDate =  dateCompenents.day// get today's date
         
-        print("alarm date is \(alarmDate)")
+        print("alarm setting date is \(alarmSettingDate)")
         
         DispatchQueue.global(qos: .background).async {
             //background code
@@ -566,12 +578,6 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
                 //your main thread
             }
         }
-        
-        
-//        DispatchQueue.main.async(execute: {
-            
-//        })
-        
     }
     
     
@@ -590,6 +596,15 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
 //                                    selector: #selector(turnOnAlarmAtBackground),
 //                                    name: NSNotification.Name(rawValue: "backgroundAlarmOn"),
 //                                     object: nil)
+        //set hour and minute
+        let tempHour = localStorage.string(forKey: "hour")
+        let tempMinute = localStorage.string(forKey: "minute")
+        
+        // if localstorage has target hour and number, save it to app
+        if tempHour != nil && tempMinute != nil{
+            targetHour = Int(tempHour!)!
+            targetMinute = Int(tempMinute!)!
+        }
         
         //set testnumber
         testNumber = String(number)
@@ -597,7 +612,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         //set alarmDate
         let tempAlarmDate = localStorage.string(forKey: "alarmSettingDate")
         if tempAlarmDate != nil{
-            alarmDate = Int(tempAlarmDate!)
+            alarmSettingDate = Int(tempAlarmDate!)
         }
         
         DispatchQueue.global(qos: .background).async {
@@ -613,58 +628,12 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
 //        })
     }
 
-    @objc func turnOnAlarmAtBackground(){
-        shouldSuspendApp = false
-        turnOnAlarm()
-    }
-    
-    @objc func turnOnAlarmAtForeground(){
-        shouldSuspendApp = true
-        turnOnAlarm()
-    }
-    
-    @objc func turnOnAlarm(){
-        print("**********************")
-        print("Enter turnOnAlarm()")
-        shouldPop = true
-        
-//        backgroundTask.stopBackgroundTask()
-        
-        player?.play()
-//        backgroundTask.startBackgroundTask()
-        
-        //get file url
-//        let pathString:NSURL? = getFileUrl()
-        
-        print("turnonAlarm(): soundfilePath=\(soundFilePath!)")
-        
-        let asset = AVURLAsset(url: soundFilePath! as URL, options: nil)
-        let audioDuration = asset.duration
-        let audioDurationSeconds = CMTimeGetSeconds(audioDuration)
-
-        //get length of music file
-        let musicLength:Double = audioDurationSeconds
-
-        print(musicLength)
-        
-        //repeat 10 times
-        Timer.scheduledTimer(timeInterval: musicLength*5, target: self, selector: #selector(stopMusic), userInfo: nil, repeats: false)
-        
-        if shouldSuspendApp {
-            //suspend app
-            UIControl().sendAction(#selector(URLSessionTask.suspend), to: UIApplication.shared, for: nil)
-        }
-        
-        
-    }
     
     
     @objc func appMovedToBackground() {
         DispatchQueue.global(qos: DispatchQoS.QoSClass.default).async {
             
         }
-        
-        
     }
 
 
