@@ -493,7 +493,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
                 
                 //volume MAX
                 MPVolumeView.setVolume(1)
-                
+                player?.volume = 1
 //                print("playMusic(): volume up claer")
                 //play music
                 player?.play()
@@ -532,6 +532,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
     @objc func stopMusic(){
         print("stopMusic(): stop!!!!")
         player?.pause()
+        player?.seek(to: CMTime.zero)
     }
     
     @objc func getFileUrl() -> NSURL? {
