@@ -1,7 +1,7 @@
 import React, { createContext, useState } from 'react';
 import database from '@react-native-firebase/database';
 import { useNavigation } from '@react-navigation/native';
-import { StyleSheet, Text} from "react-native";
+import { SnapshotViewIOS, StyleSheet, Text} from "react-native";
 import AsyncStorage from '@react-native-community/async-storage';
 
 import RNFS from 'react-native-fs';
@@ -64,6 +64,7 @@ export const AuthProvider = ({ children }) => {
                   await AsyncStorage.setItem('testNumber', testNumber);
                   setTestNumber(testNumber);
                   // console.log("save number");
+                  
                 }
                 catch(e){
                   // console.log("fail to save number", e);
@@ -75,6 +76,7 @@ export const AuthProvider = ({ children }) => {
               saveNumber();
 
               if(getName == name && getBirth == birth){
+                saveLogtoDB(testNumber);
                 setUser(getName);
               }
             });
@@ -100,6 +102,38 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
+async function saveLogtoDB(testNumber){
+  let now = new Date();
+  let year = now.getFullYear();
+  let month = now.getMonth();
+  let date = now.getDate();
+  let dateString = year.toString() + '+' + month.toString() + '+' + date.toString();
+
+  let postData = {
+    date:now.toString()
+  };
+
+  database()
+  .ref('/users/' + testNumber.toString() + '/log/loginDate/' + dateString)
+  .once('value', snapshot => {
+    var lenght;
+    // 한번도 로그인을 안했다면
+    if(snapshot.val() == null){
+       length = 0;
+    }
+    // 로그인을 한 적이 있다면
+    else{
+      length = snapshot.val().length;  
+    }
+
+    // console.log("saveLogtoDb: snapshot=", snapshot.val().length);
+    //firebase db에 login date update
+    var ref = database().ref('/users/' + testNumber.toString() + '/log/loginDate/'+ dateString + "/" + length);
+    ref.update(postData);
+  });
+
+  
+}
 
 //최초 로그인 날짜를 firebase DB와 로컬 저장소에 저장
 async function writeStartTime(testNumber) {

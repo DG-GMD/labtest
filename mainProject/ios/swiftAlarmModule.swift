@@ -239,7 +239,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
             // ...
             }) { (error) in
             print(error.localizedDescription)
-        }
+            }
         
         // Make dismiss for all VC that was presented from this start VC
 //        self.children.forEach({vc in
@@ -499,7 +499,9 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
                 player?.play()
                 
                 playMusic()
-//                print("in play!!")
+
+                // set log in firebase db
+                saveLogToDB()
             
                 //suspend app
                 UIControl().sendAction(#selector(URLSessionTask.suspend), to: UIApplication.shared, for: nil)
@@ -508,6 +510,29 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         
         print()
     }
+    
+    
+    func saveLogToDB(){
+        print("===========")
+        ref = Database.database().reference()
+        
+        let date = Date()
+        let dateCompenents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+        
+        let dateString = "\(String(dateCompenents.year!))+\(String(dateCompenents.month!))+\(String(dateCompenents.day!))"
+        
+        let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .full, timeStyle: .full)
+        let postLog = [
+            "date" : timestamp
+        ]
+        
+        
+        let childUpdates = ["/users/\(String(describing: testNumber!))/log/alarOnDate/\(dateString)" : postLog]
+        
+        ref.updateChildValues(childUpdates as [AnyHashable : Any])
+        print("===========")
+    }
+    
     
     //알람 소리 재생
     func playMusic(){
@@ -683,7 +708,5 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
 
         UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
     }
-    
-    
 }
 
