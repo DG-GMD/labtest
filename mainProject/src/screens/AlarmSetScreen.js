@@ -38,6 +38,9 @@ export default class AlarmSet extends Component {
             testNumber: null,
         };
 
+        console.log("is ios?", Platform.OS === 'ios');
+        console.log("is android?", Platform.OS === 'android');
+
         this.notif = new NotifService(
             this.onRegister.bind(this),
             this.onNotif.bind(this),
@@ -255,51 +258,6 @@ export default class AlarmSet extends Component {
                     backgroundColor: 'rgba(142,228,175,0.3)',
                 }}
             >
-                {Platform.OS === 'android' && (
-                <View style={{
-                    flex: 1,
-                    width: '100%',
-                    backgroundColor: '#8EE4AF',
-                    justifyContent: 'center',
-                    alignItems: 'center'
-                }}>
-                    <Text style={{
-                        padding: 15,
-                        fontSize: 16
-                    }}>
-                        하단의 시간을 터치하여 설정을 시작해주세요.
-                    </Text>
-                </View>
-                )}
-
-                {Platform.OS === 'android' && (
-                <View
-                    style={{
-                        width: '100%',
-                        flex: 3,
-                        flexDirection: 'row',
-                        backgroundColor: 'rgba(142,228,175,0.1)',
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                    }}
-                >
-                    
-                    <TouchableOpacity
-                        style={{
-                            alignSelf: 'center',
-                        }}
-                        onPress={() => this.setState({show: true})}
-                    >
-                        <Text
-                            style = {{
-                                fontSize: 60,
-                            }}
-                        >
-                            {this.timeString()}
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-                )}
                 
                 {this.state.show && (
                     <View
@@ -311,12 +269,12 @@ export default class AlarmSet extends Component {
                         }}
                     >
                         <DateTimePicker
-                        testID="dateTimePicker"
-                        value={this.state.date}
-                        mode="time"
-                        is24Hour={false}
-                        display="spinner"
-                        onChange={this.onChange}
+                            testID="dateTimePicker"
+                            value={this.state.date}
+                            mode="time"
+                            is24Hour={false}
+                            display="spinner"
+                            onChange={this.onChange}
                         />
                     </View>
                 )}
