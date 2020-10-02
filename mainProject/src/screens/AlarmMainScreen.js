@@ -95,7 +95,7 @@ export default class AlarmMain extends Component {
         //let calcDate = new Date(now.getTime() - storageFirstLoginTime);
         this.setState({
             //howLongDate: calcDate.getDate()
-            howLongDate: this.dateDiff(new Date(), new Date(Number(storageFirstLoginTime)))
+            howLongDate: this.dateDiff(new Date(), new Date(Number(storageFirstLoginTime))) + 1
         });
         
         this.props.navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={this.state.howLongDate} userName={this.state.userName}/>}   });

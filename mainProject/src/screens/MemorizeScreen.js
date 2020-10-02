@@ -80,6 +80,7 @@ export default class Memorize extends Component {
         this.props.navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Test Loading...</Text> });
         //writeTestState('before test');
     }
+
     componentDidMount(){
         //header 수정
         this.getData();
@@ -173,9 +174,8 @@ export default class Memorize extends Component {
         })();
     }
 
-    //로컬 저장소의 기존 로그인 정보들로 header title 수정
+    //헤더 수정 함수
     getData = async () => {
-        
         const storageUserName = await AsyncStorage.getItem('user');
         const storageTestNumber = await AsyncStorage.getItem('testNumber');
         const storageFirstLoginTime = await AsyncStorage.getItem('firstLoginTime');
@@ -187,42 +187,29 @@ export default class Memorize extends Component {
 
         // console.log("storage ", storageTestNumber, storageUserName, storageFirstLoginTime);
 
-        let now = new Date();
+        //let now = new Date();
 
-        let calcDate = new Date(now.getTime() - storageFirstLoginTime);
+        //let calcDate = new Date(now.getTime() - storageFirstLoginTime);
         this.setState({
-            howLongDate: calcDate.getDate()
+            //howLongDate: calcDate.getDate()
+            howLongDate: this.dateDiff(new Date(), new Date(Number(storageFirstLoginTime))) + 1
         });
         
         this.props.navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={this.state.howLongDate} userName={this.state.userName}/>}   });
-    
-
-        // database()
-        // .ref('/users/' + storageTestNumber)
-        // .once('value')
-        // .then(snapshot => {
-        //     console.log("snapshot ", snapshot.val());
-        //     this.setState({
-        //     userDB: snapshot.val(),
-
-        //     });
-        //     return snapshot.val().startDate.millitime;
-        // })
-        // .then( (milliTime) => {        
-        //     console.log('time : ', milliTime);
-
-        //     let now = new Date();
-
-        //     let calcDate = new Date(now.getTime() - milliTime);
-        //     this.setState({
-        //     howLongDate: calcDate.getDate()
-        //     });
-            
-        // })
-        // .then( () => {
-        //     this.props.navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={this.state.howLongDate} userName={this.state.userName}/>}   });
-        // });
     };
+
+    dateDiff = (_date1, _date2) => {
+        var diffDate_1 = _date1 instanceof Date ? _date1 :new Date(_date1);
+        var diffDate_2 = _date2 instanceof Date ? _date2 :new Date(_date2);
+     
+        diffDate_1 =new Date(diffDate_1.getFullYear(), diffDate_1.getMonth()+1, diffDate_1.getDate());
+        diffDate_2 =new Date(diffDate_2.getFullYear(), diffDate_2.getMonth()+1, diffDate_2.getDate());
+     
+        var diff = Math.abs(diffDate_2.getTime() - diffDate_1.getTime());
+        diff = Math.ceil(diff / (1000 * 3600 * 24));
+     
+        return diff;
+    }
 
     _onPressScreen(){
         //마지막 5번째 단어인지
