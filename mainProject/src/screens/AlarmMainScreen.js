@@ -143,7 +143,7 @@ export default class AlarmMain extends Component {
         console.log("firstlogin=", storageFirstLoginTime);
         // let calcDate = new Date(now.getTime() - storageFirstLoginTime);
         this.setState({
-            // howLongDate: calcDate.getDate()
+            //howLongDate: calcDate.getDate()
             howLongDate: this.dateDiff(new Date(), new Date(Number(storageFirstLoginTime))) + 1
         });
         

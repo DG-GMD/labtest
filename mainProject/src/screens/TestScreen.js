@@ -138,28 +138,29 @@ export default class Test extends Component{
         this.props.navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Test Loading...</Text> });
     }
 
-    //header 수정
+    //헤더 수정 함수
     getData = async () => {
         const storageUserName = await AsyncStorage.getItem('user');
         const storageTestNumber = await AsyncStorage.getItem('testNumber');
         const storageFirstLoginTime = await AsyncStorage.getItem('firstLoginTime');
-  
+
         this.setState({
             userName: storageUserName,
             userTestNumber: storageTestNumber
         });
-  
+
         // console.log("storage ", storageTestNumber, storageUserName, storageFirstLoginTime);
-  
-        let now = new Date();
-  
-        let calcDate = new Date(now.getTime() - storageFirstLoginTime);
+
+        //let now = new Date();
+
+        //let calcDate = new Date(now.getTime() - storageFirstLoginTime);
         this.setState({
-            howLongDate: calcDate.getDate()
+            //howLongDate: calcDate.getDate()
+            howLongDate: dateDiff(new Date(), new Date(Number(storageFirstLoginTime))) + 1
         });
         
         this.props.navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={this.state.howLongDate} userName={this.state.userName}/>}   });
-      };
+    };
 
     //사용자가 체크한 현재 문제의 답을 저장
     changeChecked(value){
@@ -698,11 +699,24 @@ function writeTestResultToLocal(result){
 async function getCurrentDate(){
     let now = new Date();
     let firstLoginTime = await AsyncStorage.getItem('firstLoginTime');
-    let dDate = new Date(now.getTime() - firstLoginTime);
+    console.log('getCurrentDate: ', firstLoginTime);
+    let dDate = dateDiff(now, new Date(Number(firstLoginTime))) + 1;
 
-    return dDate.getDate();
+    return dDate;
 }
 
+function dateDiff(_date1, _date2){
+    var diffDate_1 = _date1 instanceof Date ? _date1 :new Date(_date1);
+    var diffDate_2 = _date2 instanceof Date ? _date2 :new Date(_date2);
+ 
+    diffDate_1 =new Date(diffDate_1.getFullYear(), diffDate_1.getMonth()+1, diffDate_1.getDate());
+    diffDate_2 =new Date(diffDate_2.getFullYear(), diffDate_2.getMonth()+1, diffDate_2.getDate());
+ 
+    var diff = Math.abs(diffDate_2.getTime() - diffDate_1.getTime());
+    diff = Math.ceil(diff / (1000 * 3600 * 24));
+ 
+    return diff;
+}
 function writeTestState(state){
     (async () => {
         let nowdDate = await getCurrentDate();
@@ -779,10 +793,11 @@ async function writeTestResultToDB(item, _lastIndex) {
     try{
         //현재 D+ 날짜 구하기
         let firstLoginTime = await AsyncStorage.getItem('firstLoginTime');
-        let dDate = new Date(now.getTime() - firstLoginTime);
+        let dDate = dateDiff(new Date(), new Date(Number(firstLoginTime))) + 1;
 
         //현재 D+ 날짜 저장
-        await AsyncStorage.setItem('lastDate', dDate.getDate().toString());
+        await AsyncStorage.setItem('lastDate', dDate.toString());
+
 
         //현재 로그인한 testNumber 구하기
         let testNumber = await AsyncStorage.getItem('testNumber');
@@ -792,7 +807,7 @@ async function writeTestResultToDB(item, _lastIndex) {
         console.log('before write to db, lastIndex=', lastIndex);
 
         //firebase db에 update
-        var ref = database().ref('/users/' + testNumber.toString() + '/test/' + dDate.getDate().toString() + '/' + lastIndex);
+        var ref = database().ref('/users/' + testNumber.toString() + '/test/' + dDate.toString() + '/' + lastIndex);
         ref.update(postData);
         
         // let updates = {};
