@@ -23,9 +23,11 @@ export default function LoginScreen({ navigation }) {
 
     var alarmPath = '';
     if(category == 1)
-      alarmPath = '/alarm/' + parseInt(testNumber) + '.mp3';
+      alarmPath = '/alarm/' + (parseInt(testNumber) - 1000) + '.mp3';
+    else if(category == 2)
+      alarmPath = '/alarm/' + (parseInt(testNumber) - 2000) + '.mp3';
     else
-      alarmPath = '/alarm/' + category + '.mp3';
+      alarmPath = '/alarm/Alarm bell.mp3';
 
     const task = storage()
       .ref(alarmPath)
