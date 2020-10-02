@@ -114,9 +114,9 @@ export default class AlarmSet extends Component {
 
         // console.log("storage ", storageTestNumber, storageUserName, storageFirstLoginTime);
 
-        let now = new Date();
+        // let now = new Date();
 
-        let calcDate = new Date(now.getTime() - storageFirstLoginTime);
+        // let calcDate = new Date(now.getTime() - storageFirstLoginTime);
         this.setState({
             howLongDate: calcDate.getDate()
         });

@@ -127,7 +127,6 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         
         var soundFileName: String?
         let testNumberInt = Int(testNumber!)
-        var fileNumber = 0;
         
         // testnumber = 1000
         if testNumberInt! / 1000 == 1 {
