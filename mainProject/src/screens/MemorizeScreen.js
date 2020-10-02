@@ -104,7 +104,7 @@ export default class Memorize extends Component {
             .then((result) => {
                 //console.log('GOT RESULT', result);
 
-                var i = 0, index = 0;
+                var i = 0, index = -1;
                 result.forEach((element) => {
                     if(element.name.toString() === 'popTime.txt'){
                         //console.log('element', element);
@@ -116,11 +116,17 @@ export default class Memorize extends Component {
                 return Promise.all([RNFS.stat(result[index].path), result[index].path]);
             })
             .then((statResult) => {
-                //console.log('statResult', statResult);
+                console.log('statResult', statResult);
                 if (statResult[0].isFile()) {
                     // if we have a file, read it
                     return RNFS.readFile(statResult[1], 'utf8');
                 }
+
+                //PopScreen이 오늘 아직 뜨지 않았다.
+                //= 아직 시험을 시작하면 안된다
+                this.setState({
+                    isPop: false
+                });
 
                 return 'no file';
             })
@@ -143,15 +149,17 @@ export default class Memorize extends Component {
                 AsyncStorage.getItem('firstLoginTime')
                     .then((firstLoginTime)=>{
                         //현재 D+Date 구하기
-                        let now = new Date();
-                        let dDate = new Date(now.getTime() - firstLoginTime);
+                        //let now = new Date();
+                        let dDate = dateDiff(new Date(), new Date(Number(firstLoginTime))) + 1;
                         
                         //PopScreen이 마지막으로 표시된 D+Date
-                        let popDate = new Date(popScreenTime - firstLoginTime);
+                        let popDate = 0;
+                        if(popScreenTime)
+                            popDate = dateDiff(new Date(Number(popScreenTime)), new Date(Number(firstLoginTime))) + 1;
 
-                        console.log('현재 날짜 ', dDate.getDate(), 'pop 날짜 ', popDate.getDate());
+                        console.log('현재 날짜 ', dDate, 'pop 날짜 ', popDate);
                         //PopScreen이 뜬 날짜와 현재 날짜가 동일하다면
-                        if(dDate.getDate() == popDate.getDate()){
+                        if(dDate == popDate){
                             //반드시 PopScreen이 오늘 떴던 것이므로 시험 시작 가능
                             this.setState({
                                 isPop: true
@@ -192,24 +200,11 @@ export default class Memorize extends Component {
         //let calcDate = new Date(now.getTime() - storageFirstLoginTime);
         this.setState({
             //howLongDate: calcDate.getDate()
-            howLongDate: this.dateDiff(new Date(), new Date(Number(storageFirstLoginTime))) + 1
+            howLongDate: dateDiff(new Date(), new Date(Number(storageFirstLoginTime))) + 1
         });
         
         this.props.navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={this.state.howLongDate} userName={this.state.userName}/>}   });
     };
-
-    dateDiff = (_date1, _date2) => {
-        var diffDate_1 = _date1 instanceof Date ? _date1 :new Date(_date1);
-        var diffDate_2 = _date2 instanceof Date ? _date2 :new Date(_date2);
-     
-        diffDate_1 =new Date(diffDate_1.getFullYear(), diffDate_1.getMonth()+1, diffDate_1.getDate());
-        diffDate_2 =new Date(diffDate_2.getFullYear(), diffDate_2.getMonth()+1, diffDate_2.getDate());
-     
-        var diff = Math.abs(diffDate_2.getTime() - diffDate_1.getTime());
-        diff = Math.ceil(diff / (1000 * 3600 * 24));
-     
-        return diff;
-    }
 
     _onPressScreen(){
         //마지막 5번째 단어인지
@@ -486,9 +481,23 @@ export default class Memorize extends Component {
 async function getCurrentDate(){
     let now = new Date();
     let firstLoginTime = await AsyncStorage.getItem('firstLoginTime');
-    let dDate = new Date(now.getTime() - firstLoginTime);
+    console.log('getCurrentDate: ', firstLoginTime);
+    let dDate = dateDiff(now, new Date(Number(firstLoginTime))) + 1;
 
-    return dDate.getDate();
+    return dDate;
+}
+
+function dateDiff(_date1, _date2){
+    var diffDate_1 = _date1 instanceof Date ? _date1 :new Date(_date1);
+    var diffDate_2 = _date2 instanceof Date ? _date2 :new Date(_date2);
+ 
+    diffDate_1 =new Date(diffDate_1.getFullYear(), diffDate_1.getMonth()+1, diffDate_1.getDate());
+    diffDate_2 =new Date(diffDate_2.getFullYear(), diffDate_2.getMonth()+1, diffDate_2.getDate());
+ 
+    var diff = Math.abs(diffDate_2.getTime() - diffDate_1.getTime());
+    diff = Math.ceil(diff / (1000 * 3600 * 24));
+ 
+    return diff;
 }
 
 

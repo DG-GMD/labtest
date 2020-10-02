@@ -76,7 +76,7 @@ export default class Check extends Component {
               let firstLoginTime = await AsyncStorage.getItem('firstLoginTime');
               
               console.log('현재시간, 최초로그인', now.getTime(), firstLoginTime);
-              let _nowDdate = new Date(now.getTime() - firstLoginTime);
+              let _nowDdate = this.dateDiff(new Date(), new Date(Number(firstLoginTime))) + 1;
               this.setState({
                 nowDdate: _nowDdate.getDate()
               });

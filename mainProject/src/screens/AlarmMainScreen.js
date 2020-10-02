@@ -102,6 +102,8 @@ export default class AlarmMain extends Component {
     };
 
     dateDiff = (_date1, _date2) => {
+        console.log('date1: ', _date1.toString());
+        console.log('date2: ', _date2.toString());
         var diffDate_1 = _date1 instanceof Date ? _date1 :new Date(_date1);
         var diffDate_2 = _date2 instanceof Date ? _date2 :new Date(_date2);
      
