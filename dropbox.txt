@@ -7,6 +7,8 @@ https://dl.dropboxusercontent.com/s/mwyjy9dwm90ywic/labtest.ipa
 https://dl.dropboxusercontent.com/s/mwyjy9dwm90ywic/labtest.ipa
 
 https://dl.dropboxusercontent.com/s/5zeho1j995pdv6w/labtest.ipa
+
+https://dl.dropboxusercontent.com/s/xtu178rqcfdftep/labtest.ipa
 ---
 
 ipa plist file link
@@ -18,7 +20,7 @@ https://dl.dropboxusercontent.com/s/xady4r436xm2188/labtest.plist
 
 https://dl.dropboxusercontent.com/s/mt4qblntegdxmlg/labtest.plist
 
-
+https://dl.dropboxusercontent.com/s/go1end3waw6enzv/labtest.plist
 ---
 
 html file link
@@ -28,3 +30,5 @@ https://dl.dropboxusercontent.com/s/2lo5tq00sa3fbu1/labtest.html?dl=0
 https://dl.dropboxusercontent.com/s/fbf4o1kmdovv6oa/labtest.html?dl=0
 
 https://dl.dropboxusercontent.com/s/9s52oi14rndqi75/labtest.html?dl=0
+
+https://dl.dropboxusercontent.com/s/bxy4h722jbq09mn/labtest.html?dl=0

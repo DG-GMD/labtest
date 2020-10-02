@@ -4,7 +4,13 @@ from collections import OrderedDict
 import pandas as pd
 import numpy
 
+# add zero while length of number is 6
+def addZero(number):
+    numberString = str(number)
+    while len(numberString) < 6:
+        numberString = "0" + numberString
 
+    return numberString
 """
 condition 구분 : 1000, 2000, 3000 번대
 condition 별로 21명
@@ -20,7 +26,7 @@ user_array = xlsx_dataframe.to_numpy()
 
 for user in user_array:
     name = user[1]
-    birth = user[3]
+    birth = addZero(user[3])
     testNumber = user[7]
     json_data[testNumber] = {
         'alarm':[{'order': 0}],
