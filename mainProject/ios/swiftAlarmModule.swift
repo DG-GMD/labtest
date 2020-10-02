@@ -15,16 +15,16 @@ import Firebase
 import AudioToolbox
 
 extension MPVolumeView {
-    static func setVolume(_ volume: Float){
-        let volumeView = MPVolumeView()
-        let slider = volumeView.subviews.first(where: {$0 is UISlider}) as? UISlider
-        
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.01) {
-            print("-----set volume to \(volume)")
-            slider?.value = volume
-        }
+  static func setVolume(_ volume: Float) {
+    let volumeView = MPVolumeView()
+    let slider = volumeView.subviews.first(where: { $0 is UISlider }) as? UISlider
+
+    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.5) {
+      slider?.value = volume
     }
+  }
 }
+
 
 class DbAlarmData: NSObject {
     
@@ -56,10 +56,6 @@ class DbAlarmData: NSObject {
 
 @objc(swiftAlarmModule)
 class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
-
-//    @IBOutlet weak var myDatePicker: UIDatePicker!
-    //    let appDelegate = UIApplication.shared.delegate as! AppDelegate
-
     
     //player
      var player: AVQueuePlayer?
@@ -122,24 +118,36 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
     //local storage
     let localStorage = UserDefaults.standard
     
+    let mainVolumeView = MPVolumeView()
     
     // MARK: 알람, 알림 초기화
     @objc func initAlarm() {
         backgroundTask.startBackgroundTask()
         
-        var testFlag:Bool = true
+        
         var soundFileName: String?
-        //test 중이라 실제 음원 파일이 없을 때
-        if testFlag{
-            let sampleFileNumber = Int(Int(testNumber!)!/1000)
-    
-            soundFileName = String(sampleFileNumber) + ".mp3"
-        }
-        //release service
-        else{
-            soundFileName = testNumber! + ".mp3"
+        let testNumberInt = Int(testNumber!)
+        var fileNumber = 0;
+        
+        // testnumber = 1000
+        if testNumberInt! / 1000 == 1 {
+            soundFileName = String(testNumberInt! - 1000)
         }
         
+        // testnumber = 2000
+        else if testNumberInt! / 1000 == 2 {
+            soundFileName = String(testNumberInt! - 2000)
+        }
+        
+        // testnumber = 3000
+        else {
+            soundFileName = "Alarm bell"
+        }
+        
+        soundFileName = soundFileName! + ".mp3"
+        print("======")
+        print(soundFileName!)
+        print("======")
         //firebase storage
         if !isDownloadSoundFile {
             print("start donwload soundfile")
@@ -156,7 +164,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
 
             let localURL = documentsDirectory.appendingPathComponent(soundFileName!)
             soundFilePath = localURL
-            print(soundFilePath)
+            print(soundFilePath ?? 0)
             // Create local filesystem URL
 //            let localURL = URL(string: "file:///labtest")!
 
@@ -201,7 +209,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         ref.child("users").child(String(testNumber!) + "/alarm").queryOrdered(byChild: "order").queryLimited(toLast: 1).observeSingleEvent(of: .value, with: { (snapshot) in
           // Get user value
             let alarmDic = snapshot.value as? Dictionary<String, Any>
-            print("snapshot data \(alarmDic)")
+//            print("snapshot data \(alarmDic)")
             
 //            let firstKey = Array(alarmDic!)[0].key as String
 //            print(alarmDic![firstKey]r!)
@@ -241,30 +249,6 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
             print(error.localizedDescription)
             }
         
-        // Make dismiss for all VC that was presented from this start VC
-//        self.children.forEach({vc in
-//            print("Dismiss \(vc.description)")
-//            vc.dismiss(animated: false, completion: nil)
-//        })
-        
-        
-        
-
-        //AVAudioPlayer check time
-//        player.addPeriodicTimeObserver(forInterval: CMTimeMake(value: 1, timescale: 100), queue: DispatchQueue.main) {
-//            [weak self] time in
-//            guard let self = self else { return }
-//            let timeString = String(format: "%02.2f", CMTimeGetSeconds(time))
-//r
-//            if UIApplication.shared.applicationState == .active {
-//                //            self.timeLabel.text = timeString
-//            } else {
-//                print("Background: \(timeString)")
-//            }
-//        }
-
-//        stopTimer()
-        
         //MARK: make scheduler to update time
         alarmTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateTime), userInfo: nil, repeats: true)
         
@@ -286,20 +270,20 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         self.playerLooper = AVPlayerLooper(player: player!, templateItem: songs[0])
         
         //AVAudioPlayer Setting
-        do {
-            try AVAudioSession.sharedInstance().setCategory(
-              AVAudioSession.Category.playAndRecord,
-              mode: .default,
-              options: []
-            )
-        } catch {
-            print("Failed to set audio session category.  Error: \(error)")
-        }
+//        do {
+//            try AVAudioSession.sharedInstance().setCategory(
+//              AVAudioSession.Category.playAndRecord,
+//              mode: .default,
+//              options: []
+//            )
+//        } catch {
+//            print("Failed to set audio session category.  Error: \(error)")
+//        }
         
         let session = AVAudioSession.sharedInstance()
         var _: Error?
         try? session.setCategory(AVAudioSession.Category.playback)
-        try? session.setMode(AVAudioSession.Mode.voiceChat)
+//        try? session.setMode(AVAudioSession.Mode.voiceChat)
         
         try? session.overrideOutputAudioPort(AVAudioSession.PortOverride.speaker)
         
@@ -374,14 +358,14 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
             let alarmRingingDate = try localStorage.string(forKey: "alarmRingingDate")
             
             if alarmRingingDate != nil{
-                print("checkCondition: localStorage alarmRingingDate = \(String(describing: alarmRingingDate))")
-                print("checkCondition: dateCompenents.day=\(dateCompenents.day)")
+//                print("checkCondition: localStorage alarmRingingDate = \(String(describing: alarmRingingDate))")
+//                print("checkCondition: dateCompenents.day=\(dateCompenents.day)")
                 //alarm ringing today!
                 if Int(alarmRingingDate!)! == dateCompenents.day! {
                     // 알람이 오늘 울렸으니까 플레이어 또한 이미 재생된적이 있다고 표시
                     isPlayConfirm = true
-                    print("********")
-                    print("alarm ringing today!!")
+//                    print("********")
+//                    print("alarm ringing today!!")
                 }
                 //alarm ringing other day!
                 else{
@@ -399,8 +383,8 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
                     // Popscreen을 띄우면 안됨
                     shouldPop = false
                     
-                    print("********")
-                    print("alarm ringing other day!!")
+//                    print("********")
+//                    print("alarm ringing other day!!")
                 }
             }
             else{
@@ -433,7 +417,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
                 
             }
             
-            print("checkAlarmCondition(): isConfirmFromPop!!!!!!! \(isConfirmFromPop)")
+//            print("checkAlarmCondition(): isConfirmFromPop!!!!!!! \(isConfirmFromPop)")
         }
     }
 
@@ -461,10 +445,15 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         //update alarm flag
         checkAlarmCondition()
         
-        print("isAlarmRing=\(isAlarmRing)")
-        print("isConfirmFromPop=\(isConfirmFromPop)")
-        print("isPlayConfirm=\(isPlayConfirm)")
-        print("shouldPop=\(shouldPop)")
+//        print("isAlarmRing=\(isAlarmRing)")
+//        print("isConfirmFromPop=\(isConfirmFromPop)")
+//        print("isPlayConfirm=\(isPlayConfirm)")
+//        print("shouldPop=\(shouldPop)")
+        
+        if nowSecond == "00"{
+            saveTimeLogToDB()
+        }
+        
         
         //check alarm is ring
         if(isAlarmRing){
@@ -485,34 +474,64 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
                 // set day of today
                 let date = Date()
                 let dateCompenents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
-                print("type of dateCompenents = \(type(of: dateCompenents.day))")
+//                print("type of dateCompenents = \(type(of: dateCompenents.day))")
                 print("alarm ring at day \(String(describing: dateCompenents.day))")
                 
                 localStorage.set(dateCompenents.day, forKey: "alarmRingingDate")
                 
-                
                 //volume MAX
-                MPVolumeView.setVolume(1)
-                player?.volume = 1
-//                print("playMusic(): volume up claer")
+                player?.volume = 1.0
+                
+//                mainVolumeView.volumeSlider.value = 1
+                MPVolumeView.setVolume(1.0)
+                
                 //play music
                 player?.play()
                 
                 playMusic()
 
                 // set log in firebase db
-                saveLogToDB()
+                saveAlarmLogToDB()
             
-                //suspend app
+                // suspend app
                 UIControl().sendAction(#selector(URLSessionTask.suspend), to: UIApplication.shared, for: nil)
             }
         }
         
         print()
     }
+
+    func saveTimeLogToDB(){
+        print("===========")
+        ref = Database.database().reference()
+        
+        let date = Date()
+        let dateCompenents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+        
+        let dateString = "\(String(dateCompenents.year!))+\(String(dateCompenents.month!))+\(String(dateCompenents.day!))"
+        
+        var formatter = DateFormatter() // 특정 포맷으로 날짜를 보여주기 위한 변수 선언
+        formatter.dateFormat = "HH" // hour format
+        let nowHour = formatter.string(from: Date())
+
+        formatter = DateFormatter() // 특정 포맷으로 날짜를 보여주기 위한 변수 선언
+        formatter.dateFormat = "mm" // minute format
+        let nowMinute = formatter.string(from: Date())
+        
+        let timeStringForPath = "\(nowHour)+\(nowMinute)"
+        
+        let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .full, timeStyle: .full)
+        let postLog = [
+            "date": timestamp
+        ]
+        
+        let childUpdates = ["/users/\(String(describing: testNumber!))/log/checkTimeLog/\(dateString)/\(timeStringForPath)" : postLog]
+        
+        ref.updateChildValues(childUpdates as [AnyHashable : Any])
+        print("===========")
+    }
     
-    
-    func saveLogToDB(){
+    func saveAlarmLogToDB(){
         print("===========")
         ref = Database.database().reference()
         
@@ -527,7 +546,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         ]
         
         
-        let childUpdates = ["/users/\(String(describing: testNumber!))/log/alarOnDate/\(dateString)" : postLog]
+        let childUpdates = ["/users/\(String(describing: testNumber!))/log/alarmOnDate/\(dateString)" : postLog]
         
         ref.updateChildValues(childUpdates as [AnyHashable : Any])
         print("===========")
@@ -538,19 +557,8 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
     func playMusic(){
         //vibrate phone
         AudioServicesPlayAlertSoundWithCompletion(SystemSoundID(kSystemSoundID_Vibrate)) { }
-
-        
         print("playMusic(): play clear")
-        
-        let asset = AVURLAsset(url: soundFilePath! as URL, options: nil)
-        let audioDuration = asset.duration
-        let audioDurationSeconds = CMTimeGetSeconds(audioDuration)
 
-        //get length of music file
-        let musicLength:Double = audioDurationSeconds
-
-        print(musicLength)
-//        print("playMusic(): schedule clear")
     }
 
     //알라 소리 멈추기
@@ -585,14 +593,14 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         //it's date when alarm is set
         // set day of today
         let date = Date()
-        var dateCompenents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+        let dateCompenents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
         
-        print("alarm set at day \(dateCompenents.day)")
+        print("alarm set at day \(String(describing: dateCompenents.day))")
         localStorage.set(dateCompenents.day, forKey: "alarmSettingDate")
         
         alarmSettingDate =  dateCompenents.day// get today's date
         
-        print("alarm setting date is \(alarmSettingDate)")
+        print("alarm setting date is \(String(describing: alarmSettingDate))")
         
         DispatchQueue.global(qos: .background).async {
             //background code
@@ -640,14 +648,14 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         
         DispatchQueue.global(qos: .background).async {
             //background code
-            
+
             DispatchQueue.main.async {
                 //your main thread
                 self.initAlarm()
             }
         }
 //        DispatchQueue.main.async(execute: {
-            
+//            self.initAlarm()
 //        })
     }
 

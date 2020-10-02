@@ -105,7 +105,7 @@ export const AuthProvider = ({ children }) => {
 async function saveLogtoDB(testNumber){
   let now = new Date();
   let year = now.getFullYear();
-  let month = now.getMonth();
+  let month = now.getMonth()+1;
   let date = now.getDate();
   let dateString = year.toString() + '+' + month.toString() + '+' + date.toString();
 
@@ -130,9 +130,7 @@ async function saveLogtoDB(testNumber){
     //firebase db에 login date update
     var ref = database().ref('/users/' + testNumber.toString() + '/log/loginDate/'+ dateString + "/" + length);
     ref.update(postData);
-  });
-
-  
+  });  
 }
 
 //최초 로그인 날짜를 firebase DB와 로컬 저장소에 저장

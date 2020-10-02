@@ -154,9 +154,7 @@ export default function Routes() {
 
   if(isPop == true){
     return(
-      
-        <PopScreen/>
-      
+        <PopScreen/>    
     );
   } else {
     return (

@@ -169,6 +169,7 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
   NSLog(@"********");
   NSLog(@"applicationWillTerminate!");
   NSLog(@"********");
+
 }
 
 @end

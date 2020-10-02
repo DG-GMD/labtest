@@ -1,26 +1,32 @@
 # -*- coding: utf-8 -*-
 import json
 from collections import OrderedDict
+import pandas as pd
+import numpy
 
-json_data = OrderedDict()
 
 """
 condition 구분 : 1000, 2000, 3000 번대
-condition 별로 20명
+condition 별로 21명
 테스트 계정이므로 name='testUser', birth='000000'으로 통일
 """
-numberList = [1000, 2000, 3000]
 
-for bigNumber in numberList:
-    for smallNumber in range(0, 20):
-        testNumber = bigNumber + smallNumber
-        json_data[testNumber] = {'alarm':[{'order': 0}],'name':'testUser', 'birth':123456}
-    testNumber = bigNumber + 998
-    json_data[testNumber] = {'alarm':[{'order': 0}],'name':'testUser', 'birth':123456}
-    testNumber = bigNumber + 999
-    json_data[testNumber] = {'alarm':[{'order': 0}],'name':'testUser', 'birth':123456}
+json_data = OrderedDict()
 
-# print(json.dumps(json_data, indent=4))
+# read xlsx to dataframe
+xlsx_dataframe = pd.read_excel("user_info.xlsx")
 
-with open('users.json', 'w') as make_file:
-    json.dump(json_data, make_file, indent=4)
+user_array = xlsx_dataframe.to_numpy()
+
+for user in user_array:
+    name = user[1]
+    birth = user[3]
+    testNumber = user[7]
+    json_data[testNumber] = {
+        'alarm':[{'order': 0}],
+        'name':name, 
+        'birth':birth
+    }
+
+with open('users.json', 'wt', encoding='utf-8') as make_file:
+    json.dump(json_data, make_file, indent=4, ensure_ascii=False)
