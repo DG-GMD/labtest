@@ -18,6 +18,8 @@ target 'labtest' do
 
   pod 'RNExitApp', :path => '../node_modules/react-native-exit-app'
 
+  pod 'RNBackgroundFetch', :path => '../node_modules/react-native-background-fetch'
+
   target 'labtestTests' do
     inherit! :complete
     # Pods for testing

@@ -44,7 +44,8 @@ export default class Check extends Component {
         milliTime: 0,
         howLongDate: 0,
         nowDdate: 1,
-        testNumber: -1
+        testNumber: -1,
+        reload: false,
       };
       
       //현재 로그인한 사용자의 연구번호를 가져온다
@@ -191,6 +192,13 @@ export default class Check extends Component {
       // console.log('---------------in didmout');
 
       this.checkedTestDB();
+      this._unsubscribe = this.props.navigation.addListener('focus', () => {
+        this.setState({reload: !this.state.reload});
+      });
+    }
+
+    componentWillUnmount() {
+        this._unsubscribe();
     }
   
     //헤더 수정 함수

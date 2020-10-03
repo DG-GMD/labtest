@@ -57,6 +57,8 @@ class DbAlarmData: NSObject {
 @objc(swiftAlarmModule)
 class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
     
+    // alarmbell flag
+    var isAlarmBell: Bool?s
     //player
      var player: AVQueuePlayer?
     
@@ -131,16 +133,19 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         // testnumber = 1000
         if testNumberInt! / 1000 == 1 {
             soundFileName = String(testNumberInt! - 1000)
+            isAlarmBell = false
         }
         
         // testnumber = 2000
         else if testNumberInt! / 1000 == 2 {
             soundFileName = String(testNumberInt! - 2000)
+            isAlarmBell = false
         }
         
         // testnumber = 3000
         else {
             soundFileName = "Alarm bell"
+            isAlarmBell = true
         }
         
         soundFileName = soundFileName! + ".mp3"
@@ -478,11 +483,21 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
                 
                 localStorage.set(dateCompenents.day, forKey: "alarmRingingDate")
                 
-                //volume MAX
-                player?.volume = 1.0
-                
-//                mainVolumeView.volumeSlider.value = 1
-                MPVolumeView.setVolume(1.0)
+                if isAlarmBell? {
+                    //volume MAX
+                    player?.volume = 1.0
+                    
+    //                mainVolumeView.volumeSlider.value = 1
+                    MPVolumeView.setVolume(0.8)
+                }
+                else{
+                    //volume MAX
+                    player?.volume = 1.0
+                    
+    //                mainVolumeView.volumeSlider.value = 1
+                    MPVolumeView.setVolume(1.0)
+                }
+               
                 
                 //play music
                 player?.play()
