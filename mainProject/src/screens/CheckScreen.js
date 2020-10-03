@@ -45,7 +45,6 @@ export default class Check extends Component {
         howLongDate: 0,
         nowDdate: 1,
         testNumber: -1,
-        reload: false,
       };
       
       //현재 로그인한 사용자의 연구번호를 가져온다
@@ -79,7 +78,7 @@ export default class Check extends Component {
               console.log('현재시간, 최초로그인', now.getTime(), firstLoginTime);
               let _nowDdate = this.dateDiff(new Date(), new Date(Number(firstLoginTime))) + 1;
               this.setState({
-                nowDdate: _nowDdate.getDate()
+                nowDdate: _nowDdate
               });
             }
             //해당 날짜에 시험을 수행하지 않았다면
@@ -193,9 +192,11 @@ export default class Check extends Component {
 
       this.checkedTestDB();
       this._unsubscribe = this.props.navigation.addListener('focus', () => {
-        this.setState({reload: !this.state.reload});
+        this.getData();
       });
     }
+
+
 
     componentWillUnmount() {
         this._unsubscribe();
@@ -305,7 +306,7 @@ export default class Check extends Component {
                         textAlign: 'center',
                         margin: 30
                         }}>
-                        학습 {this.state.nowDdate}일차
+                        학습 {this.state.howLongDate}일차
                     </Text>
                 </View>
                 

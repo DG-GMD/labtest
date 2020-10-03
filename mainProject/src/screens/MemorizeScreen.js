@@ -35,7 +35,7 @@ export default class Memorize extends Component {
             meaning :'',
             isWord: true,
             tochange: true,
-            isPop: false
+            isPop: false,
         };
 
 
@@ -97,7 +97,15 @@ export default class Memorize extends Component {
                 this.setState({count: 1})
             }
         });
-      }
+
+        this._unsubscribe = this.props.navigation.addListener('focus', () => {
+            this.getData();
+        });
+    }
+
+    componentWillUnmount() {
+        this._unsubscribe();
+    }
     
     _IsTestStart(){
         (async () => {
