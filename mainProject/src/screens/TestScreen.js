@@ -68,7 +68,6 @@ export default class Test extends Component{
             correctCount: 0,
             jsonTestResult: null,
             isTestResultExist: false,
-            reload: false,
         };
 
         (async () =>{
@@ -221,7 +220,7 @@ export default class Test extends Component{
         this.getData();
 
         this._unsubscribe = this.props.navigation.addListener('focus', () => {
-            this.setState({reload: !this.state.reload});
+            this.getData();
         });
     }
 

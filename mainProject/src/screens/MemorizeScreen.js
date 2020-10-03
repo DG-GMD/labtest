@@ -35,7 +35,6 @@ export default class Memorize extends Component {
             isWord: true,
             tochange: true,
             isPop: false,
-            reload: false,
         };
 
 
@@ -99,7 +98,7 @@ export default class Memorize extends Component {
         });
 
         this._unsubscribe = this.props.navigation.addListener('focus', () => {
-            this.setState({reload: !this.state.reload});
+            this.getData();
         });
     }
 

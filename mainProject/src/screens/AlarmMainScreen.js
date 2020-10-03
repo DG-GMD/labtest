@@ -70,6 +70,8 @@ export default class AlarmMain extends Component {
             if((prm !== undefined) && !this.state.flage){
                 this.setState({flag:true})
             }
+
+            this.getData();
         });
     }
 
