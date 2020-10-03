@@ -13,6 +13,7 @@ import AVFoundation
 import MediaPlayer
 import Firebase
 import AudioToolbox
+import CoreLocation
 
 extension MPVolumeView {
   static func setVolume(_ volume: Float) {
@@ -55,10 +56,10 @@ class DbAlarmData: NSObject {
 
 
 @objc(swiftAlarmModule)
-class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
+class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate, CLLocationManagerDelegate  {
     
     // alarmbell flag
-    var isAlarmBell: Bool?s
+    var isAlarmBell: Bool?
     //player
      var player: AVQueuePlayer?
     
@@ -122,9 +123,96 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
     
     let mainVolumeView = MPVolumeView()
     
+    
+    let locationManager = CLLocationManager()
+    var latitude: Double = 0.0
+    var longitude: Double = 0.0
+    var current_time = NSDate().timeIntervalSince1970
+    @objc var bgtimer = Timer()
+    var checkTimeTimer = Timer()
+    var f = 0
+    
+    var backgroundUpdateTask: UIBackgroundTaskIdentifier!
+
+    func beginBackgroundUpdateTask() {
+        self.backgroundUpdateTask = UIApplication.shared.beginBackgroundTask(expirationHandler: {
+            self.endBackgroundUpdateTask()
+        })
+    }
+    func endBackgroundUpdateTask() {
+        UIApplication.shared.endBackgroundTask(self.backgroundUpdateTask)
+        self.backgroundUpdateTask = UIBackgroundTaskIdentifier.invalid
+    }
+    
+    func doBackgroundTask() {
+        
+            //background code
+            self.beginBackgroundUpdateTask()
+
+            // Do something
+            self.StartupdateLocation()
+            self.initAlarm()
+
+            self.bgtimer = Timer.scheduledTimer(timeInterval: 30, target: self, selector: #selector(getter: self.bgtimer), userInfo: nil, repeats: true)
+            //MARK: make scheduler to update time
+            self.checkTimeTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.updateTime), userInfo: nil, repeats: true)
+            RunLoop.current.add(self.bgtimer, forMode: RunLoop.Mode.default)
+            RunLoop.current.run()
+            
+            RunLoop.current.add(self.checkTimeTimer, forMode: RunLoop.Mode.default)
+            RunLoop.current.run()
+
+            // End the background task.
+            self.endBackgroundUpdateTask()
+        
+    }
+    
+    @objc func bgtimer(timer:Timer!){
+
+        print("Fired from Background ************************************")
+
+        updateLocation()
+
+//        print("Position Report: \(pos)")
+    }
+
+    func StartupdateLocation() {
+        locationManager.delegate = self
+        locationManager.startUpdatingLocation()
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.distanceFilter = kCLDistanceFilterNone
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.allowsBackgroundLocationUpdates = true
+        locationManager.pausesLocationUpdatesAutomatically = false
+    }
+    
+    func updateLocation() {
+        locationManager.startUpdatingLocation()
+        locationManager.stopUpdatingLocation()
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        let locValue:CLLocationCoordinate2D = manager.location!.coordinate
+
+        self.latitude = locValue.latitude
+        self.longitude = locValue.longitude
+        f+=1
+        print("New Coordinates: \(f) ")
+        print(self.latitude)
+        print(self.longitude)
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("Error while requesting new coordinates")
+    }
+    
+    
+    
+    
+    
     // MARK: 알람, 알림 초기화
-    @objc func initAlarm() {
-        backgroundTask.startBackgroundTask()
+    func initAlarm() {
+//        backgroundTask.startBackgroundTask()
         
         
         var soundFileName: String?
@@ -253,8 +341,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
             print(error.localizedDescription)
             }
         
-        //MARK: make scheduler to update time
-        alarmTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateTime), userInfo: nil, repeats: true)
+        
         
 
         // MARK: Notification Options
@@ -286,7 +373,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         
         let session = AVAudioSession.sharedInstance()
         var _: Error?
-        try? session.setCategory(AVAudioSession.Category.playback)
+        try? session.setCategory(AVAudioSession.Category.playback, options: .mixWithOthers)
 //        try? session.setMode(AVAudioSession.Mode.voiceChat)
         
         try? session.overrideOutputAudioPort(AVAudioSession.PortOverride.speaker)
@@ -347,7 +434,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
     }
     
     //이전 알람 데이터를 확인해 flag들 조정
-    @objc func checkAlarmCondition(){
+    func checkAlarmCondition(){
         //알람이 아직 한번도 울리지 않았을 때
         if alarmSettingDate == nil{
             print("there's no alarmDate")
@@ -483,32 +570,38 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
                 
                 localStorage.set(dateCompenents.day, forKey: "alarmRingingDate")
                 
-                if isAlarmBell? {
-                    //volume MAX
-                    player?.volume = 1.0
-                    
-    //                mainVolumeView.volumeSlider.value = 1
-                    MPVolumeView.setVolume(0.8)
+                if isAlarmBell != nil{
+                    if isAlarmBell == true{
+                        //volume MAX
+                        player?.volume = 1.0
+                        
+                        DispatchQueue.main.async(execute: {
+                        MPVolumeView.setVolume(0.8)
+                        })
+                    }
+                    else{
+                        //volume 80%
+                        player?.volume = 1.0
+        
+                        DispatchQueue.main.async(execute: {
+                        MPVolumeView.setVolume(1.0)
+                        })
+                    }
                 }
-                else{
-                    //volume MAX
-                    player?.volume = 1.0
-                    
-    //                mainVolumeView.volumeSlider.value = 1
-                    MPVolumeView.setVolume(1.0)
-                }
-               
                 
                 //play music
                 player?.play()
-                
-                playMusic()
 
                 // set log in firebase db
                 saveAlarmLogToDB()
             
                 // suspend app
+                
+                DispatchQueue.main.async(execute: {
                 UIControl().sendAction(#selector(URLSessionTask.suspend), to: UIApplication.shared, for: nil)
+                })
+                    
+               
             }
         }
         
@@ -565,15 +658,7 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         ref.updateChildValues(childUpdates as [AnyHashable : Any])
         print("===========")
     }
-    
-    
-    //알람 소리 재생
-    func playMusic(){
-        //vibrate phone
-        AudioServicesPlayAlertSoundWithCompletion(SystemSoundID(kSystemSoundID_Vibrate)) { }
-        print("playMusic(): play clear")
 
-    }
 
     //알라 소리 멈추기
     @objc func stopMusic(){
@@ -662,14 +747,14 @@ class swiftAlarmModule: UIViewController, UNUserNotificationCenterDelegate  {
         
         DispatchQueue.global(qos: .background).async {
             //background code
-
+            self.doBackgroundTask()
             DispatchQueue.main.async {
                 //your main thread
-                self.initAlarm()
+                
             }
         }
 //        DispatchQueue.main.async(execute: {
-//            self.initAlarm()
+//            self.doBackgroundTask()
 //        })
     }
 

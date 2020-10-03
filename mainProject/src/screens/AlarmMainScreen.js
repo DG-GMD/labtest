@@ -18,6 +18,8 @@ Number.prototype.pad = function(size) {
     return s;
 }
 
+var isStartMoudle = false;
+
 export default class AlarmMain extends Component {
     constructor(props){
         super(props);
@@ -91,24 +93,17 @@ export default class AlarmMain extends Component {
                     }
                 })
 
-                // //testNumber로 알람 소리 설정
-                // let soundName;
-                // //본인 목소리
-                // if(parseInt(testNumber/1000) == 1){
-                //     soundName = "Self-voice.aiff";
-                // }
-                // //컴퓨터 목소리
-                // else if(parseInt(testNumber/1000) == 2){
-                //     soundName = "other-voice.mp3";
-                // }
-                // //알람 벨
-                // else if(parseInt(testNumber/1000) == 3){
-                //     soundName = "Alarm-bell.aiff";
-                // }
-
-                //swift moudule init
-                // const swiftAlarmModule = NativeModules.swiftAlarmModule;
-                swiftAlarmModule.checkAlarm(testNumber);
+                
+                // 해당 플래그가 false라면 앱 실행 후 한번도 checkalarm이 실행 안됨
+                // true면 한번이라도 모듈이 실행됐기에 더 이상 실행하지 않는다.
+                if(isStartMoudle){
+                    // do nothing
+                }
+                // 
+                else{
+                    isStartMoudle = true;
+                    swiftAlarmModule.checkAlarm(testNumber);    
+                }
             });
         }
 

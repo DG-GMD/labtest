@@ -1,5 +1,5 @@
 import React, { useRef, useContext, useState, useEffect, createContext } from 'react';
-import { AppState, StyleSheet, Text,  Platform } from "react-native";
+import { Alert, AppState, StyleSheet, Text,  Platform } from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import AuthStack from './AuthStack';
@@ -20,7 +20,6 @@ import swiftAlarmModule from '../utils/swiftModule';
 import UserContext, {UserProvider} from './UserContext';
 
 import RNRestart from 'react-native-restart'; // Import package from node modules
-
 
 
 
@@ -98,6 +97,7 @@ export default function Routes() {
     if (initializing) setInitializing(false);
     setLoading(false);
   }
+
 
   
   useEffect(() => {
