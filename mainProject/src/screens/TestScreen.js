@@ -67,7 +67,8 @@ export default class Test extends Component{
             ],
             correctCount: 0,
             jsonTestResult: null,
-            isTestResultExist: false
+            isTestResultExist: false,
+            reload: false,
         };
 
         (async () =>{
@@ -218,6 +219,14 @@ export default class Test extends Component{
     componentDidMount(){
         this.setProblemItems();
         this.getData();
+
+        this._unsubscribe = this.props.navigation.addListener('focus', () => {
+            this.setState({reload: !this.state.reload});
+        });
+    }
+
+    componentWillUnmount() {
+        this._unsubscribe();
     }
 
     setProblemItems(){
