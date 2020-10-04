@@ -91,14 +91,12 @@ export default class Memorize extends Component {
         // console.log('---------------in didmout');
 
         this._unsubscribe = this.props.navigation.addListener('focus', () => {
+            this.getData();
+
             var prm = this.props.route.params;
             if((prm !== undefined && prm.isReset)){
-                this.setState({count: 1})
+                this._setToFirstWord();
             }
-        });
-
-        this._unsubscribe = this.props.navigation.addListener('focus', () => {
-            this.getData();
         });
     }
 

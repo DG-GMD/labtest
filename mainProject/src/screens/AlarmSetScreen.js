@@ -35,8 +35,6 @@ export default class AlarmSet extends Component {
     }
 
     componentDidMount(){
-        // this.getData();
-
         if(!this.state.flag){
             (async () => {
                 let testNumber = await AsyncStorage.getItem('testNumber');
@@ -88,43 +86,6 @@ export default class AlarmSet extends Component {
         }
     }
 
-    //헤더 수정 함수
-    getData = async () => {
-        const storageUserName = await AsyncStorage.getItem('user');
-        const storageTestNumber = await AsyncStorage.getItem('testNumber');
-        const storageFirstLoginTime = await AsyncStorage.getItem('firstLoginTime');
-
-        this.setState({
-            userName: storageUserName,
-            userTestNumber: storageTestNumber
-        });
-
-        // console.log("storage ", storageTestNumber, storageUserName, storageFirstLoginTime);
-
-        //let now = new Date();
-
-        //let calcDate = new Date(now.getTime() - storageFirstLoginTime);
-        this.setState({
-            //howLongDate: calcDate.getDate()
-            howLongDate: this.dateDiff(new Date(), new Date(Number(storageFirstLoginTime))) + 1
-        });
-        
-        this.props.navigation.setOptions({ headerTitle: props => {return <LogoutButton restDate={this.state.howLongDate} userName={this.state.userName}/>}   });
-    };
-
-    dateDiff = (_date1, _date2) => {
-        var diffDate_1 = _date1 instanceof Date ? _date1 :new Date(_date1);
-        var diffDate_2 = _date2 instanceof Date ? _date2 :new Date(_date2);
-     
-        diffDate_1 =new Date(diffDate_1.getFullYear(), diffDate_1.getMonth()+1, diffDate_1.getDate());
-        diffDate_2 =new Date(diffDate_2.getFullYear(), diffDate_2.getMonth()+1, diffDate_2.getDate());
-     
-        var diff = Math.abs(diffDate_2.getTime() - diffDate_1.getTime());
-        diff = Math.ceil(diff / (1000 * 3600 * 24));
-     
-        return diff;
-    }
-
     saveAlarm = () => {
         database()
             .ref('/users/' + this.state.testNumber + '/alarm')
@@ -140,7 +101,7 @@ export default class AlarmSet extends Component {
                 .then((result) => {
                     //console.log('GOT RESULT', result);
 
-                    var i = 0, index = 0;
+                    var i = 0, index = -1;
                     result.forEach((element) => {
                         if(element.name.toString() === 'popTime.txt'){
                             //console.log('element', element);
@@ -149,38 +110,49 @@ export default class AlarmSet extends Component {
                         i++;
                     });
 
+                    if(index < 0)
+                        return Promise.all([null]);
+
                     return Promise.all([RNFS.stat(result[index].path), result[index].path]);
                 })
                 .then((statResult) => {
+                    if(statResult[0] == null)
+                        return null;
+                        
                     //console.log('statResult', statResult);
                     if (statResult[0].isFile()) {
                         // if we have a file, read it
                         return RNFS.readFile(statResult[1], 'utf8');
                     }
 
-                    return 'no file';
+                    return null;
                 })
                 .then((contents) => {
                     // log the file contents
-                    //console.log('popTime', contents);
+                    console.log('popTime', contents);
+                    if(contents == null)
+                        popScreenTime = -1;
 
                     //PopScreen이 표시된 시간 확인 확인
                     let popScreenTime = contents;
                     //console.log('popScreenTime: ', popScreenTime);
 
-                    var nowDate = (new Date()).getDate();
-                    var popDate = (new Date(popScreenTime - 0)).getDate();
                     //console.log('nowDate: ', nowDate)
                     //console.log('popDate: ', popDate)
                     if(popScreenTime == -1){
                         alarmModule.diaryNotification(dt.getTime().toString(), false);
                     }
-                    else if(nowDate == popDate){
-                        alarmModule.diaryNotification(dt.getTime().toString(), true);
-                    }
-                    else {
-                        alarmModule.diaryNotification(dt.getTime().toString(), false);
-                    }
+                    else{
+                        var nowDate = (new Date()).getDate();
+                        var popDate = (new Date(popScreenTime - 0)).getDate();
+
+                        if(nowDate == popDate){
+                            alarmModule.diaryNotification(dt.getTime().toString(), true);
+                        }
+                        else {
+                            alarmModule.diaryNotification(dt.getTime().toString(), false);
+                        }
+                    } 
                 })
                 .catch((err) => {
                     console.log(err.message, err.code);
