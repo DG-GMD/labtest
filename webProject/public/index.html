@@ -82,8 +82,12 @@
 
     const dataHandler = {
       FirstSheetData: function(jsonData) {
+        console.log(jsonData);
+
         var jsonArr = [];
         for(rNum in jsonData){
+          if(rNum==null || rNum == 'null')
+            continue;
           let dt = jsonData[rNum];
           let mDt = {};
 
@@ -117,8 +121,10 @@
       SecondSheetData: function(jsonData) {
         var jsonArr = [];
         for(rNum in jsonData){
+          if(rNum==null || rNum == 'null')
+            continue;
           let dt = jsonData[rNum];
-
+          
           if(dt.alarm.length > 1){
             for(i in dt.alarm){
               let alarmData = dt.alarm[i];
@@ -141,11 +147,14 @@
       ThirdSheetData: function(jsonData) {
         var jsonArr = [];
         for(rNum in jsonData){
+          if(rNum==null || rNum == 'null')
+            continue;
           let dt = jsonData[rNum];
           
           if(dt.test !== null && dt.test != undefined){
             for(i in dt.test){
               let testData = dt.test[i]
+              let tryOder = 0;
               for(j in testData){
                 let testDateData = testData[j]
                 if(testDateData !== null && testDateData !== undefined) {
@@ -153,7 +162,7 @@
 
                   mDt.research_number = rNum;
                   mDt.test_date = i;
-                  mDt.try_order = Number(j)+1;
+                  mDt.try_order = ++tryOder;
                   mDt.correct_count = testDateData.correctCount;
                   mDt.try_date = testDateData.date;
 
@@ -170,6 +179,8 @@
       FourthSheetData: function(jsonData) {
         var jsonArr = [];
         for(rNum in jsonData){
+          if(rNum==null || rNum == 'null')
+            continue;
           let dt = jsonData[rNum];
           
           if(dt.popCheck !== null && dt.popCheck != undefined){
