@@ -136,15 +136,45 @@ export default class Check extends Component {
               let _tableData1 = [...this.state.tableData1];
               let _tableData2 = [...this.state.tableData2];
 
-              //단어 시험을 본 날짜들을 가져온다
+              //단어 시험을 본 날짜들이 담겨 있다.
+              // eg. [2, 4] -> 2, 4번째 날짜에 시험을 봤다.
               let testDateList = [];
-              let tempList = Object.keys(_testList);
-              for(let i=0; i<tempList.length; i++){
-                let date = tempList[i];
-                testDateList.push(parseInt(date));
-              }
-              console.log(Object.keys(_testList), testDateList);
 
+              // test 데이터가 json인지 array인지 확인
+              let isTestDataIsArray;
+
+
+              /**
+               * array : 0번째 요소가 null, 요소의 index가 test 본 날
+               * json : 0번째 요소부터 test data, key가 test 본 날
+               */
+ 
+              // test 데이터가 비어있으면 checkscreen 달력 비워놓기
+              if(_testList == null || _testList == undefined)
+                return;
+              // test 데이터가 array면 
+              else if(Array.isArray(_testList)){
+                for (let i=0; i<_testList.length; i++) {
+                  let testData = _testList[i];
+                  if (testData == null){
+                    continue;
+                  }
+                  
+                  testDateList.push(i);
+                }
+              }
+              // test 데이터가 json이면
+              else{
+                let keyList = Object.keys(_testList);
+
+                for(let i=0; i<keyList.length; i++){
+                  let date = keyList[i];
+                  testDateList.push(parseInt(date));
+                }
+                
+                console.log(Object.keys(_testList), testDateList);
+              }
+                
               //표의 모든 요소를 loop로 돌아본다
               for(let i=0; i<testDateList.length; i++){
                 let date = testDateList[i];
