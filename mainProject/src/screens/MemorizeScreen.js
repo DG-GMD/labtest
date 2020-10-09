@@ -96,9 +96,6 @@ export default class Memorize extends Component {
             if((prm !== undefined && prm.isReset)){
                 this._setToFirstWord();
             }
-        });
-
-        this._unsubscribe = this.props.navigation.addListener('focus', () => {
             this.getData();
         });
     }
