@@ -41,6 +41,7 @@ export default class Test extends Component{
         this.initTest = this.initTest.bind(this);
         this.setProblemItems = this.setProblemItems.bind(this);
         this.getData = this.getData.bind(this);
+        this.getWordListFromDB = this.getWordListFromDB.bind(this);
 
         this.state = {
             toastVisible: false,
@@ -70,33 +71,9 @@ export default class Test extends Component{
             isTestResultExist: false,
         };
 
-        (async () =>{
-            let nowdDate = await getCurrentDate();
-            console.log(nowdDate);
-            return nowdDate;
-        })()
-        .then( (nowdDate) => {
-            database()
-            .ref('/words/day' + nowdDate.toString())
-            .once('value')
-            .then(snapshot => {
-                console.log('Word data: ', snapshot.val());
-                dbList = snapshot.val(); 
-                this.setState({
-                    wordList: snapshot.val(),
-                });
-                this.setState({
-                    word: this.state.wordList[this.state.count].word
-                });
-            });
-        });
-
-        
-
-        
+        this.getWordListFromDB();
 
         //시험 결과를 일단 불러와봄
-        // let jsonTestResult = readTesetResult();
         (async () => {
             try{
                 let result = await AsyncStorage.getItem('testResult');
@@ -136,6 +113,29 @@ export default class Test extends Component{
             }
         });
         this.props.navigation.setOptions({ headerTitle: props => <Text style={{fontSize:20}}>Test Loading...</Text> });
+    }
+
+    getWordListFromDB = () => {
+        (async () =>{
+            let nowdDate = await getCurrentDate();
+            console.log(nowdDate);
+            return nowdDate;
+        })()
+        .then( (nowdDate) => {
+            database()
+            .ref('/words/day' + nowdDate.toString())
+            .once('value')
+            .then(snapshot => {
+                console.log('Word data: ', snapshot.val());
+                dbList = snapshot.val(); 
+                this.setState({
+                    wordList: snapshot.val(),
+                });
+                this.setState({
+                    word: this.state.wordList[this.state.count].word
+                });
+            });
+        });
     }
 
     //헤더 수정 함수
@@ -204,6 +204,7 @@ export default class Test extends Component{
 
     componentDidMount(){
         this.setProblemItems();
+        this.getWordListFromDB();
         this.getData();
 
         this._unsubscribe = this.props.navigation.addListener('focus', () => {
@@ -578,78 +579,77 @@ export default class Test extends Component{
             Toast.show('반드시 모든 문제를 풀어야 채점이 가능합니다!', Toast.LONG);
             return;
         }
-
         
-        //오늘 시험을 처음 보는 것이라면
-        // if(!this.state.isTestResultExist){
-            console.log("checkedlist : " + this.state.checkedList);
+        console.log("checkedlist : " + this.state.checkedList);
 
-            this.setState({
-                testDone: true
-            });
-            let _correctList = [false, false, false, false, false, false];
-            for(let i=1; i<=5; i++){
-                //답안지와 체크한 항목이 일치한다면
-                if(this.state.checkedList[i] == this.state.answerList[i]){
-                    _correctList[i] = true;
-                }
+        this.setState({
+            testDone: true
+        });
+
+        let _correctList = [false, false, false, false, false, false];
+
+        for(let i=1; i<=5; i++){
+            //답안지와 체크한 항목이 일치한다면
+            if(this.state.checkedList[i] == this.state.answerList[i]){
+                _correctList[i] = true;
             }
-            this.setState({
-                correctList: _correctList
-            });
-            
-            let _correctCount = 0;
+        }
 
-            for(let i=0; i<5; i++){
-                //표의 title을 단어로 기입
-                this.state.tableTitle[i] = this.state.wordList[i+1].word;
+        this.setState({
+            correctList: _correctList
+        });
+        
+        let _correctCount = 0;
 
-                //표의 data를 단어 뜻, 내 답변, 채점 결과로 기입
+        for(let i=0; i<5; i++){
+            //표의 title을 단어로 기입
+            this.state.tableTitle[i] = this.state.wordList[i+1].word;
 
-                //단어 뜻
-                this.state.tableData[i][0] = this.state.wordList[i+1].meaning;
+            //표의 data를 단어 뜻, 내 답변, 채점 결과로 기입
 
-                //내 답변
-                let myAnswerNumber = this.state.checkedList[i+1];
-                console.log("myAnswerNumber : " + myAnswerNumber);
-                this.state.tableData[i][1] = this.state.problemItemList[i+1][myAnswerNumber-1][1];
+            //단어 뜻
+            this.state.tableData[i][0] = this.state.wordList[i+1].meaning;
 
-                //채점 결과
-                //맞다면
-                if(this.state.checkedList[i+1] == this.state.answerList[i+1]){
-                    this.state.tableData[i][2] = "O";
-                    _correctCount++;
-                }
-                else{
-                    this.state.tableData[i][2] = "X";
-                }
+            //내 답변
+            let myAnswerNumber = this.state.checkedList[i+1];
+            console.log("myAnswerNumber : " + myAnswerNumber);
+            this.state.tableData[i][1] = this.state.problemItemList[i+1][myAnswerNumber-1][1];
+
+            //채점 결과
+            //맞다면
+            if(this.state.checkedList[i+1] == this.state.answerList[i+1]){
+                this.state.tableData[i][2] = "O";
+                _correctCount++;
             }
+            else{
+                this.state.tableData[i][2] = "X";
+            }
+        }
 
-            this.setState({
-                correctCount: _correctCount
-            });
-            
+        this.setState({
+            correctCount: _correctCount
+        });
+        
 
-            //단어 시험결과를 저장
-            (async () => {
-                //Async에 쓸 데이터를 1개의 json 객체로 묶기
-                let item = new Object();
-                item.tableData = this.state.tableData;
-                item.correctCount = _correctCount;
-                item.tableTitle = this.state.tableTitle;
+        //단어 시험결과를 저장
+        (async () => {
+            //Async에 쓸 데이터를 1개의 json 객체로 묶기
+            let item = new Object();
+            item.tableData = this.state.tableData;
+            item.correctCount = _correctCount;
+            item.tableTitle = this.state.tableTitle;
 
-                return item;
-            })().then( async (item) => {
-                //가장 최근에 본 시험의 n회차인지 구하고 n+1을 반환한다
-                let lastIndex = await writeIndexOfTestResult();
+            return item;
+        })().then( async (item) => {
+            //가장 최근에 본 시험의 n회차인지 구하고 n+1을 반환한다
+            let lastIndex = await writeIndexOfTestResult();
 
-                //AsyncStorage에 단어 시험 결과 저장
-                writeTestResultToLocal(item);
+            //AsyncStorage에 단어 시험 결과 저장
+            writeTestResultToLocal(item);
 
-                //Firebase DB에 단어 시험 결과 저장
-                writeTestResultToDB(_correctCount, lastIndex);
-            });
-        // }
+            //Firebase DB에 단어 시험 결과 저장
+            writeTestResultToDB(_correctCount, lastIndex);
+        });
 
         //이미 저장돼있는 시험 결과가 있다면 바로 여기로 와서 함수 종료
     }
