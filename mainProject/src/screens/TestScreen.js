@@ -712,6 +712,10 @@ function dateDiff(_date1, _date2){
 function writeTestState(state){
     (async () => {
         let nowdDate = await getCurrentDate();
+
+        if (nowDate > 14) {
+            nowDate = nowDate % 14;
+        }
         return nowdDate;
     })()
     .then( (nowdDate) => {
