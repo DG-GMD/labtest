@@ -167,52 +167,39 @@ export default class Test extends Component{
         const _value = value;
         let _checkedList = [...this.state.checkedList];
         _checkedList[this.state.count] = _value;
+        console.log(_checkedList);
 
         this.setState({
             checkedList: _checkedList,
             checked: _value
         });
     }
+    
+    /**
+     * 다음 문제로 이동, 체크 표시도 수정
+     */
     increaseCount(){
         let _checkedList = [...this.state.checkedList];
         let _checked = _checkedList[this.state.count+1];
-        if(_checked == -1){
-            this.setState({
-                count: this.state.count+1,
-                word: this.state.wordList[this.state.count+1].word,
-                checked: -1
-            });
-        }
-        else{
-            this.setState({
-                checked: _checked,
-                count: this.state.count+1,
-                word: this.state.wordList[this.state.count+1].word,
-                checked: -1
-            });
-        }
-        // console.log(_checkedList);
-        //console.log(this.state.wordList[1].word);
+        
+        this.setState({
+            count: this.state.count+1,
+            word: this.state.wordList[this.state.count+1].word,
+            checked: _checked
+        });
     }
+    /**
+     * 이전 문제로 이동, 체크 표시도 수정
+     */
     decreaseCount(){
         let _checkedList = [...this.state.checkedList];
         let _checked = _checkedList[this.state.count-1];
-        if(_checked == -1){
-            this.setState({
-                count: this.state.count-1,
-                word: this.state.wordList[this.state.count-1].word,
-                checked: -1
-            });
-        }
-        else{
-            this.setState({
-                checked: _checked,
-                count: this.state.count-1,
-                word: this.state.wordList[this.state.count-1].word,
-                checked: -1
-            });
-        }
-        // console.log(_checkedList);
+        
+        this.setState({
+            count: this.state.count-1,
+            word: this.state.wordList[this.state.count-1].word,
+            checked: _checked
+        });
     }
 
     componentDidMount(){
@@ -249,7 +236,7 @@ export default class Test extends Component{
             console.log("DOM is existed : " + this.state.count);
             
             item = this.state.problemDOM[this.state.count];
-            // console.log(item);
+            
             return item;
         }
         else{
@@ -594,8 +581,8 @@ export default class Test extends Component{
 
         
         //오늘 시험을 처음 보는 것이라면
-        if(!this.state.isTestResultExist){
-            // console.log("checkedlist : " + this.state.checkedList);
+        // if(!this.state.isTestResultExist){
+            console.log("checkedlist : " + this.state.checkedList);
 
             this.setState({
                 testDone: true
@@ -662,7 +649,7 @@ export default class Test extends Component{
                 //Firebase DB에 단어 시험 결과 저장
                 writeTestResultToDB(_correctCount, lastIndex);
             });
-        }
+        // }
 
         //이미 저장돼있는 시험 결과가 있다면 바로 여기로 와서 함수 종료
     }
