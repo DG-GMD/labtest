@@ -45,6 +45,10 @@ export default class Memorize extends Component {
 
         (async () =>{
             let nowdDate = await getCurrentDate();
+            if (nowdDate > 14) {
+                nowdDate = nowdDate % 14;
+            }
+            
             console.log(nowdDate);
             //console.log("Memorize Constructor:", await AsyncStorage.getItem('popTime'));
             return nowdDate;
@@ -510,6 +514,7 @@ function dateDiff(_date1, _date2){
 function writeTestStateTesting(){
     (async () => {
         let nowdDate = await getCurrentDate();
+
         return nowdDate;
     })()
     .then( (nowdDate) => {
