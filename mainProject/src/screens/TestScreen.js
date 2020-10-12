@@ -118,6 +118,10 @@ export default class Test extends Component{
     getWordListFromDB = () => {
         (async () =>{
             let nowdDate = await getCurrentDate();
+            if (nowDate > 14) {
+                nowDate = nowDate % 14;
+            }
+            
             console.log(nowdDate);
             return nowdDate;
         })()
@@ -713,9 +717,7 @@ function writeTestState(state){
     (async () => {
         let nowdDate = await getCurrentDate();
 
-        if (nowDate > 14) {
-            nowDate = nowDate % 14;
-        }
+        
         return nowdDate;
     })()
     .then( (nowdDate) => {
