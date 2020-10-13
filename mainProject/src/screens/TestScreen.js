@@ -116,13 +116,14 @@ export default class Test extends Component{
     }
 
     getWordListFromDB = () => {
+        console.log('getWordListFromDB');
         (async () =>{
             let nowdDate = await getCurrentDate();
             if (nowdDate > 14) {
                 nowdDate = nowdDate % 14;
             }
             
-            console.log(nowdDate);
+            //console.log(nowdDate);
             return nowdDate;
         })()
         .then( (nowdDate) => {
@@ -130,6 +131,7 @@ export default class Test extends Component{
             .ref('/words/day' + nowdDate.toString())
             .once('value')
             .then(snapshot => {
+                console.log('getWordListFromDB_then');
                 console.log('Word data: ', snapshot.val());
                 dbList = snapshot.val(); 
                 this.setState({
@@ -171,7 +173,7 @@ export default class Test extends Component{
         const _value = value;
         let _checkedList = [...this.state.checkedList];
         _checkedList[this.state.count] = _value;
-        console.log(_checkedList);
+        //console.log(_checkedList);
 
         this.setState({
             checkedList: _checkedList,
@@ -221,6 +223,7 @@ export default class Test extends Component{
     }
 
     setProblemItems(){
+        console.log('setProblemItems');
         let _problemDOM = tempProblemList;
         let _answerList = tempAnswerList;
         let _checkedList = [...this.state.checkedList];
@@ -235,10 +238,12 @@ export default class Test extends Component{
             problemItemList: _probelmItemList
         });
     }
+
     ProblemButton() {
+        console.log('ProblemButton-problemDOM: ',this.state.problemDOM);
         if(this.state.problemDOM != null && this.state.problemDOM.length != 0){
             let item;
-            console.log("DOM is existed : " + this.state.count);
+            //("DOM is existed : " + this.state.count);
             
             item = this.state.problemDOM[this.state.count];
             
@@ -246,7 +251,7 @@ export default class Test extends Component{
         }
         else{
             writeTestState('testing');
-            console.log('making new 5 Problems...');
+            //console.log('making new 5 Problems...');
             // console.log("in else");
             let randomNumber = 0;
             let randomNumberList = [];
@@ -276,6 +281,7 @@ export default class Test extends Component{
                     }
                     flag = true;
                     wordMeaning = this.state.wordList[randomNumber].meaning;
+                    console.log("ProblemButton-wordMeaning: ", wordMeaning);
 
                     //삽입될 DOM의 뜻이 현재 문제 번호의 영단어와 일치한다면
                     //answerList에 문제번호 별로 답 번호 기록
@@ -302,7 +308,7 @@ export default class Test extends Component{
             // console.log("answerList : " + tempAnswerList);
             // console.log("problemitemlist : ");
             // console.log(tempProblemItemList);
-            console.log('first prolbem ', tempProblemItemList[1]);
+            //console.log('first prolbem ', tempProblemItemList[1]);
             return tempProblemList[1];
         }
     }
@@ -345,7 +351,10 @@ export default class Test extends Component{
                         <View style={styles.warningButtonContainer}>
                             <TouchableOpacity
                                 style={styles.buttonContainer}  
-                                onPress={ () => { this.setState({ start: true }) } } 
+                                onPress={ () => {
+                                    this.initTest(true);
+                                    //this.setState({ start: true }); 
+                                } } 
                             >
                                 <Text style={{
                                     fontSize: 20
@@ -399,7 +408,6 @@ export default class Test extends Component{
         let year = today.getFullYear();
         let month = today.getMonth();
         let date = today.getDate();
-        
 
         return(
             <View style={{
@@ -496,7 +504,7 @@ export default class Test extends Component{
                         flex: 1,
                         // backgroundColor: 'blue'
                     }}>
-                        <TouchableOpacity style={styles.reMembuttonContainer} onPress={() => {this.initTest()}}>
+                        <TouchableOpacity style={styles.reMembuttonContainer} onPress={() => {this.initTest(false)}}>
                             <Text style={{fontSize: 15 , color: 'mediumseagreen', marginBottom: 10}}>
                                 다시 학습하기
                             </Text>
@@ -506,7 +514,9 @@ export default class Test extends Component{
             </View>
         );
     }
-    initTest(){
+    
+    initTest(startTest){
+        console.log('initTest');
         //local에 저장된 단어시험 결과들을 삭제
         this.setState({
             tableTitle: [null, null, null, null, null],
@@ -533,11 +543,19 @@ export default class Test extends Component{
 
         writeTestState('');
         
-        //단어 시험 종료 여부 flag 초기화
-        this.setState({
-            testDone: false,
-            start: false
-        });
+        if(startTest){ // 테스트하기 버튼으로 들어왔으면 true, 다시 학습하기 버튼으로 들어왔으면 false
+            this.setState({
+                testDone: false,
+                start: true
+            });
+        }
+        else{
+            //단어 시험 종료 여부 flag 초기화
+            this.setState({
+                testDone: false,
+                start: false
+            });
+        }
 
         tempProblemList = [];
         tempAnswerList = [];
@@ -555,11 +573,13 @@ export default class Test extends Component{
         }
         this.changeChecked(-1);
 
-        this.props.navigation.navigate('MemorizeScreen',{isReset:true});
+        if(!startTest)
+            this.props.navigation.navigate('MemorizeScreen',{isReset:true});
     }
 
     //local에 저장된 단어시험결과 관련 저장소와 변수들을 초기화
     initTestResult(){
+        console.log('initTestResult');
         this.initTest();
         try{
              AsyncStorage.removeItem('testIndex');
@@ -569,6 +589,7 @@ export default class Test extends Component{
         }      
     }
     Grading(){
+        console.log('Grading');
         let isAllProlbemChecked = true;
         //모든 문제가 체크돼어있는지 확인
         //아니라면 상태 변화 없음
@@ -584,10 +605,11 @@ export default class Test extends Component{
             return;
         }
         
-        console.log("checkedlist : " + this.state.checkedList);
+        //console.log("checkedlist : " + this.state.checkedList);
 
         this.setState({
-            testDone: true
+            testDone: true,
+            problemDOM: []
         });
 
         let _correctList = [false, false, false, false, false, false];
@@ -616,7 +638,7 @@ export default class Test extends Component{
 
             //내 답변
             let myAnswerNumber = this.state.checkedList[i+1];
-            console.log("myAnswerNumber : " + myAnswerNumber);
+            //console.log("myAnswerNumber : " + myAnswerNumber);
             this.state.tableData[i][1] = this.state.problemItemList[i+1][myAnswerNumber-1][1];
 
             //채점 결과
@@ -673,6 +695,7 @@ async function returnToMemorize(){
 }
 
 function writeTestResultToLocal(result){
+    console.log('writeTestResultToLocal');
     (async () => {
         try{
             //시험 결과를 1개의 json 객체에 넣어서 저장(String 형태로)
@@ -714,6 +737,7 @@ function dateDiff(_date1, _date2){
 }
 
 function writeTestState(state){
+    console.log('writeTestState');
     (async () => {
         let nowdDate = await getCurrentDate();
 
@@ -738,6 +762,7 @@ function writeTestState(state){
 //n+1을 반환한다.
 //testIndex는 0부터 시작
 async function writeIndexOfTestResult(){
+    console.log('writeIndexOfTestResult');
     let testIndexArrayString = null;
     let testIndexArray = [];
     let lastIndex = -1;
@@ -764,7 +789,7 @@ async function writeIndexOfTestResult(){
         testIndexArray.push(lastIndex);
 
         lastIndex = n;
-        console.log('last index is', lastIndex-1, 'new last index is', lastIndex);
+        //console.log('last index is', lastIndex-1, 'new last index is', lastIndex);
     }
 
     //최신 정보가 기록된 IndexArray를 AsyncStorage에 저장
@@ -776,7 +801,7 @@ async function writeIndexOfTestResult(){
     }
     
     //가장 마지막 단어 시험 회차가 몇번째 단어시험인지 반환
-    console.log('return lastIndex ', lastIndex);
+    //console.log('return lastIndex ', lastIndex);
     return lastIndex;
 }
 
@@ -801,7 +826,7 @@ async function writeTestResultToDB(item, _lastIndex) {
 
         //실험 시작 n일째에서 몇번째 시험 결과를 저장할 것인지 확인
         let lastIndex = _lastIndex;
-        console.log('before write to db, lastIndex=', lastIndex);
+        //console.log('before write to db, lastIndex=', lastIndex);
 
         //firebase db에 update
         var ref = database().ref('/users/' + testNumber.toString() + '/test/' + dDate.toString() + '/' + lastIndex);
