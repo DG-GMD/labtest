@@ -1,11 +1,10 @@
-# labtest
-
-- skku lab app
-
-how to build
+# Demo Build
+1. Install Requirements
+```sh
+$ yarn install
 ```
-git clone https://github.com/DG-GMD/labtest
-yarn install
-(turn on android emulator)
-npx react-native run-android
+2. Turn on android emulator
+3. Run 
+```sh
+$ npx react-native run-android
 ```
