@@ -1,4 +1,4 @@
-# Laboratory Testing Application
+# Laboratory Alarm/Testing Application
 SSKU lab app
 
 ## Docs
